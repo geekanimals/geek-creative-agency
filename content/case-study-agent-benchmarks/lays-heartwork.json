@@ -1,0 +1,362 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-09-05T00:27:16.343Z",
+  "project": {
+    "slug": "lays-heartwork",
+    "title": "Lay's Heartwork",
+    "client": "Lay's (PepsiCo)",
+    "year": 2020,
+    "location": "India",
+    "shortSummary": "Lay's Heartwork reactivated creators acquired through Smile Deke Dekho, using gratitude packs to thank India's unsung heroes and engage an existing creator community.",
+    "cardSummary": "Reactivating an existing creator community through Lay's Heartwork gratitude packs.",
+    "renderMode": "standard",
+    "projectKind": "campaign",
+    "companySlug": "pepsico",
+    "brandSlug": "lays",
+    "businessCategorySlugs": [
+      "fmcg"
+    ],
+    "serviceSlugs": [
+      "influencer-marketing"
+    ],
+    "solutionSlugs": [],
+    "headline": "Reactivating an existing creator community for Lay's Heartwork",
+    "challenge": {
+      "question": "How could Lay's thank India's unsung heroes while reactivating an existing creator community?",
+      "copy": "Heartwork needed to engage fan-club members, including creators acquired through Smile Deke Dekho, without rebuilding the creator community from scratch."
+    },
+    "insight": "The creator community acquired through Smile Deke Dekho could be reactivated as an existing relationship asset rather than treated as a fresh list.",
+    "idea": {
+      "statement": "Reactivate the community through gratitude.",
+      "copy": "Lay's Heartwork sent gratitude packs to fan-club members, including creators acquired through Smile Deke Dekho, as part of its effort to thank India's unsung heroes."
+    },
+    "execution": "Within Geek's tracked creator-activation subset, packs reached 1,400 influencers and 1,058 creators were activated. The activation generated 1,738 tracked posts and Stories, comprising 853 posts and 885 Stories.",
+    "outcome": "Heartwork demonstrated that the creator community acquired through Smile Deke Dekho could be reactivated rather than rebuilt. Geek's tracked subset recorded 4.76M reach, 3.81M engagement and 75% organic participation.",
+    "metrics": [
+      {
+        "value": "1,400",
+        "label": "Influencers reached with packs",
+        "note": "Geek's tracked creator-activation subset; not the entire Heartwork campaign.",
+        "claimId": "metric-geek-influencers-reached"
+      },
+      {
+        "value": "1,058",
+        "label": "Creators activated",
+        "note": "Geek's tracked creator-activation subset; not the entire Heartwork campaign.",
+        "claimId": "metric-geek-creators-activated"
+      },
+      {
+        "value": "1,738",
+        "label": "Tracked posts and Stories",
+        "note": "Geek's tracked creator-activation subset, comprising 853 posts and 885 Stories.",
+        "claimId": "metric-geek-content"
+      },
+      {
+        "value": "4.76M",
+        "label": "Tracked reach",
+        "note": "Geek's tracked creator-activation subset; not total campaign reach.",
+        "claimId": "metric-geek-reach"
+      },
+      {
+        "value": "3.81M",
+        "label": "Tracked engagement",
+        "note": "Geek's tracked creator-activation subset; not an entire-campaign figure.",
+        "claimId": "metric-geek-engagement"
+      },
+      {
+        "value": "75",
+        "label": "Organic participation",
+        "suffix": "%",
+        "note": "Geek's tracked creator-activation subset.",
+        "claimId": "metric-geek-organic-participation"
+      },
+      {
+        "value": "8M+",
+        "label": "Wider-campaign total organic reach",
+        "note": "Reported wider-campaign figure; not attributable to Geek's tracked subset.",
+        "claimId": "metric-wider-organic-reach"
+      },
+      {
+        "value": "4,300+",
+        "label": "Wider-campaign posts and Stories",
+        "note": "Reported wider-campaign figure; not attributable to Geek's tracked subset.",
+        "claimId": "metric-wider-content"
+      },
+      {
+        "value": "~70,000",
+        "label": "Wider-campaign conversations",
+        "note": "Reported wider-campaign figure; not attributable to Geek's tracked subset.",
+        "claimId": "metric-wider-conversations"
+      },
+      {
+        "value": "~50M",
+        "label": "Wider-campaign partner-brand impressions",
+        "note": "Reported wider-campaign figure generated through leading partner brands; not attributable to Geek's tracked subset.",
+        "claimId": "metric-wider-impressions"
+      }
+    ],
+    "seo": {
+      "metaTitle": "Lay's Heartwork Creator Activation Case Study | Geek Creative Agency",
+      "metaDescription": "How Lay's Heartwork reactivated creators acquired through Smile Deke Dekho, with Geek's tracked activation metrics kept distinct from wider-campaign figures.",
+      "noindex": false
+    }
+  },
+  "evidence": {
+    "sources": [
+      {
+        "id": "heartwork-gold-standard-reference",
+        "kind": "internal-document",
+        "title": "Curated Gold Standard Reference — Lay's Heartwork",
+        "notes": "Curated from the frozen Lay's Gold Standard content pack. Geek-specific tracked metrics, wider-campaign figures and historical creator economics must remain separately scoped."
+      }
+    ],
+    "claims": [
+      {
+        "id": "relationship-brand-company",
+        "type": "relationship",
+        "statement": "Lay's is the brand and PepsiCo is the company for this project.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "relationship-service",
+        "type": "relationship",
+        "statement": "The supported service for Heartwork is Influencer Marketing / creator activation.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "relationship-category",
+        "type": "relationship",
+        "statement": "The project is categorized as FMCG.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "relationship-no-solution",
+        "type": "relationship",
+        "statement": "Heartwork has no formal IRM Solution relationship; that relationship begins with the later MyLaysRelationchip project.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "narrative-challenge",
+        "type": "narrative",
+        "statement": "Heartwork sought to thank India's unsung heroes while engaging fan-club members, including creators acquired through Smile Deke Dekho.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "fact-community-continuity",
+        "type": "fact",
+        "statement": "Lay's Heartwork gratitude packs went to fan-club members, including creators acquired through Smile Deke Dekho.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "narrative-insight",
+        "type": "narrative",
+        "statement": "The existing creator community could be reactivated rather than rebuilt as a fresh list.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "narrative-idea",
+        "type": "narrative",
+        "statement": "Heartwork used gratitude packs to thank India's unsung heroes and reactivate members of an existing creator community.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "narrative-outcome",
+        "type": "narrative",
+        "statement": "Heartwork demonstrated that the creator community acquired through Smile Deke Dekho could be reactivated as an existing relationship asset rather than rebuilt from scratch.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "metric-geek-influencers-reached",
+        "type": "metric",
+        "statement": "Geek's tracked creator-activation subset reached 1,400 influencers with packs.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "This is a Geek-subset figure, not an entire-campaign total."
+      },
+      {
+        "id": "metric-geek-creators-activated",
+        "type": "metric",
+        "statement": "Geek's tracked creator-activation subset activated 1,058 creators.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "This is a Geek-subset figure, not an entire-campaign total."
+      },
+      {
+        "id": "metric-geek-content",
+        "type": "metric",
+        "statement": "Geek's tracked creator-activation subset generated 1,738 tracked posts and Stories, comprising 853 posts and 885 Stories.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "This is a Geek-subset figure, not an entire-campaign total."
+      },
+      {
+        "id": "metric-geek-reach",
+        "type": "metric",
+        "statement": "Geek's tracked creator-activation subset recorded 4.76M reach.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "This is tracked subset reach, not wider-campaign reach."
+      },
+      {
+        "id": "metric-geek-engagement",
+        "type": "metric",
+        "statement": "Geek's tracked creator-activation subset recorded 3.81M engagement.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "This is a Geek-subset figure, not an entire-campaign total."
+      },
+      {
+        "id": "metric-geek-organic-participation",
+        "type": "metric",
+        "statement": "Geek's tracked creator-activation subset recorded 75% organic participation.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "metric-wider-organic-reach",
+        "type": "metric",
+        "statement": "The wider Heartwork campaign was reported at 8M+ total organic reach.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Wider-campaign context; not attributable to Geek's tracked subset."
+      },
+      {
+        "id": "metric-wider-content",
+        "type": "metric",
+        "statement": "The wider Heartwork campaign was reported at 4,300+ posts and Stories.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Wider-campaign context; not attributable to Geek's tracked subset."
+      },
+      {
+        "id": "metric-wider-conversations",
+        "type": "metric",
+        "statement": "The wider Heartwork campaign was reported at approximately 70,000 conversations.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Wider-campaign context; not attributable to Geek's tracked subset."
+      },
+      {
+        "id": "metric-wider-impressions",
+        "type": "metric",
+        "statement": "The wider Heartwork campaign was reported at approximately 50M impressions through leading partner brands.",
+        "sourceIds": [
+          "heartwork-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Wider-campaign partner-brand amplification; not attributable to Geek's tracked subset."
+      }
+    ],
+    "narrativeBindings": [
+      {
+        "field": "challenge",
+        "claimIds": [
+          "narrative-challenge",
+          "fact-community-continuity"
+        ]
+      },
+      {
+        "field": "insight",
+        "claimIds": [
+          "fact-community-continuity",
+          "narrative-insight"
+        ]
+      },
+      {
+        "field": "idea",
+        "claimIds": [
+          "narrative-idea",
+          "fact-community-continuity"
+        ]
+      },
+      {
+        "field": "execution",
+        "claimIds": [
+          "fact-community-continuity",
+          "metric-geek-influencers-reached",
+          "metric-geek-creators-activated",
+          "metric-geek-content"
+        ]
+      },
+      {
+        "field": "outcome",
+        "claimIds": [
+          "narrative-outcome",
+          "metric-geek-reach",
+          "metric-geek-engagement",
+          "metric-geek-organic-participation"
+        ]
+      }
+    ]
+  },
+  "quality": {
+    "status": "pass",
+    "draftReady": true,
+    "score": 100,
+    "issues": []
+  }
+}

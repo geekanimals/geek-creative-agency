@@ -1,0 +1,373 @@
+{
+  "_meta": {
+    "project": "the-coolest-job",
+    "note": "Web-optimised assets. Masters retained out of /public at /media-masters/the-coolest-job/. Mobile image assets intentionally empty where desktop reads fine on 390–430px (CMS uses desktop fallback).",
+    "updated": "2026-08-22"
+  },
+  "hero": {
+    "role": "case-study-hero",
+    "desktop": {
+      "video": "/assets/work/the-coolest-job/hero/hero-desktop.mp4",
+      "dims": "960x540",
+      "codec": "h264",
+      "durationSec": 38,
+      "sizeKB": 1412
+    },
+    "mobile": {
+      "video": "/assets/work/the-coolest-job/hero/hero-mobile.mp4",
+      "dims": "854x480",
+      "codec": "h264",
+      "durationSec": 38,
+      "sizeKB": 962
+    },
+    "poster": {
+      "webp": "/assets/work/the-coolest-job/hero/hero-poster.webp",
+      "sizeKB": 179,
+      "dims": "1200x750",
+      "jpgFallback": "/assets/work/the-coolest-job/hero/hero-poster.jpg",
+      "jpgSizeKB": 207
+    },
+    "master": "/media-masters/the-coolest-job/hero/hero.mp4 (mpeg4 960x540, 10 MB)",
+    "alt": "Miller High Life — The Coolest Job",
+    "rights": "CLIENT ARCHIVE"
+  },
+  "campaignFilm": {
+    "role": "case-study-film",
+    "desktop": {
+      "video": "/assets/work/the-coolest-job/activation/case-study-film-web.mp4",
+      "dims": "1280x720",
+      "codec": "h264",
+      "durationSec": 121,
+      "sizeKB": 5562
+    },
+    "mobile": null,
+    "poster": {
+      "webp": "/assets/work/the-coolest-job/hero/hero-poster.webp"
+    },
+    "master": "/media-masters/the-coolest-job/activation/case-study-film-master.mp4 (mpeg4 1280x720, 23 MB)",
+    "alt": "The Coolest Job — campaign film",
+    "rights": "CLIENT ARCHIVE"
+  },
+  "media": [
+    {
+      "file": "/assets/work/the-coolest-job/campaign/work-hard-party-hard.png",
+      "role": "campaign",
+      "format": "PNG",
+      "dims": "1280x800",
+      "sizeKB": 36,
+      "alt": "Miller High Life — Work Hard. Party Hard.",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/campaign/campaign-identity.png",
+      "role": "campaign",
+      "format": "PNG",
+      "dims": "1280x800",
+      "sizeKB": 28,
+      "alt": "The Coolest Job — campaign identity",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/campaign/brand-reveal.png",
+      "role": "campaign",
+      "format": "PNG",
+      "dims": "1280x800",
+      "sizeKB": 56,
+      "alt": "The Coolest Job — brand reveal",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/campaign/print-radio.png",
+      "role": "campaign",
+      "format": "PNG",
+      "dims": "1280x800",
+      "sizeKB": 103,
+      "alt": "The Coolest Job — archival print & radio recruitment references",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE (confirm — Times Ascent reference)"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/campaign/weekday-weekend-social-creative.jpg",
+      "role": "campaign",
+      "format": "JPG",
+      "dims": "638x479",
+      "sizeKB": 86,
+      "alt": "The Coolest Job — weekday / weekend social creative",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/campaign/brand-responsible-drinking-creative.jpg",
+      "role": "campaign",
+      "format": "JPG",
+      "dims": "638x479",
+      "sizeKB": 101,
+      "alt": "Miller High Life — responsible drinking creative",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/campaign/brand-creatives-grid.jpg",
+      "role": "campaign",
+      "format": "JPG",
+      "dims": "638x479",
+      "sizeKB": 113,
+      "alt": "The Coolest Job — brand creatives grid",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/application/prelaunch-apply-now.jpg",
+      "role": "application",
+      "format": "JPG",
+      "dims": "474x1093",
+      "sizeKB": 80,
+      "alt": "The Coolest Job — apply now screen",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/application/prelaunch-like-screen.webp",
+      "role": "application",
+      "format": "WEBP",
+      "dims": "521x605",
+      "sizeKB": 35,
+      "alt": "The Coolest Job — like / entry screen",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/application/prelaunch-profile.jpg",
+      "role": "application",
+      "format": "JPG",
+      "dims": "651x1084",
+      "sizeKB": 86,
+      "alt": "The Coolest Job — applicant profile screen",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/application/vineeth-vincent-profile.jpg",
+      "role": "application",
+      "format": "JPG",
+      "dims": "638x479",
+      "sizeKB": 78,
+      "alt": "The Coolest Job — real applicant profile",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/application/gamified-missions-ui.jpg",
+      "role": "application",
+      "format": "JPG",
+      "dims": "1280x720",
+      "sizeKB": 68,
+      "alt": "The Coolest Job — missions & gamification interface",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/application/prelaunch-twitter-stream.webp",
+      "role": "application",
+      "format": "WEBP",
+      "dims": "720x558",
+      "sizeKB": 48,
+      "alt": "Application — Twitter stream",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/application/prelaunch-vote-requests.webp",
+      "role": "application",
+      "format": "WEBP",
+      "dims": "720x558",
+      "sizeKB": 53,
+      "alt": "Application — vote requests",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/application/prelaunch-about.webp",
+      "role": "application",
+      "format": "WEBP",
+      "dims": "720x765",
+      "sizeKB": 57,
+      "alt": "Application — about",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/activation/channel-ecosystem.png",
+      "role": "activation",
+      "format": "PNG",
+      "dims": "1280x800",
+      "sizeKB": 62,
+      "alt": "The Coolest Job — channel ecosystem",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/activation/sutra-resumes.png",
+      "role": "activation",
+      "format": "PNG",
+      "dims": "1280x800",
+      "sizeKB": 50,
+      "alt": "Recruitment / Sutra HR resumes",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/activation/ipad-game-live.webp",
+      "role": "activation",
+      "format": "WEBP",
+      "dims": "1366x768",
+      "sizeKB": 579,
+      "alt": "The Miller High Life iPad game interface",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/results/four-ambassadors.png",
+      "role": "results",
+      "format": "PNG",
+      "dims": "1280x800",
+      "sizeKB": 32,
+      "alt": "The four High Life ambassadors",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/results/fans-applicants.png",
+      "role": "results",
+      "format": "PNG",
+      "dims": "1280x800",
+      "sizeKB": 48,
+      "alt": "Results — fans & applicants",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/results/brand-linkage.png",
+      "role": "results",
+      "format": "PNG",
+      "dims": "1280x800",
+      "sizeKB": 90,
+      "alt": "Results — brand linkage",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/results/10000-applications.png",
+      "role": "results",
+      "format": "PNG",
+      "dims": "1280x800",
+      "sizeKB": 45,
+      "alt": "Results — 10,000 applications",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/results/64-shortlisted.png",
+      "role": "results",
+      "format": "PNG",
+      "dims": "1280x800",
+      "sizeKB": 49,
+      "alt": "Results — 64 shortlisted",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/post-campaign/facebook-page-2012.webp",
+      "role": "post-campaign",
+      "format": "WEBP",
+      "dims": "851x388",
+      "sizeKB": 257,
+      "alt": "Miller High Life — Facebook page, 2012",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/post-campaign/miller-patrol-facebook-app.webp",
+      "role": "post-campaign",
+      "format": "WEBP",
+      "dims": "1366x768",
+      "sizeKB": 106,
+      "alt": "Miller Patrol — Facebook app",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/post-campaign/twitter-page-2012.webp",
+      "role": "post-campaign",
+      "format": "WEBP",
+      "dims": "1107x597",
+      "sizeKB": 80,
+      "alt": "Miller High Life — Twitter, 2012",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/post-campaign/its-miller-time-contest.webp",
+      "role": "post-campaign",
+      "format": "WEBP",
+      "dims": "1001x601",
+      "sizeKB": 314,
+      "alt": "It's Miller Time — contest",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/post-campaign/store-locator.webp",
+      "role": "post-campaign",
+      "format": "WEBP",
+      "dims": "732x661",
+      "sizeKB": 420,
+      "alt": "Miller High Life — store locator",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/post-campaign/miller-blog.webp",
+      "role": "post-campaign",
+      "format": "WEBP",
+      "dims": "889x564",
+      "sizeKB": 62,
+      "alt": "Miller High Life — blog",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/post-campaign/downloads-page.webp",
+      "role": "post-campaign",
+      "format": "WEBP",
+      "dims": "1166x568",
+      "sizeKB": 125,
+      "alt": "Miller High Life — downloads",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/community/social-community-1.png",
+      "role": "community",
+      "format": "PNG",
+      "dims": "546x533",
+      "sizeKB": 58,
+      "alt": "The Coolest Job — community",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    },
+    {
+      "file": "/assets/work/the-coolest-job/community/social-community-2.png",
+      "role": "community",
+      "format": "PNG",
+      "dims": "524x481",
+      "sizeKB": 56,
+      "alt": "The Coolest Job — community",
+      "mobile": null,
+      "rights": "CLIENT ARCHIVE"
+    }
+  ]
+}

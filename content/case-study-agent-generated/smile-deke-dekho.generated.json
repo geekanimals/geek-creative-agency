@@ -1,0 +1,301 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-09-05T00:11:50.377Z",
+  "project": {
+    "slug": "smile-deke-dekho",
+    "title": "Lay's Smile Deke Dekho",
+    "client": "Lay's (PepsiCo)",
+    "year": 2019,
+    "shortSummary": "Geek delivered the creator-activation layer of Lay's Smile Deke Dekho, coordinating personalised gifting and creator publishing while helping establish a community that could be reactivated in later Lay's work.",
+    "cardSummary": "Personalised Lay's packs became creator content—and the starting point for a reusable Lay's creator community.",
+    "renderMode": "standard",
+    "projectKind": "campaign",
+    "companySlug": "pepsico",
+    "brandSlug": "lays",
+    "businessCategorySlugs": [
+      "fmcg"
+    ],
+    "serviceSlugs": [
+      "influencer-marketing"
+    ],
+    "solutionSlugs": [],
+    "headline": "Turning personalised packs into a reusable creator community",
+    "challenge": {
+      "question": "How could Lay's extend its smile-led packaging idea into creator-led social content?",
+      "copy": "Geek's task was to deliver the creator-activation layer—not the full campaign—through personalised gifting, coordinated publishing and programme reporting."
+    },
+    "insight": "Personalised packaging gave creators a tangible prompt for social content, allowing the packs themselves to become part of the participation mechanic.",
+    "idea": {
+      "statement": "Put personalised smiles in creators' hands",
+      "copy": "Personalise Lay's packs for creators and use gifting to turn the packaging idea into a wave of social creator content."
+    },
+    "execution": "Geek sourced creators, managed personalised gifting logistics, coordinated publishing and reported on the influencer programme. This work formed one execution layer within the wider Smile Deke Dekho campaign, which was publicly led by PepsiCo with Edelman and Wunderman Thompson.",
+    "outcome": "For Geek, the defensible outcome was the acquisition of a known Lay's creator community rather than ownership of the wider campaign's performance. Creators built through the Smile activation were later included among the fan-club members who received gratitude packs for Lay's Heartwork, showing how the community could be reactivated in subsequent work.",
+    "metrics": [
+      {
+        "value": "185M+",
+        "label": "Wider-campaign impressions",
+        "prefix": "Approx.",
+        "note": "Reported for the wider Smile Deke Dekho campaign and packaging activation; not attributable specifically to Geek.",
+        "claimId": "metric-wider-impressions"
+      },
+      {
+        "value": "750+",
+        "label": "Wider-campaign influencers",
+        "note": "Reported for the wider Smile Deke Dekho campaign and packaging activation; not a Geek-specific creator count.",
+        "claimId": "metric-wider-influencers"
+      },
+      {
+        "value": "8.2M",
+        "label": "Wider-campaign engagements",
+        "note": "Reported for the wider Smile Deke Dekho campaign and packaging activation; not attributable specifically to Geek.",
+        "claimId": "metric-wider-engagements"
+      },
+      {
+        "value": "75%",
+        "label": "Wider-campaign share reported as earned",
+        "prefix": "Approx.",
+        "note": "Reported for the wider Smile Deke Dekho campaign and packaging activation; not a Geek-specific performance result.",
+        "claimId": "metric-wider-earned"
+      }
+    ],
+    "seo": {
+      "metaTitle": "Lay's Smile Deke Dekho Creator Activation | Geek Creative Agency",
+      "metaDescription": "How Geek supported Lay's Smile Deke Dekho through creator sourcing, personalised gifting, publishing coordination and influencer programme reporting.",
+      "noindex": false
+    }
+  },
+  "evidence": {
+    "sources": [
+      {
+        "id": "smile-gold-standard-reference",
+        "kind": "internal-document",
+        "title": "Curated Gold Standard Reference — Lay's Smile Deke Dekho",
+        "notes": "Curated from the frozen Lay's Gold Standard content pack. Wider-campaign figures must remain clearly separated from Geek attribution."
+      }
+    ],
+    "claims": [
+      {
+        "id": "fact-project",
+        "type": "fact",
+        "statement": "Lay's Smile Deke Dekho was a 2019 campaign.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "relationship-brand-company",
+        "type": "relationship",
+        "statement": "Lay's is the brand and PepsiCo is the company.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "relationship-category",
+        "type": "relationship",
+        "statement": "The project is classified in the FMCG business category.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "relationship-service",
+        "type": "relationship",
+        "statement": "Geek's work comprised influencer marketing and creator activation.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "relationship-no-irm",
+        "type": "relationship",
+        "statement": "The campaign predates Geek's formalised IRM solution and must not be classified as an IRM project.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Supports leaving solutionSlugs empty."
+      },
+      {
+        "id": "narrative-challenge",
+        "type": "narrative",
+        "statement": "The creator-activation task was to extend Lay's smile-led packaging idea into social creator content through personalised gifting and coordinated participation.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "narrative-insight",
+        "type": "narrative",
+        "statement": "Personalised creator packs provided a tangible content prompt, enabling the packaging idea to become a creator participation mechanic.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Editorial synthesis grounded in the documented campaign mechanic."
+      },
+      {
+        "id": "narrative-idea",
+        "type": "narrative",
+        "statement": "Lay's put smiles on its packs and personalised packaging for creators, turning the packaging idea into a wave of social creator content.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "narrative-execution",
+        "type": "narrative",
+        "statement": "Geek handled creator sourcing, personalised gifting logistics, publishing coordination and reporting for the influencer programme.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "fact-campaign-scope",
+        "type": "fact",
+        "statement": "Geek did not run the full Smile Deke Dekho campaign; the wider campaign was publicly led by PepsiCo with Edelman and Wunderman Thompson.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Required attribution distinction."
+      },
+      {
+        "id": "narrative-community-outcome",
+        "type": "narrative",
+        "statement": "The defensible Geek-specific outcome was the acquisition of a known Lay's creator community that could be reused in later work.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Does not attribute wider-campaign performance to Geek."
+      },
+      {
+        "id": "fact-heartwork-continuity",
+        "type": "fact",
+        "statement": "Lay's Heartwork later sent gratitude packs to fan-club members, including creators built through the Smile activation.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Supports continuity and later reactivation of the creator community."
+      },
+      {
+        "id": "metric-wider-impressions",
+        "type": "metric",
+        "statement": "Independent public reporting cited approximately 185M+ impressions for the wider Smile Deke Dekho campaign and packaging activation.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Wider-campaign figure; not Geek-attributed performance."
+      },
+      {
+        "id": "metric-wider-influencers",
+        "type": "metric",
+        "statement": "Independent public reporting cited 750+ influencers for the wider Smile Deke Dekho campaign and packaging activation.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Wider-campaign figure; not a Geek-specific creator count."
+      },
+      {
+        "id": "metric-wider-engagements",
+        "type": "metric",
+        "statement": "Independent public reporting cited 8.2M engagements for the wider Smile Deke Dekho campaign and packaging activation.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Wider-campaign figure; not Geek-attributed performance."
+      },
+      {
+        "id": "metric-wider-earned",
+        "type": "metric",
+        "statement": "Independent public reporting described approximately 75% of the wider Smile Deke Dekho campaign result as earned.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "high",
+        "publishable": true,
+        "note": "Wider-campaign figure; not Geek-attributed performance."
+      },
+      {
+        "id": "metric-conflicting-internal",
+        "type": "metric",
+        "statement": "Geek archive material contains figures of 1,450+ influencers, 210M impressions, 25M engagement, 90%+ organic and 2,500+ features, but their scope conflicts with the independently reported wider-campaign figures.",
+        "sourceIds": [
+          "smile-gold-standard-reference"
+        ],
+        "confidence": "low",
+        "publishable": false,
+        "note": "Scope is unreconciled. These figures must not appear as verified public metrics."
+      }
+    ],
+    "narrativeBindings": [
+      {
+        "field": "challenge",
+        "claimIds": [
+          "narrative-challenge"
+        ]
+      },
+      {
+        "field": "insight",
+        "claimIds": [
+          "narrative-insight"
+        ]
+      },
+      {
+        "field": "idea",
+        "claimIds": [
+          "narrative-idea"
+        ]
+      },
+      {
+        "field": "execution",
+        "claimIds": [
+          "narrative-execution",
+          "fact-campaign-scope"
+        ]
+      },
+      {
+        "field": "outcome",
+        "claimIds": [
+          "narrative-community-outcome",
+          "fact-heartwork-continuity",
+          "fact-campaign-scope"
+        ]
+      }
+    ]
+  },
+  "quality": {
+    "status": "pass",
+    "draftReady": true,
+    "score": 100,
+    "issues": []
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "sources": [
+    {
+      "id": "mylaysrelationchip-gold-standard-reference",
+      "kind": "internal-document",
+      "title": "Curated Gold Standard Reference — Lay's #MyLaysRelationchip",
+      "content": "PROJECT: Lay's #MyLaysRelationchip.\n\nYEAR: 2021.\n\nCLIENT / RELATIONSHIP: Lay's is the brand. PepsiCo is the company.\n\nPROJECT TYPE: Campaign.\n\nINDUSTRY: FMCG.\n\nSERVICE: Influencer Marketing / creator activation.\n\nSOLUTION / IP RELATIONSHIP: Influencer Relationship Management. The canonical Solution slug is influencer-relationship-management. This relationship is explicit and intentional for this project. #MyLaysRelationchip is the strongest project-level evidence for Geek's Influencer Relationship Management approach because Geek activated Lay's accumulated creator database rather than building a fresh creator list.\n\nROLE IN THE STORY: Scale. #MyLaysRelationchip launched Lay's Herby Crush and Cheesy Love for Valentine's by activating the creator community accumulated through earlier Lay's campaigns at database scale. Creators shared their relationship status using cue cards and hampers containing the new flavours.\n\nIRM EVIDENCE: Geek's report explicitly refers to activating the overall influencer database, the Friends of Lay's community, expanding the influencer family, and creators asking to participate. The activation generated 500+ inbound creators requesting to join. This inbound demand is explicit evidence supporting the Influencer Relationship Management Solution relationship.\n\nGEEK-SPECIFIC CREATOR-ACTIVATION SCOPE: The following figures come from Geek's own final creator-activation report and describe Geek's activation scope, not an independently audited whole-brand campaign total.\n\nGEEK-SPECIFIC FIGURES:\n- 2,900 influencers reached.\n- 2,700+ creators participated.\n- 93% participation.\n- 5,000+ posts + Stories.\n- 2,300+ posts.\n- 3,000+ Stories.\n- 28M+ estimated creator reach.\n- 70M+ combined follower base.\n- 10M+ engagement.\n- 500+ inbound creators requesting to join.\n\nThe 28M+ creator reach is explicitly estimated and must remain labelled as estimated.\n\nHISTORICAL CREATOR ECONOMICS — NOT AUDITED ROI: Geek's report recorded approximately ₹5.57Cr estimated or perceived creator media value against approximately ₹21L spend, described historically as approximately ₹5.3Cr value comparison. These are retrospective estimated creator-economics figures. They are NOT audited ROI, NOT financial return, and must never be described as return on investment.\n\nPUBLIC / WIDER-CAMPAIGN SNAPSHOT: Independent trade media reported approximately 3,000+ micro-influencers, approximately 2M views and estimated media value of approximately ₹25–30 lakh at a point in time. The public reports did not mention Geek.\n\nSCOPE CONFLICT: Geek's final report and public trade-media figures must NOT be averaged, merged or treated as direct equivalents. They describe different measurement objects and different scopes: Geek's activation report is a retrospective activation scope, while public coverage is a wider-campaign point-in-time media snapshot. Preserve both scopes separately if both are used.\n\nOUTCOME FRAMING: The strongest defensible outcome is database-scale activation of an accumulated creator community plus 500+ inbound creators requesting to join. This demonstrates that the creator community functioned as a relationship asset capable of repeated activation rather than as a disposable campaign list.\n\nATTRIBUTION SAFETY: Do not attribute public 2M views or ₹25–30 lakh media-value figures to Geek. Do not combine those figures with Geek's 28M+ estimated creator reach or ₹5.57Cr estimated creator-media-value figure. Do not call any creator-media-value comparison ROI.\n\nRELATIONSHIP SAFETY: Unlike Smile Deke Dekho and Heartwork, this project SHOULD explicitly assign the Solution relationship influencer-relationship-management. The assignment is supported by the existing-database activation, Friends of Lay's community references and 500+ inbound creators requesting to participate.",
+      "notes": "Curated from the frozen Lay's Gold Standard record. This benchmark deliberately tests positive IRM assignment, metric-scope conflict handling, estimated-reach labelling and ROI safety."
+    }
+  ],
+
+  "taxonomy": {
+    "companies": [
+      {
+        "slug": "pepsico",
+        "label": "PepsiCo"
+      }
+    ],
+
+    "brands": [
+      {
+        "slug": "lays",
+        "label": "Lay's",
+        "companySlug": "pepsico"
+      }
+    ],
+
+    "businessCategories": [
+      {
+        "slug": "fmcg",
+        "label": "FMCG"
+      }
+    ],
+
+    "services": [
+      {
+        "slug": "influencer-marketing",
+        "label": "Influencer Marketing"
+      }
+    ],
+
+    "solutions": [
+      {
+        "slug": "influencer-relationship-management",
+        "label": "Influencer Relationship Management"
+      }
+    ]
+  },
+
+  "projectHint": {
+    "title": "Lay's #MyLaysRelationchip",
+    "slug": "mylaysrelationchip",
+    "client": "Lay's (PepsiCo)",
+    "year": 2021,
+    "editorialNote": "Convert the frozen flexible reference into a Standard-mode case study. The core story is Scale: Geek activated Lay's accumulated creator community at database scale. Explicitly assign the canonical Solution influencer-relationship-management. Keep Geek's activation figures separate from public point-in-time figures. Preserve 28M+ as estimated creator reach. Never turn historical creator-media-value comparisons into ROI."
+  }
+}

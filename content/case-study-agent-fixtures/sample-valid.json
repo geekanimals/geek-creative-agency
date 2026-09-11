@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-09-04T00:00:00.000Z",
+  "project": {
+    "slug": "sample-case-study",
+    "title": "Sample Case Study",
+    "client": "Sample Client",
+    "year": 2026,
+    "shortSummary": "A creator-led campaign built around participation.",
+    "cardSummary": "A creator-led campaign built for participation.",
+    "renderMode": "standard",
+    "projectKind": "campaign",
+    "companySlug": "sample-company",
+    "brandSlug": "sample-brand",
+    "businessCategorySlugs": ["fmcg"],
+    "serviceSlugs": ["influencer-marketing"],
+    "solutionSlugs": ["sample-solution"],
+    "headline": "Turning a launch into something people wanted to join.",
+    "challenge": {
+      "question": "How do you make another launch feel worth participating in?",
+      "copy": "The launch needed to compete for attention in a crowded category."
+    },
+    "insight": "Participation can create stronger memory than passive exposure.",
+    "idea": {
+      "statement": "Turn the audience into part of the launch.",
+      "copy": "Creators were given an active role in the campaign structure."
+    },
+    "execution": "Geek developed the creator structure, campaign mechanics and activation workflow.",
+    "outcome": "The campaign generated measurable participation and a repeatable activation model.",
+    "metrics": [
+      {
+        "value": "500",
+        "label": "Creators",
+        "claimId": "metric-creators"
+      }
+    ],
+    "seo": {
+      "metaTitle": "Sample Case Study | Geek",
+      "metaDescription": "How Geek built a creator-led participation campaign.",
+      "noindex": true
+    }
+  },
+  "evidence": {
+    "sources": [
+      {
+        "id": "source-report",
+        "kind": "internal-document",
+        "title": "Final Campaign Report"
+      }
+    ],
+    "claims": [
+      {
+        "id": "metric-creators",
+        "type": "metric",
+        "statement": "The campaign activated 500 creators.",
+        "sourceIds": ["source-report"],
+        "confidence": "high",
+        "publishable": true
+      },
+      {
+        "id": "relationship-solution",
+        "type": "relationship",
+        "statement": "The project explicitly used the Sample Solution methodology.",
+        "sourceIds": ["source-report"],
+        "confidence": "high",
+        "publishable": true
+      }
+    ]
+  },
+  "quality": {
+    "status": "fail",
+    "draftReady": false,
+    "score": 0,
+    "issues": []
+  }
+}

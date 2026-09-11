@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --geek-cyan: #32c1df;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: #0c0d0c;
+  overflow-x: hidden;
+}
+
+/* Oversized advertising headline utility */
+.h-display {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+.eyebrow {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+/* Fluid clamp helpers for one-thought-per-viewport headlines */
+.text-mega {
+  font-size: clamp(2.6rem, 9vw, 9.5rem);
+}
+.text-giant {
+  font-size: clamp(2.2rem, 7vw, 7rem);
+}
+.text-big {
+  font-size: clamp(1.9rem, 5vw, 4.5rem);
+}
+
+/* Selection */
+::selection {
+  background: var(--geek-cyan);
+  color: #06232a;
+}
+
+/* Thin scrollbar for horizontal galleries */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Visible keyboard focus everywhere (mouse clicks stay clean via :focus-visible) */
+:focus-visible {
+  outline: 2px solid var(--geek-cyan);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee {
+    animation: none !important;
+  }
+  /* safety net: neutralise CSS animations/transitions for motion-sensitive users
+     (framer-motion is handled per-component via useReducedMotion) */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

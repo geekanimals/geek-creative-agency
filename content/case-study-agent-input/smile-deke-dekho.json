@@ -1,0 +1,57 @@
+{
+  "sources": [
+    {
+      "id": "smile-gold-standard-reference",
+      "kind": "internal-document",
+      "title": "Curated Gold Standard Reference — Lay's Smile Deke Dekho",
+      "content": "PROJECT: Lay's Smile Deke Dekho.\n\nYEAR: 2019.\n\nCLIENT / RELATIONSHIP: Lay's is the brand. PepsiCo is the company.\n\nPROJECT TYPE: Campaign.\n\nINDUSTRY: FMCG.\n\nSERVICE: Influencer Marketing / creator activation.\n\nSOLUTION / IP RULE: This campaign predates the formalised IRM solution. It must NOT be classified as an IRM project. The correct Solution relationship is none.\n\nCAMPAIGN IDEA AND MECHANIC: Lay's put smiles on its packs and personalised packaging for creators, turning the packaging idea into a wave of social creator content.\n\nGEEK'S ROLE: Geek worked on the creator-activation execution layer. The role included creator sourcing, personalised gifting logistics, publishing coordination and reporting for the influencer programme.\n\nSCOPE / ATTRIBUTION: Geek did NOT run the whole Smile Deke Dekho campaign. The wider campaign was led publicly by PepsiCo with Edelman and Wunderman Thompson.\n\nWIDER-CAMPAIGN FIGURES: Independent public reporting cited approximately 185M+ impressions, 750+ influencers and 8.2M engagements, with approximately 75% earned. These figures describe the wider campaign / packaging activation. They are NOT Geek-attributed performance metrics. If any of these figures are used in the case study, the metric label or note must make the wider-campaign scope explicit.\n\nCONFLICTING INTERNAL FIGURES — DO NOT PUBLISH AS VERIFIED METRICS: Geek first-party archive material contains figures including 1,450+ influencers, 210M impressions, 25M engagement, 90%+ organic and 2,500+ features. These conflict in scope with the independently reported wider-campaign numbers. The scope has not been reconciled, so these internal figures must be withheld from public metrics and must not be presented as verified results.\n\nWHY THE CAMPAIGN MATTERS TO GEEK'S STORY: Smile Deke Dekho is where the Lay's creator community began for the relationship story. The lasting value was not simply one burst of campaign reach; it was the creator base acquired through the activation.\n\nCONTINUITY: Lay's Heartwork later sent gratitude packs to fan-club members, including creators built through the Smile activation. This supports the interpretation that Smile acquired a creator community which later campaigns could reactivate.\n\nOUTCOME FRAMING: The defensible Geek-specific outcome is the creation / acquisition of a known creator community that became reusable in later Lay's work. Do not convert wider-campaign impressions, influencer counts or engagements into Geek-specific outcomes.\n\nEDITORIAL SAFETY: Keep the distinction between wider campaign performance and Geek's execution role explicit. Do not invent ROI, sales lift, reach attributable specifically to Geek, creator counts attributable specifically to Geek, or any unsupported performance result.",
+      "notes": "Curated from the frozen Lay's Gold Standard content pack. Wider-campaign figures must remain clearly separated from Geek attribution."
+    }
+  ],
+
+  "taxonomy": {
+    "companies": [
+      {
+        "slug": "pepsico",
+        "label": "PepsiCo"
+      }
+    ],
+
+    "brands": [
+      {
+        "slug": "lays",
+        "label": "Lay's",
+        "companySlug": "pepsico"
+      }
+    ],
+
+    "businessCategories": [
+      {
+        "slug": "fmcg",
+        "label": "FMCG"
+      }
+    ],
+
+    "services": [
+      {
+        "slug": "influencer-marketing",
+        "label": "Influencer Marketing"
+      }
+    ],
+
+    "solutions": [
+      {
+        "slug": "influencer-relationship-management",
+        "label": "Influencer Relationship Management"
+      }
+    ]
+  },
+
+  "projectHint": {
+    "title": "Lay's Smile Deke Dekho",
+    "slug": "smile-deke-dekho",
+    "client": "Lay's (PepsiCo)",
+    "year": 2019,
+    "editorialNote": "Convert the existing flexible reference into a strong Standard-mode case-study narrative. Preserve strict attribution between Geek's creator-activation role and wider-campaign results. Smile predates IRM, so do not assign IRM."
+  }
+}

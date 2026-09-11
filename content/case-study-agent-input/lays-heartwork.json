@@ -1,0 +1,57 @@
+{
+  "sources": [
+    {
+      "id": "heartwork-gold-standard-reference",
+      "kind": "internal-document",
+      "title": "Curated Gold Standard Reference — Lay's Heartwork",
+      "content": "PROJECT: Lay's Heartwork.\n\nYEAR: 2020.\n\nCLIENT / RELATIONSHIP: Lay's is the brand. PepsiCo is the company.\n\nPROJECT TYPE: Campaign.\n\nINDUSTRY: FMCG.\n\nSERVICE: Influencer Marketing / creator activation.\n\nSOLUTION / IP RULE: Heartwork built on the creator community acquired through Smile Deke Dekho, but the formal IRM relationship is NOT assigned here. MyLaysRelationchip is the later project where the formal IRM relationship begins. Therefore Heartwork must have no Solution relationship.\n\nCAMPAIGN ROLE IN THE STORY: Reactivate. Heartwork thanked India's unsung heroes and sent Lay's gratitude packs to fan-club members, including creators acquired through Smile Deke Dekho. The important continuity fact is that an existing creator community was reactivated rather than rebuilt from scratch.\n\nGEEK-SPECIFIC CREATOR-ACTIVATION SCOPE: The following figures come from Geek's own creator-activation report and describe Geek's tracked activation subset, not the entire Heartwork campaign.\n\nGEEK-SPECIFIC VERIFIED FIGURES:\n- 1,400 influencers reached / packs.\n- 1,058 creators activated.\n- 1,738 tracked posts + Stories, consisting of 853 posts and 885 Stories.\n- 4.76M tracked reach.\n- 3.81M tracked engagement.\n- 75% organic participation.\n\nThese figures may be used as Geek-attributed metrics, but labels and notes should make clear that they describe Geek's tracked creator-activation subset rather than the whole campaign.\n\nHISTORICAL CREATOR ECONOMICS — NOT AUDITED ROI: Geek's report recorded approximately ₹14L spend against approximately ₹158L estimated creator media value, described historically as roughly ₹1.44Cr value comparison. This is an estimated creator-media-value comparison, NOT audited ROI, NOT a financial return, and must never be described as ROI or return on investment.\n\nWIDER-CAMPAIGN CONTEXT: Independent media reported the broader Heartwork campaign at approximately 1,400+ influencers, 8M+ total organic reach, 4,300+ posts/Stories, approximately 70,000 conversations and approximately 50M impressions through leading partner brands. These are wider-campaign figures, including partner-brand amplification beyond Geek's tracked subset. They must remain separate from Geek-specific metrics.\n\nCONTINUITY FROM SMILE: Lay's Heartwork gratitude packs went to fan-club members, including creators acquired through Smile Deke Dekho. This demonstrates reactivation of an existing creator community.\n\nOUTCOME FRAMING: The defensible Geek-specific outcome is that Heartwork demonstrated the creator community acquired through Smile could be reactivated as an existing relationship asset rather than rebuilt as a fresh list.\n\nATTRIBUTION SAFETY: Do not merge Geek subset figures with wider campaign totals. Do not present 8M+ reach, 4,300+ posts/Stories or 50M partner-brand impressions as Geek results. Do not call the ₹1.44Cr historical creator-value comparison ROI.\n\nAWARD CONTEXT: The wider Lay's Heartwork campaign received Good Design recognition through PepsiCo Design. Geek was not credited for that award, so it must not be presented as a Geek award.",
+      "notes": "Curated from the frozen Lay's Gold Standard content pack. Geek-specific tracked metrics, wider-campaign figures and historical creator economics must remain separately scoped."
+    }
+  ],
+
+  "taxonomy": {
+    "companies": [
+      {
+        "slug": "pepsico",
+        "label": "PepsiCo"
+      }
+    ],
+
+    "brands": [
+      {
+        "slug": "lays",
+        "label": "Lay's",
+        "companySlug": "pepsico"
+      }
+    ],
+
+    "businessCategories": [
+      {
+        "slug": "fmcg",
+        "label": "FMCG"
+      }
+    ],
+
+    "services": [
+      {
+        "slug": "influencer-marketing",
+        "label": "Influencer Marketing"
+      }
+    ],
+
+    "solutions": [
+      {
+        "slug": "influencer-relationship-management",
+        "label": "Influencer Relationship Management"
+      }
+    ]
+  },
+
+  "projectHint": {
+    "title": "Lay's Heartwork",
+    "slug": "lays-heartwork",
+    "client": "Lay's (PepsiCo)",
+    "year": 2020,
+    "editorialNote": "Convert the existing flexible reference into a Standard-mode case study. The core story is Reactivate: Heartwork reused the creator community acquired through Smile Deke Dekho. Keep Geek's tracked subset metrics separate from wider-campaign figures. Do not assign IRM. Never describe the historical ₹1.44Cr creator-value comparison as audited ROI."
+  }
+}

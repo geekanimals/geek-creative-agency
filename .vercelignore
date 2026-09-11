@@ -1,0 +1,3 @@
+# keep private + heavy source masters out of Vercel uploads
+_private-source/
+media-masters/
