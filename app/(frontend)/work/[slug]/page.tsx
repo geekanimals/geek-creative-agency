@@ -23,7 +23,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const { isEnabled: draft } = await draftMode();
-  const p = await getProjectBySlug(slug, { draft });
+  const p = await getProjectBySlug(slug, { draft, requireCmsDraft: draft });
   if (!p) return { title: "Work — Geek" };
   const title = p.seoTitle || `${p.project} — ${p.brand} | Geek`;
   const description = p.metaDescription || p.oneLineSummary;
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const { isEnabled: draft } = await draftMode();
-  const project = await getProjectBySlug(slug, { draft });
+  const project = await getProjectBySlug(slug, { draft, requireCmsDraft: draft });
 
   // Never expose unpublished work in production unless in an authorised preview.
   const published = project?.publishStatus === "published";
