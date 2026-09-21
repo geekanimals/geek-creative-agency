@@ -1,4 +1,5 @@
 import { CaseStudy } from "./types";
+import { heartwork as goldHeartwork, myLaysRelationchip as goldMyLaysRelationchip } from "@/content/gold-standard/lays/projects";
 
 /**
  * Project data. Tags are PROVISIONAL starting classifications — edit freely
@@ -452,23 +453,29 @@ export const projects: CaseStudy[] = [
     homepageFeatured: true,
     storyPending: true,
   },
-  {
+  ({
     slug: "lays-heartwork",
     brand: "Lay's",
     brandSlug: "lays",
     project: "Heartwork",
+    year: 2020,
     businessCategory: ["fmcg"],
-    services: ["influencer-marketing", "creator-marketing", "packaging-fulfilment", "social-media"],
+    services: ["influencer-marketing"],
     campaignTypes: ["mass-creator-campaign"],
     businessOutcomes: ["content-generation", "engagement", "awareness"],
-    heroImageNeed: heroNeed("lays"),
-    headline: "LAY'S HEARTWORK",
-    oneLineSummary: "A creator campaign carried all the way to the last mile.",
+    heroImage: "/assets/work/lays/heartwork/heartwork-hero.jpg",
+    headline: goldHeartwork.headline || "A CREATOR COMMUNITY WORTH COMING BACK TO.",
+    oneLineSummary: goldHeartwork.shortSummary || "A gratitude campaign that reactivated the Lay's creator community built through Smile Deke Dekho.",
     stats: [
       { value: "1,058", label: "Creators" },
       { value: "1,738", label: "Content Assets" },
       { value: "3.81M", label: "Engagements" },
     ],
+    renderMode: "flexible",
+    sections: goldHeartwork.sections,
+    press: goldHeartwork.press,
+    awards: goldHeartwork.awards,
+    faqs: goldHeartwork.faqs,
     verificationStatus: "partially-verified",
     sourceNotes: [
       "Creator / content / engagement figures supplied by Geek (homepage Proof section).",
@@ -476,8 +483,28 @@ export const projects: CaseStudy[] = [
     ],
     featured: true,
     homepageFeatured: true,
-    storyPending: true,
-  },
+    publishStatus: "draft",
+  } as unknown as CaseStudy),
+  ({
+    slug: "mylaysrelationchip",
+    brand: "Lay's",
+    brandSlug: "lays",
+    project: "Lay's #MyLaysRelationchip",
+    year: 2021,
+    businessCategory: ["fmcg"],
+    services: ["influencer-marketing"],
+    campaignTypes: ["mass-creator-campaign"],
+    headline: goldMyLaysRelationchip.headline || "DATABASE-SCALE CREATOR ACTIVATION",
+    oneLineSummary: goldMyLaysRelationchip.shortSummary || "A Valentine's flavour launch activated across Lay's accumulated creator database.",
+    renderMode: "flexible",
+    sections: goldMyLaysRelationchip.sections,
+    press: goldMyLaysRelationchip.press,
+    faqs: goldMyLaysRelationchip.faqs,
+    verificationStatus: "partially-verified",
+    featured: true,
+    homepageFeatured: false,
+    publishStatus: "draft",
+  } as unknown as CaseStudy),
   {
     slug: "foreo",
     brand: "Foreo",
@@ -583,12 +610,19 @@ export const projectBySlug = (slug: string): CaseStudy | undefined =>
   projects.find((p) => p.slug === slug);
 
 // ── Publishing gate ───────────────────────────────────────────────────────
-export const IS_PROD = process.env.NODE_ENV === "production";
+/**
+ * Strict public production gate.
+ * True only on Vercel Production.
+ * False in local development and Vercel Preview deployments.
+ */
+export const IS_STRICT_PROD = process.env.VERCEL_ENV
+  ? process.env.VERCEL_ENV === "production"
+  : process.env.NODE_ENV === "production";
 export const isPublished = (p: CaseStudy): boolean => p.publishStatus === "published";
 /** Public, published case studies (sitemap / related / next-project / routes). */
 export const publishedProjects = (): CaseStudy[] => projects.filter(isPublished);
-/** A draft case study is viewable only in development (for internal review). */
-export const canOpenCaseStudy = (p: CaseStudy): boolean => isPublished(p) || !IS_PROD;
+/** A draft case study is viewable in dev and Vercel preview (for internal review). */
+export const canOpenCaseStudy = (p: CaseStudy): boolean => isPublished(p) || !IS_STRICT_PROD;
 
 /** Curated order for the /work "Featured Stories" intro (edit freely). */
 export const FEATURED_STORY_SLUGS = [

@@ -19,6 +19,10 @@
  * permitted to create facts, metrics, quotes, relationships or provenance.
  */
 
+import {
+  loadCaseStudyAgentMemory,
+} from "./caseStudyAgentMemory";
+
 import OpenAI from "openai";
 
 import {
@@ -897,6 +901,8 @@ export async function generateCaseStudy(
   request: GenerateCaseStudyRequest,
   options: GenerateCaseStudyOptions = {},
 ): Promise<BuiltCaseStudyPackage> {
+  loadCaseStudyAgentMemory();
+
   validateGenerationRequest(request);
 
   const apiKey =

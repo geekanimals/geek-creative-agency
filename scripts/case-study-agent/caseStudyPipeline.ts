@@ -16,6 +16,10 @@
  * - Human approval still comes later.
  */
 
+import {
+  loadCaseStudyAgentMemory,
+} from "./caseStudyAgentMemory";
+
 import type OpenAI from "openai";
 
 import {
@@ -45,6 +49,10 @@ import {
 import {
   critiqueCaseStudy,
 } from "./semanticCritic";
+
+import {
+  generateFlexibleSeo,
+} from "./flexibleSeo";
 
 import {
   buildTrustedPortfolioContext,
@@ -81,6 +89,10 @@ import type {
 import type {
   SemanticCriticResult,
 } from "./semanticCritic";
+
+import type {
+  FlexibleSeoResult,
+} from "./flexibleSeo";
 
 import type {
   TrustedPortfolioContext,
@@ -153,6 +165,14 @@ export type BuildCaseStudyCandidateRequest = {
   designerModel?: string;
 
   criticModel?: string;
+
+  /**
+   * Optional SEO-model override.
+   *
+   * SEO remains downstream of the completed case-study
+   * intelligence pipeline.
+   */
+  seoModel?: string;
 };
 
 /* ── Injectable clients for tests ───────────────────── */
@@ -171,6 +191,8 @@ export type BuildCaseStudyCandidateOptions = {
   designerClient?: OpenAI;
 
   criticClient?: OpenAI;
+
+  seoClient?: OpenAI;
 };
 
 /* ── Final candidate package ────────────────────────── */
@@ -243,9 +265,168 @@ export type GoldStandardCaseStudyCandidate = {
    */
   semanticCritic:
     SemanticCriticResult;
+
+  /**
+   * Additive discoverability layer generated only after
+   * the normal case-study Semantic Critic is draft-ready.
+   */
+  seo:
+    FlexibleSeoResult;
 };
 
 /* ── Public orchestrator ────────────────────────────── */
+
+
+/* SEO-safe public-story projection */
+
+/**
+ * Convert the finished Flexible design into reader-visible
+ * text for the downstream SEO Agent.
+ *
+ * Internal evidence bindings, media identifiers, provenance
+ * and continuity targets never cross this boundary.
+ *
+ * CTA/navigation sections are deliberately excluded so copy
+ * about another project cannot distort the current project's
+ * search positioning.
+ */
+function buildSeoStoryText(
+  design:
+    FlexibleCaseStudyDesign,
+): string[] {
+  const text:
+    string[] =
+      [];
+
+  const add = (
+    value:
+      string | null | undefined,
+  ) => {
+    if (
+      typeof value ===
+        "string" &&
+      value.trim()
+    ) {
+      text.push(
+        value.trim(),
+      );
+    }
+  };
+
+  for (
+    const section of
+    design.sections
+  ) {
+    switch (
+      section.blockType
+    ) {
+      case "sectionIntro":
+        add(
+          section.eyebrow,
+        );
+
+        add(
+          section.heading,
+        );
+
+        add(
+          section.body,
+        );
+
+        break;
+
+      case "richText":
+        add(
+          section.body,
+        );
+
+        break;
+
+      case "mediaBlock":
+        /*
+         * Pure media.
+         * Asset identity must not reach SEO.
+         */
+        break;
+
+      case "fullBleedMedia":
+        add(
+          section.overlayHeading,
+        );
+
+        break;
+
+      case "splitContent":
+        add(
+          section.body,
+        );
+
+        break;
+
+      case "mediaGallery":
+        add(
+          section.heading,
+        );
+
+        break;
+
+      case "metrics":
+        add(
+          section.heading,
+        );
+
+        for (
+          const item of
+          section.items
+        ) {
+          const value =
+            (
+              item.prefix ??
+              ""
+            ) +
+            item.value +
+            (
+              item.suffix ??
+              ""
+            );
+
+          add(
+            value +
+            " - " +
+            item.label +
+            (
+              item.note
+                ? " - " +
+                  item.note
+                : ""
+            ),
+          );
+        }
+
+        break;
+
+      case "quote":
+        add(
+          section.quote,
+        );
+
+        add(
+          section.attribution,
+        );
+
+        break;
+
+      case "cta":
+        /*
+         * Continuity/navigation content belongs to another
+         * project's discovery context.
+         */
+        break;
+    }
+  }
+
+  return text;
+}
 
 export async function buildCaseStudyCandidate(
   request:
@@ -253,6 +434,8 @@ export async function buildCaseStudyCandidate(
   options:
     BuildCaseStudyCandidateOptions = {},
 ): Promise<GoldStandardCaseStudyCandidate> {
+  loadCaseStudyAgentMemory();
+
   const mediaAssets =
     request.mediaAssets ??
     [];
@@ -567,18 +750,120 @@ export async function buildCaseStudyCandidate(
    * to human review, matching the quality convention.
    */
   if (!semanticCritic.draftReady) {
-    const findingIds =
+    const findingDetails =
       semanticCritic.findings
         .map(
-          (finding) =>
-            finding.id,
+          (finding) => {
+            const sections =
+              finding.sectionIds.length > 0
+                ? finding.sectionIds.join(", ")
+                : "none";
+
+            const claims =
+              finding.claimIds.length > 0
+                ? finding.claimIds.join(", ")
+                : "none";
+
+            return [
+              finding.id,
+              `[${finding.severity}/${finding.category}]`,
+              finding.message,
+              `sections: ${sections}`,
+              `claims: ${claims}`,
+            ].join(" | ");
+          },
         )
-        .join(", ");
+        .join(" || ");
 
     throw new Error(
-      `Case Study Pipeline failed Semantic Critic: ${findingIds || "unknown semantic error"}`,
+      `Case Study Pipeline failed Semantic Critic: ${findingDetails || "unknown semantic error"}`,
     );
   }
+
+  /**
+   * PHASE 7 — ADDITIVE SEO / AEO LAYER
+   *
+   * This happens only after:
+   * - trusted evidence;
+   * - portfolio validation;
+   * - architecture;
+   * - design;
+   * - compilation;
+   * - deterministic quality;
+   * - independent Semantic Critic.
+   *
+   * SEO cannot rewrite any upstream output.
+   */
+  const seoProject =
+    portfolio
+      .projectHint;
+
+  if (
+    !seoProject.title?.trim() ||
+    !seoProject.slug?.trim()
+  ) {
+    throw new Error(
+      "Case Study Pipeline requires validated project title and slug before SEO generation.",
+    );
+  }
+
+  const publishableSeoClaims =
+    evidence.claims
+      .filter(
+        (claim) =>
+          claim.publishable &&
+          claim.confidence !==
+            "low",
+      )
+      .map(
+        (claim) => ({
+          id:
+            claim.id,
+
+          type:
+            claim.type,
+
+          statement:
+            claim.statement,
+        }),
+      );
+
+  const seo =
+    await generateFlexibleSeo(
+      {
+        project: {
+          title:
+            seoProject.title,
+
+          slug:
+            seoProject.slug,
+
+          client:
+            seoProject.client,
+
+          year:
+            seoProject.year,
+
+          location:
+            seoProject.location,
+        },
+
+        publishableClaims:
+          publishableSeoClaims,
+
+        storyText:
+          buildSeoStoryText(
+            design,
+          ),
+
+        model:
+          request.seoModel,
+      },
+      {
+        client:
+          options.seoClient,
+      },
+    );
 
   return {
     sourceIntake,
@@ -598,5 +883,7 @@ export async function buildCaseStudyCandidate(
     quality,
 
     semanticCritic,
+
+    seo,
   };
 }

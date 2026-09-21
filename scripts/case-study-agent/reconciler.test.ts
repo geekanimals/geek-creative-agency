@@ -1,4 +1,4 @@
-﻿/**
+/**
  * GOLD STANDARD CASE STUDY AGENT — EVIDENCE RECONCILER TESTS
  *
  * No real OpenAI call.
@@ -27,13 +27,23 @@ import type {
 
 function fakeClient(
   outputText: string | undefined,
+  capturedInputs:
+    unknown[] = [],
 ) {
   return {
     responses: {
-      create: async () => ({
-        output_text:
-          outputText,
-      }),
+      create: async (
+        input: unknown,
+      ) => {
+        capturedInputs.push(
+          input,
+        );
+
+        return {
+          output_text:
+            outputText,
+        };
+      },
     },
   } as never;
 }
@@ -1323,6 +1333,243 @@ async function main() {
   check(
     "empty Reconciler output is rejected",
     emptyOutputRejected,
+  );
+
+  /* ── Auditor repair-context contract ─────────────── */
+
+  const repairRequest =
+    clone(REQUEST);
+
+  repairRequest.repairContext = {
+    attempt:
+      1,
+
+    findings: [
+      {
+        id:
+          "missed-quantitative-conflict",
+
+        category:
+          "missed-conflict",
+
+        severity:
+          "error",
+
+        message:
+          "Two supported metric claims require another reconciliation pass.",
+
+        claimIds: [
+          "metric-final-1058",
+          "metric-wider-reach",
+        ],
+      },
+    ],
+  };
+
+  const repairPromptInputs:
+    unknown[] =
+    [];
+
+  const repairResult =
+    await reconcileEvidence(
+      repairRequest,
+      {
+        client:
+          fakeClient(
+            JSON.stringify(
+              VALID_OUTPUT,
+            ),
+            repairPromptInputs,
+          ),
+      },
+    );
+
+  check(
+    "valid Auditor repairContext is accepted",
+    repairResult.claims.length ===
+      REQUEST.claims.length,
+  );
+
+  /**
+   * Inspect the actual user prompt structurally.
+   *
+   * The OpenAI request contains the Reconciler prompt as a JSON
+   * string inside the request object, so stringify/search would
+   * double-escape field names and provide a weaker assertion.
+   */
+  const capturedRepairInput =
+    repairPromptInputs[0] as any;
+
+  const capturedRepairUserMessage =
+    Array.isArray(
+      capturedRepairInput?.input,
+    )
+      ? capturedRepairInput.input.find(
+          (message: any) =>
+            message?.role ===
+            "user",
+        )
+      : undefined;
+
+  let parsedRepairPrompt:
+    any = null;
+
+  try {
+    if (
+      typeof capturedRepairUserMessage
+        ?.content ===
+      "string"
+    ) {
+      parsedRepairPrompt =
+        JSON.parse(
+          capturedRepairUserMessage
+            .content,
+        );
+    }
+  } catch {
+    parsedRepairPrompt =
+      null;
+  }
+
+  const capturedRepairFinding =
+    parsedRepairPrompt
+      ?.repairContext
+      ?.findings?.[0];
+
+  check(
+    "Auditor repair finding is supplied to Reconciler model prompt",
+    parsedRepairPrompt
+      ?.repairContext
+      ?.attempt ===
+      1 &&
+    capturedRepairFinding?.id ===
+      "missed-quantitative-conflict" &&
+    capturedRepairFinding
+      ?.category ===
+      "missed-conflict" &&
+    capturedRepairFinding
+      ?.severity ===
+      "error" &&
+    capturedRepairFinding
+      ?.message ===
+      "Two supported metric claims require another reconciliation pass." &&
+    JSON.stringify(
+      capturedRepairFinding
+        ?.claimIds,
+    ) ===
+      JSON.stringify([
+        "metric-final-1058",
+        "metric-wider-reach",
+      ]),
+  );
+
+  const unknownRepairClaim =
+    clone(REQUEST) as any;
+
+  unknownRepairClaim.repairContext = {
+    attempt:
+      1,
+
+    findings: [
+      {
+        id:
+          "unknown-claim-conflict",
+
+        category:
+          "missed-conflict",
+
+        severity:
+          "error",
+
+        message:
+          "This deliberately references an unknown claim.",
+
+        claimIds: [
+          "invented-claim",
+        ],
+      },
+    ],
+  };
+
+  await expectReject(
+    "repairContext cannot reference an unknown claim",
+    unknownRepairClaim as
+      ReconcileEvidenceRequest,
+    VALID_OUTPUT,
+    "references unknown claimId",
+  );
+
+  const warningRepairFinding =
+    clone(REQUEST) as any;
+
+  warningRepairFinding.repairContext = {
+    attempt:
+      1,
+
+    findings: [
+      {
+        id:
+          "warning-cannot-trigger-repair",
+
+        category:
+          "decision-justification",
+
+        severity:
+          "warning",
+
+        message:
+          "Warnings must not enter the repair boundary.",
+
+        claimIds: [
+          "metric-final-1058",
+        ],
+      },
+    ],
+  };
+
+  await expectReject(
+    "warning finding cannot masquerade as repair error",
+    warningRepairFinding as
+      ReconcileEvidenceRequest,
+    VALID_OUTPUT,
+    "must have error severity",
+  );
+
+  const thirdRepairAttempt =
+    clone(REQUEST) as any;
+
+  thirdRepairAttempt.repairContext = {
+    attempt:
+      3,
+
+    findings: [
+      {
+        id:
+          "third-repair-attempt",
+
+        category:
+          "missed-conflict",
+
+        severity:
+          "error",
+
+        message:
+          "A third repair attempt must never be accepted.",
+
+        claimIds: [
+          "metric-final-1058",
+          "metric-wider-reach",
+        ],
+      },
+    ],
+  };
+
+  await expectReject(
+    "Reconciler refuses repair attempt greater than two",
+    thirdRepairAttempt as
+      ReconcileEvidenceRequest,
+    VALID_OUTPUT,
+    "permits only repair attempt 1 or 2",
   );
 
   /* ── Zero-candidate fast path ────────────────────── */

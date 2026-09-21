@@ -251,6 +251,101 @@ function main() {
       .verified,
   );
 
+  const payloadNullMetadata =
+    cleanStoredDocument();
+
+  const payloadNullSections =
+    payloadNullMetadata
+      .sections as
+      Array<
+        Record<
+          string,
+          unknown
+        >
+      >;
+
+  for (
+    const section
+    of payloadNullSections
+  ) {
+    section.blockName =
+      null;
+  }
+
+  const payloadNullMetricItems =
+    payloadNullSections[1]
+      .items as
+      Array<
+        Record<
+          string,
+          unknown
+        >
+      >;
+
+  payloadNullMetricItems[0].prefix =
+    null;
+
+  payloadNullMetricItems[0].suffix =
+    null;
+
+  payloadNullMetricItems[0].note =
+    null;
+
+  payloadNullSections[2].legacySrc =
+    null;
+
+  payloadNullSections[2].caption =
+    null;
+
+  payloadNullSections[2].credit =
+    null;
+
+  payloadNullSections[3].body =
+    null;
+
+  const payloadNullResult =
+    verifyFlexibleCmsDraftReadback(
+      EXPECTED,
+      payloadNullMetadata,
+    );
+
+  check(
+    "Payload blockName metadata and null optional placeholders are ignored",
+    payloadNullResult
+      .verified,
+  );
+
+  const unexpectedOptionalValue =
+    cleanStoredDocument();
+
+  (
+    unexpectedOptionalValue
+      .sections as
+      Array<
+        Record<
+          string,
+          unknown
+        >
+      >
+  )[2].caption =
+    "Unexpected caption";
+
+  const unexpectedOptionalResult =
+    verifyFlexibleCmsDraftReadback(
+      EXPECTED,
+      unexpectedOptionalValue,
+    );
+
+  check(
+    "non-null unexpected section content is still rejected",
+    !unexpectedOptionalResult
+      .verified &&
+    hasPath(
+      unexpectedOptionalResult,
+      "sections",
+    ),
+  );
+
   const populatedRelationships =
     cleanStoredDocument();
 

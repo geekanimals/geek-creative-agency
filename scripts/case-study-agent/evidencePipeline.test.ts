@@ -82,6 +82,69 @@ function fakeClient(
   } as never;
 }
 
+/**
+ * Test client capable of returning a different model output
+ * on each call.
+ *
+ * Used to prove the bounded:
+ * Reconciler #1 → Auditor #1 → Reconciler #2 → Auditor #2
+ * repair sequence.
+ */
+function sequentialFakeClient(
+  stage: string,
+  outputTexts:
+    Array<string | undefined>,
+  tracker:
+    CallTracker,
+  capturedInputs:
+    unknown[] = [],
+) {
+  let callIndex =
+    0;
+
+  return {
+    responses: {
+      create: async (
+        input: {
+          model?: string;
+        },
+      ) => {
+        tracker.order.push(
+          stage,
+        );
+
+        tracker.models[stage] =
+          input.model;
+
+        capturedInputs.push(
+          input,
+        );
+
+        if (
+          callIndex >=
+          outputTexts.length
+        ) {
+          throw new Error(
+            `Unexpected extra ${stage} call.`,
+          );
+        }
+
+        const outputText =
+          outputTexts[
+            callIndex
+          ];
+
+        callIndex++;
+
+        return {
+          output_text:
+            outputText,
+        };
+      },
+    },
+  } as never;
+}
+
 const REQUEST: BuildEvidenceLedgerRequest = {
   sources: [
     {
@@ -328,6 +391,155 @@ const RECONCILIATION_AUDITOR_OUTPUT = {
     "The reconciled ledger is safe. Deterministic enforcement correctly withheld the unsupported ROI claim.",
 
   findings: [],
+};
+
+const RECONCILIATION_REPAIR_TRIGGER_OUTPUT = {
+  summary:
+    "A material conflict was missed.",
+
+  findings: [
+    {
+      id:
+        "missed-result-conflict",
+
+      category:
+        "missed-conflict",
+
+      severity:
+        "error",
+
+      message:
+        "Two result claims require independent conflict review.",
+
+      claimIds: [
+        "metric-creators",
+        "metric-wider-reach",
+      ],
+    },
+  ],
+};
+
+const REPAIRED_RECONCILIATION_OUTPUT = {
+  decisions: [
+    {
+      claimId:
+        "metric-creators",
+
+      decision:
+        "withhold",
+
+      confidence:
+        "low",
+
+      conflictDisposition:
+        "unresolved",
+
+      conflictGroupId:
+        "result-metric-conflict",
+
+      reason:
+        "Independent audit identified an unresolved relationship between the affected result claims.",
+    },
+
+    {
+      claimId:
+        "metric-wider-reach",
+
+      decision:
+        "withhold",
+
+      confidence:
+        "low",
+
+      conflictDisposition:
+        "unresolved",
+
+      conflictGroupId:
+        "result-metric-conflict",
+
+      reason:
+        "Independent audit identified an unresolved relationship between the affected result claims.",
+    },
+
+    {
+      claimId:
+        "claim-audited-roi",
+
+      decision:
+        "withhold",
+
+      confidence:
+        "low",
+
+      conflictDisposition:
+        "none",
+
+      conflictGroupId:
+        null,
+
+      reason:
+        "Independent verification does not support audited ROI language.",
+    },
+  ],
+};
+
+const RECONCILIATION_REPAIR_SAFE_OUTPUT = {
+  summary:
+    "The repaired reconciliation safely withholds the unresolved result claims.",
+
+  findings: [],
+};
+
+const RECONCILIATION_REPAIR_STILL_UNSAFE_OUTPUT = {
+  summary:
+    "The repair did not resolve the material conflict.",
+
+  findings: [
+    {
+      id:
+        "repair-still-unsafe",
+
+      category:
+        "missed-conflict",
+
+      severity:
+        "error",
+
+      message:
+        "The affected result claims remain semantically unsafe after repair.",
+
+      claimIds: [
+        "metric-creators",
+        "metric-wider-reach",
+      ],
+    },
+  ],
+};
+
+const RECONCILIATION_FINAL_AUDIT_UNSAFE_OUTPUT = {
+  summary:
+    "The final permitted audit still identifies a material conflict.",
+
+  findings: [
+    {
+      id:
+        "final-audit-still-unsafe",
+
+      category:
+        "missed-conflict",
+
+      severity:
+        "error",
+
+      message:
+        "The final bounded audit still finds the affected claims unsafe.",
+
+      claimIds: [
+        "metric-creators",
+        "metric-wider-reach",
+      ],
+    },
+  ],
 };
 
 async function main() {
@@ -789,18 +1001,307 @@ async function main() {
       ]),
   );
 
-  /* ── Reconciliation Auditor failure blocks ledger ─ */
+  /* ── Auditor error triggers exactly one successful repair ─ */
 
-  const auditorFailureTracker:
+  const repairTracker:
     CallTracker = {
       order: [],
       models: {},
     };
 
-  let auditorFailure =
+  const repairReconcilerInputs:
+    unknown[] =
+    [];
+
+  const repaired =
+    await buildEvidenceLedger(
+      clone(REQUEST),
+      {
+        extractorClient:
+          fakeClient(
+            "extractor",
+            JSON.stringify(
+              EXTRACTION_OUTPUT,
+            ),
+            repairTracker,
+          ),
+
+        verifierClient:
+          fakeClient(
+            "verifier",
+            JSON.stringify(
+              VERIFICATION_OUTPUT,
+            ),
+            repairTracker,
+          ),
+
+        reconcilerClient:
+          sequentialFakeClient(
+            "reconciler",
+            [
+              JSON.stringify(
+                RECONCILIATION_OUTPUT,
+              ),
+              JSON.stringify(
+                REPAIRED_RECONCILIATION_OUTPUT,
+              ),
+            ],
+            repairTracker,
+            repairReconcilerInputs,
+          ),
+
+        reconciliationAuditorClient:
+          sequentialFakeClient(
+            "auditor",
+            [
+              JSON.stringify(
+                RECONCILIATION_REPAIR_TRIGGER_OUTPUT,
+              ),
+              JSON.stringify(
+                RECONCILIATION_REPAIR_SAFE_OUTPUT,
+              ),
+            ],
+            repairTracker,
+          ),
+      },
+    );
+
+  check(
+    "Auditor error triggers exactly one bounded Reconciler repair cycle",
+    JSON.stringify(
+      repairTracker.order,
+    ) ===
+      JSON.stringify([
+        "extractor",
+        "verifier",
+        "reconciler",
+        "auditor",
+        "reconciler",
+        "auditor",
+      ]),
+  );
+
+  check(
+    "successful repair returns final safe Auditor result",
+    repaired
+      .reconciliationAuditResult
+      .safeToContinue ===
+      true &&
+    repaired
+      .reconciliationAuditResult
+      .status !==
+      "fail",
+  );
+
+  check(
+    "successful repair preserves exactly one failed audit in repair history",
+    repaired
+      .reconciliationRepairHistory
+      ?.length ===
+      1 &&
+    repaired
+      .reconciliationRepairHistory?.[0]
+      .attempt ===
+      1 &&
+    repaired
+      .reconciliationRepairHistory?.[0]
+      .auditResult
+      .findings
+      .some(
+        (finding) =>
+          finding.id ===
+          "missed-result-conflict",
+      ) ===
+      true,
+  );
+
+  const secondReconcilerInput =
+    JSON.stringify(
+      repairReconcilerInputs[1] ??
+      null,
+    );
+
+  check(
+    "repair Reconciler receives exact independent Auditor finding",
+    secondReconcilerInput.includes(
+      "repairContext",
+    ) &&
+    secondReconcilerInput.includes(
+      "missed-result-conflict",
+    ) &&
+    secondReconcilerInput.includes(
+      "metric-creators",
+    ) &&
+    secondReconcilerInput.includes(
+      "metric-wider-reach",
+    ),
+  );
+
+  check(
+    "repaired ledger withholds both claims placed in unresolved conflict",
+    repaired.claims
+      .filter(
+        (claim) =>
+          claim.id ===
+            "metric-creators" ||
+          claim.id ===
+            "metric-wider-reach",
+      )
+      .every(
+        (claim) =>
+          claim.publishable ===
+          false,
+      ),
+  );
+
+  /* ── Second repair may converge safely ────────────── */
+
+  const secondRepairTracker:
+    CallTracker = {
+      order: [],
+      models: {},
+    };
+
+  const secondRepairReconcilerInputs:
+    unknown[] =
+    [];
+
+  const twiceRepaired =
+    await buildEvidenceLedger(
+      clone(REQUEST),
+      {
+        extractorClient:
+          fakeClient(
+            "extractor",
+            JSON.stringify(
+              EXTRACTION_OUTPUT,
+            ),
+            secondRepairTracker,
+          ),
+
+        verifierClient:
+          fakeClient(
+            "verifier",
+            JSON.stringify(
+              VERIFICATION_OUTPUT,
+            ),
+            secondRepairTracker,
+          ),
+
+        reconcilerClient:
+          sequentialFakeClient(
+            "reconciler",
+            [
+              JSON.stringify(
+                RECONCILIATION_OUTPUT,
+              ),
+              JSON.stringify(
+                REPAIRED_RECONCILIATION_OUTPUT,
+              ),
+              JSON.stringify(
+                REPAIRED_RECONCILIATION_OUTPUT,
+              ),
+            ],
+            secondRepairTracker,
+            secondRepairReconcilerInputs,
+          ),
+
+        reconciliationAuditorClient:
+          sequentialFakeClient(
+            "auditor",
+            [
+              JSON.stringify(
+                RECONCILIATION_REPAIR_TRIGGER_OUTPUT,
+              ),
+              JSON.stringify(
+                RECONCILIATION_REPAIR_STILL_UNSAFE_OUTPUT,
+              ),
+              JSON.stringify(
+                RECONCILIATION_REPAIR_SAFE_OUTPUT,
+              ),
+            ],
+            secondRepairTracker,
+          ),
+      },
+    );
+
+  check(
+    "second bounded repair can converge safely on Auditor #3",
+    JSON.stringify(
+      secondRepairTracker.order,
+    ) ===
+      JSON.stringify([
+        "extractor",
+        "verifier",
+        "reconciler",
+        "auditor",
+        "reconciler",
+        "auditor",
+        "reconciler",
+        "auditor",
+      ]) &&
+    twiceRepaired
+      .reconciliationAuditResult
+      .safeToContinue ===
+      true,
+  );
+
+  check(
+    "two failed audits are preserved before successful second repair",
+    twiceRepaired
+      .reconciliationRepairHistory
+      ?.length ===
+      2 &&
+    twiceRepaired
+      .reconciliationRepairHistory?.[0]
+      .attempt ===
+      1 &&
+    twiceRepaired
+      .reconciliationRepairHistory?.[1]
+      .attempt ===
+      2,
+  );
+
+  const thirdReconcilerInput =
+    JSON.stringify(
+      secondRepairReconcilerInputs[2] ??
+      null,
+    );
+
+  check(
+    "Repair #2 receives cumulative Audit #1 and Audit #2 safety findings",
+    thirdReconcilerInput.includes(
+      "audit-1-missed-result-conflict",
+    ) &&
+    thirdReconcilerInput.includes(
+      "audit-2-repair-still-unsafe",
+    ) &&
+    thirdReconcilerInput.includes(
+      "metric-creators",
+    ) &&
+    thirdReconcilerInput.includes(
+      "metric-wider-reach",
+    ),
+  );
+
+  /* ── Auditor #3 still unsafe => permanent fail closed ─ */
+
+  const persistentFailureTracker:
+    CallTracker = {
+      order: [],
+      models: {},
+    };
+
+  let persistentAuditFailure =
     false;
 
-  let auditorFindingSurfaced =
+  let initialAuditSurfaced =
+    false;
+
+  let secondAuditSurfaced =
+    false;
+
+  let finalAuditSurfaced =
     false;
 
   try {
@@ -813,7 +1314,7 @@ async function main() {
             JSON.stringify(
               EXTRACTION_OUTPUT,
             ),
-            auditorFailureTracker,
+            persistentFailureTracker,
           ),
 
         verifierClient:
@@ -822,89 +1323,107 @@ async function main() {
             JSON.stringify(
               VERIFICATION_OUTPUT,
             ),
-            auditorFailureTracker,
+            persistentFailureTracker,
           ),
 
         reconcilerClient:
-          fakeClient(
+          sequentialFakeClient(
             "reconciler",
-            JSON.stringify(
-              RECONCILIATION_OUTPUT,
-            ),
-            auditorFailureTracker,
+            [
+              JSON.stringify(
+                RECONCILIATION_OUTPUT,
+              ),
+              JSON.stringify(
+                REPAIRED_RECONCILIATION_OUTPUT,
+              ),
+              JSON.stringify(
+                REPAIRED_RECONCILIATION_OUTPUT,
+              ),
+            ],
+            persistentFailureTracker,
           ),
 
         reconciliationAuditorClient:
-          fakeClient(
+          sequentialFakeClient(
             "auditor",
-            JSON.stringify({
-              summary:
-                "A material conflict was missed.",
-
-              findings: [
-                {
-                  id:
-                    "missed-result-conflict",
-
-                  category:
-                    "missed-conflict",
-
-                  severity:
-                    "error",
-
-                  message:
-                    "Two result claims require independent conflict review.",
-
-                  claimIds: [
-                    "metric-creators",
-                    "metric-wider-reach",
-                  ],
-                },
-              ],
-            }),
-            auditorFailureTracker,
+            [
+              JSON.stringify(
+                RECONCILIATION_REPAIR_TRIGGER_OUTPUT,
+              ),
+              JSON.stringify(
+                RECONCILIATION_REPAIR_STILL_UNSAFE_OUTPUT,
+              ),
+              JSON.stringify(
+                RECONCILIATION_FINAL_AUDIT_UNSAFE_OUTPUT,
+              ),
+            ],
+            persistentFailureTracker,
           ),
       },
     );
   } catch (error) {
-    auditorFailure =
+    persistentAuditFailure =
       error instanceof Error &&
       error.message.includes(
-        "Evidence Pipeline failed Reconciliation Auditor",
+        "after two bounded repair attempts",
       );
 
-    auditorFindingSurfaced =
+    initialAuditSurfaced =
       error instanceof Error &&
       error.message.includes(
         "missed-result-conflict",
       );
+
+    secondAuditSurfaced =
+      error instanceof Error &&
+      error.message.includes(
+        "repair-still-unsafe",
+      );
+
+    finalAuditSurfaced =
+      error instanceof Error &&
+      error.message.includes(
+        "final-audit-still-unsafe",
+      );
   }
 
   check(
-    "Reconciliation Auditor error blocks trusted evidence ledger",
-    auditorFailure,
+    "Auditor #3 error fails pipeline closed after maximum two repairs",
+    persistentAuditFailure,
   );
 
   check(
-    "Evidence Pipeline surfaces exact reconciliation Auditor finding ID",
-    auditorFindingSurfaced,
+    "final failure surfaces Audit #1 finding",
+    initialAuditSurfaced,
   );
 
   check(
-    "Auditor executes only after Extractor Verifier and Reconciler",
+    "final failure surfaces Audit #2 finding",
+    secondAuditSurfaced,
+  );
+
+  check(
+    "final failure surfaces Audit #3 finding",
+    finalAuditSurfaced,
+  );
+
+  check(
+    "pipeline permanently stops after Reconciler #3 and Auditor #3",
     JSON.stringify(
-      auditorFailureTracker.order,
+      persistentFailureTracker.order,
     ) ===
       JSON.stringify([
         "extractor",
         "verifier",
         "reconciler",
         "auditor",
+        "reconciler",
+        "auditor",
+        "reconciler",
+        "auditor",
       ]),
   );
-
-  /* ── Zero-claim fast path ───────────────────────── */
-
+  /* ── Zero-claim fast path ─────────────────────────── */
   const zeroTracker:
     CallTracker = {
       order: [],

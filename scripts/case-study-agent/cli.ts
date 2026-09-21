@@ -18,6 +18,10 @@
  * There is intentionally no publish option.
  */
 
+import {
+  loadCaseStudyAgentMemory,
+} from "./caseStudyAgentMemory";
+
 import fs from "node:fs";
 import path from "node:path";
 
@@ -63,6 +67,8 @@ function qualityIcon(
 }
 
 async function main() {
+  loadCaseStudyAgentMemory();
+
   const args = process.argv.slice(2);
 
   if (

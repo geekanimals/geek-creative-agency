@@ -23,6 +23,10 @@
  *   npx tsx scripts/case-study-agent/cli.ts <generated-package.json>
  */
 
+import {
+  loadCaseStudyAgentMemory,
+} from "./caseStudyAgentMemory";
+
 import fs from "node:fs";
 import path from "node:path";
 
@@ -186,6 +190,8 @@ function defaultOutputPath(
 /* ── Main ─────────────────────────────────────────────────────────── */
 
 async function main() {
+  loadCaseStudyAgentMemory();
+
   const {
     input,
     output,

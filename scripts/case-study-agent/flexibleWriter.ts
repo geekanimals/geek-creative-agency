@@ -19,6 +19,10 @@
  * Importing this module performs no action.
  */
 
+import {
+  loadCaseStudyAgentMemory,
+} from "./caseStudyAgentMemory";
+
 import type {
   getPayload,
 } from "payload";
@@ -731,6 +735,8 @@ export async function writeFlexibleCaseStudyDraft(
 ): Promise<
   FlexibleDraftWriteResult
 > {
+  loadCaseStudyAgentMemory();
+
   /**
    * Authorization is checked before any Payload read/write.
    */

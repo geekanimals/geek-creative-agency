@@ -81,7 +81,7 @@ function fromStatic(p: CaseStudy): ResolvedProject {
   const flagship = p.slug === "high-ultra-lounge";
   return {
     ...p,
-    renderMode: flagship ? "flagship" : "standard",
+    renderMode: flagship ? "flagship" : ((p as any).renderMode as RenderMode) || "standard",
     flagshipRendererKey: flagship ? "high-ultra-lounge" : undefined,
     source: "static",
   };
@@ -243,7 +243,13 @@ export async function getWorkProjects(): Promise<ResolvedProject[]> {
  * `draft`), then merges deep static content for flagship projects the CMS does
  * not fully model, then falls back to the static registry.
  */
-export async function getProjectBySlug(slug: string, opts: { draft?: boolean; requireCmsDraft?: boolean } = {}): Promise<ResolvedProject | null> {
+export async function getProjectBySlug(
+  slug: string,
+  opts: {
+    draft?: boolean;
+    requireCmsDraft?: boolean;
+  } = {},
+): Promise<ResolvedProject | null> {
   const draft = Boolean(opts.draft);
   const requireCmsDraft = Boolean(opts.requireCmsDraft);
   try {
@@ -272,7 +278,6 @@ export async function getProjectBySlug(slug: string, opts: { draft?: boolean; re
   } catch (e) {
     logCmsError(`getProjectBySlug(${slug})`, e);
   }
-
   /**
    * Authorised draft preview must show the exact CMS draft.
    * Never silently substitute the static registry.

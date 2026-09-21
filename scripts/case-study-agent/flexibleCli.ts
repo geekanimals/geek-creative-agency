@@ -29,6 +29,10 @@
  *    NO publish mode.
  */
 
+import {
+  loadCaseStudyAgentMemory,
+} from "./caseStudyAgentMemory";
+
 import fs from "node:fs";
 import path from "node:path";
 
@@ -209,6 +213,8 @@ function valueAfterFlag(
 async function runGenerate(
   args: string[],
 ): Promise<void> {
+  loadCaseStudyAgentMemory();
+
   const allowedFlags =
     new Set([
       "--out",
@@ -502,6 +508,8 @@ async function runGenerate(
 async function runWrite(
   args: string[],
 ): Promise<void> {
+  loadCaseStudyAgentMemory();
+
   const allowedFlags =
     new Set([
       "--write-draft",

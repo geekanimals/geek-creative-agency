@@ -105,7 +105,24 @@ function normalizeSectionValue(
       child,
     ] of Object.entries(value)
   ) {
-    if (key === "id") {
+    if (
+      key === "id" ||
+      key === "blockName"
+    ) {
+      continue;
+    }
+
+    /**
+     * Payload may materialize omitted optional block fields as null.
+     *
+     * For Agent-owned Flexible sections, omitted and null optional
+     * properties are storage-equivalent. Non-null stored values are
+     * still compared strictly and must match the approved payload.
+     */
+    if (
+      child === null ||
+      child === undefined
+    ) {
       continue;
     }
 

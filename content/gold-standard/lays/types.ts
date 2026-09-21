@@ -135,11 +135,14 @@ export type Section =
   | { blockType: "sectionIntro"; eyebrow?: string; heading: string; body?: string }
   | { blockType: "metrics"; heading?: string; items: { value: string; label: string; prefix?: string; suffix?: string; note?: string }[] }
   | { blockType: "quote"; quote: string; attribution?: string }
-  | { blockType: "cta"; heading: string; body?: string; buttonLabel?: string; buttonHref?: string };
+  | { blockType: "cta"; heading: string; body?: string; buttonLabel?: string; buttonHref?: string }
+  | { blockType: "mediaBlock"; legacySrc?: string | null; alt?: string | null; caption?: string | null; credit?: string | null }
+  | { blockType: "fullBleedMedia"; legacySrc?: string | null; alt?: string | null; caption?: string | null; credit?: string | null; overlayHeading?: string | null };
 
 export type ProjectRecord = {
   slug: string;
   title: string;
+  headline?: string;
   client?: string;
   year?: number;
   shortSummary?: string;

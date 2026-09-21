@@ -16,7 +16,9 @@
     "payload:migrate": "payload migrate",
     "payload:migrate:status": "payload migrate:status",
     "cms:check-env": "node scripts/check-cms-env.mjs",
-    "prod:preflight": "node scripts/prod-preflight.mjs"
+    "prod:preflight": "node scripts/prod-preflight.mjs",
+    "agent:test": "node scripts/case-study-agent/run-regression.mjs",
+    "agent:verify": "node scripts/case-study-agent/run-verification.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.88.0",
@@ -41,6 +43,7 @@
     "openai": "^7.10.0",
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.7",
+    "tsx": "^4.23.13",
     "typescript": "^5.5.3"
   },
   "overrides": {

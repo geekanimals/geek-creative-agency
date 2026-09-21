@@ -10,13 +10,13 @@ import EvidenceRecognition from "@/components/work/EvidenceRecognition";
 import ProjectFaqs from "@/components/work/ProjectFaqs";
 import { getFlagshipRenderer } from "@/components/work/flagshipRegistry";
 import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
-import { IS_PROD } from "@/lib/work/projects";
+import { IS_STRICT_PROD } from "@/lib/work/projects";
 import { getProjectBySlug, getAllProjectSlugs } from "@/lib/cms/projects";
 
 export async function generateStaticParams() {
-  // Production: published only. Dev: include drafts for review. CMS ∪ static;
+  // Production: published only. Dev/Preview: include drafts for review. CMS ∪ static;
   // falls back to static slugs if the CMS is unavailable at build.
-  const slugs = await getAllProjectSlugs(!IS_PROD);
+  const slugs = await getAllProjectSlugs(!IS_STRICT_PROD);
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -44,7 +44,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
 
   // Never expose unpublished work in production unless in an authorised preview.
   const published = project?.publishStatus === "published";
-  if (!project || (!published && IS_PROD && !draft)) notFound();
+  if (!project || (!published && IS_STRICT_PROD && !draft)) notFound();
 
   const showDraftBanner = draft || !published;
 

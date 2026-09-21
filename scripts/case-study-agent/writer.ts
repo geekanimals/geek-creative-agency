@@ -13,6 +13,10 @@
  * This module has no CLI entry point and does nothing merely by importing it.
  */
 
+import {
+  loadCaseStudyAgentMemory,
+} from "./caseStudyAgentMemory";
+
 import type { getPayload } from "payload";
 
 import { sanitizeProjectForCms, relationshipSlugs } from "./cmsPayload";
@@ -161,6 +165,8 @@ export async function writeCaseStudyDraft(
   payload: PayloadClient,
   pkg: CaseStudyAgentPackage,
 ): Promise<DraftWriteResult> {
+  loadCaseStudyAgentMemory();
+
   if (process.env.PAYLOAD_DB_PUSH === "true") {
     throw new Error(
       "Case Study Agent refuses to write with PAYLOAD_DB_PUSH=true. " +

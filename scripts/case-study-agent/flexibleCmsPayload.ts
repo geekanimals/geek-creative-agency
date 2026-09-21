@@ -16,6 +16,10 @@
  * Agent identifiers MUST NOT cross this boundary.
  */
 
+import {
+  loadCaseStudyAgentMemory,
+} from "./caseStudyAgentMemory";
+
 import type {
   Project as CmsProject,
 } from "../../payload-types";
@@ -264,6 +268,8 @@ export function buildFlexibleCmsDraftPayload(
   candidate:
     GoldStandardCaseStudyCandidate,
 ): FlexibleCmsDraftPreparation {
+  loadCaseStudyAgentMemory();
+
   assertSafeCandidate(
     candidate,
   );

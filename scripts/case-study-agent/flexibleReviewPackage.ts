@@ -16,6 +16,10 @@
  */
 
 import {
+  loadCaseStudyAgentMemory,
+} from "./caseStudyAgentMemory";
+
+import {
   createHash,
 } from "node:crypto";
 
@@ -152,6 +156,8 @@ export function buildFlexibleReviewPackage(
   candidate:
     GoldStandardCaseStudyCandidate,
 ): FlexibleReviewPackage {
+  loadCaseStudyAgentMemory();
+
   /**
    * Freeze the serializable form that will actually be reviewed.
    *
@@ -222,6 +228,8 @@ export function validateFlexibleReviewPackage(
   value:
     unknown,
 ): FlexibleReviewPackage {
+  loadCaseStudyAgentMemory();
+
   if (
     !isRecord(
       value,

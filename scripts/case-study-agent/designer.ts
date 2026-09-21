@@ -512,6 +512,26 @@ HARD RULES:
 
    Preserve qualifiers, scope and approximation language.
 
+   ARCHITECT METRIC PLAN IS MANDATORY:
+
+   - Every claimId in the supplied Architect metricsPlan MUST appear exactly once
+     in the designed case study inside a "metrics" block.
+
+   - Place each planned metric only under an Architect chapter whose
+     metricClaimIds contains that claimId.
+
+   - The metric claimId MUST also appear in that metrics block's
+     evidenceClaimIds.
+
+   - Do not omit an Architect-planned metric.
+
+   - Do not duplicate an Architect-planned metric.
+
+   - Do not add metric items absent from the Architect metricsPlan.
+
+   The downstream deterministic Flexible Quality Gate independently verifies
+   this contract and fails closed when it is violated.
+
 8. QUOTES:
 
    A quote block may use only a claim whose type is "quote".
@@ -536,7 +556,17 @@ HARD RULES:
     Never create buttonHref.
 
     targetProjectSlug may use only an explicitly supplied allowed continuity
-    slug and should follow the Architect CTA plan.
+    slug and must follow the Architect CTA plan.
+
+    CTA FIELD PAIRING:
+    - buttonLabel and targetProjectSlug are an inseparable pair;
+    - if the Architect CTA plan has no targetProjectSlug, output
+      buttonLabel=null and targetProjectSlug=null;
+    - if the Architect CTA plan has a targetProjectSlug, output that exact
+      targetProjectSlug and a non-empty buttonLabel;
+    - never output a buttonLabel without targetProjectSlug;
+    - never output targetProjectSlug without buttonLabel;
+    - do not invent a continuity target merely to create a button.
 
 11. Never output flagship.
 

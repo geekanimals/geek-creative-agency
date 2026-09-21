@@ -1006,6 +1006,38 @@ const DESIGNER_OUTPUT = {
   ],
 };
 
+const SEO_OUTPUT = {
+  metaTitle:
+    "Sample Campaign Influencer Case Study | Geek",
+
+  metaDescription:
+    "Explore the Sample Campaign case study, its creator participation, campaign mechanics and evidence-backed activation results.",
+
+  primaryKeyword:
+    "Sample Campaign case study",
+
+  secondaryKeywords: [
+    "Sample Campaign influencer campaign",
+    "influencer marketing case study",
+    "creator campaign case study",
+  ],
+
+  searchIntent:
+    "branded",
+
+  targetMarket:
+    null,
+
+  preferredInternalAnchors: [
+    "Sample Brand",
+    "Influencer Marketing",
+    "FMCG work",
+  ],
+
+  searchNotes:
+    "Keep search positioning focused on the Sample Campaign and avoid conflating it with unrelated creator campaigns.",
+};
+
 async function main() {
   console.log(
     "Gold Standard Case Study Agent — Full Pipeline tests\n",
@@ -1084,6 +1116,15 @@ async function main() {
             "critic",
             JSON.stringify(
               CRITIC_OUTPUT,
+            ),
+            tracker,
+          ),
+
+        seoClient:
+          fakeClient(
+            "seo",
+            JSON.stringify(
+              SEO_OUTPUT,
             ),
             tracker,
           ),
@@ -1274,6 +1315,7 @@ async function main() {
         "architect",
         "designer",
         "critic",
+        "seo",
       ]),
   );
 
@@ -1562,6 +1604,65 @@ async function main() {
 
   /* ── Zero approved sources stop before any AI ────── */
 
+
+  check(
+    "valid candidate includes additive SEO result",
+    result.seo
+      .quality
+      .draftReady ===
+      true &&
+    result.seo
+      .canonicalPath ===
+      "/work/sample-campaign",
+  );
+
+  const seoRequestJson =
+    JSON.stringify(
+      tracker
+        .requests
+        ?.seo ??
+        [],
+    );
+
+  check(
+    "SEO receives no internal evidence or media identifiers",
+    !seoRequestJson.includes(
+      "evidenceClaimIds",
+    ) &&
+    !seoRequestJson.includes(
+      "assetId",
+    ) &&
+    !seoRequestJson.includes(
+      "targetProjectSlug",
+    ) &&
+    !seoRequestJson.includes(
+      "provenance",
+    ),
+  );
+
+  check(
+    "SEO receives finished public story text",
+    seoRequestJson.includes(
+      "A launch operating under constraint.",
+    ) &&
+    seoRequestJson.includes(
+      "Creators participated through an active campaign mechanic.",
+    ) &&
+    seoRequestJson.includes(
+      "500",
+    ),
+  );
+
+  check(
+    "SEO excludes next-project CTA copy",
+    !seoRequestJson.includes(
+      "See the next project",
+    ) &&
+    !seoRequestJson.includes(
+      "THE STORY CONTINUED.",
+    ),
+  );
+
   const zeroApprovedRequest =
     clone(
       REQUEST,
@@ -1787,13 +1888,17 @@ async function main() {
   );
 
   check(
-    "Reconciliation Auditor failure stops before Architect",
+    "Reconciliation Auditor failure after two bounded repairs stops before Architect",
     JSON.stringify(
       reconciliationAuditFailureTracker.order,
     ) ===
       JSON.stringify([
         "extractor",
         "verifier",
+        "reconciler",
+        "auditor",
+        "reconciler",
+        "auditor",
         "reconciler",
         "auditor",
       ]),
@@ -2402,6 +2507,15 @@ async function main() {
             ),
             criticWarningTracker,
           ),
+
+        seoClient:
+          fakeClient(
+            "seo",
+            JSON.stringify(
+              SEO_OUTPUT,
+            ),
+            criticWarningTracker,
+          ),
       },
     );
 
@@ -2426,6 +2540,21 @@ async function main() {
   );
 
   /* ── Input immutability ─────────────────────────── */
+
+
+  check(
+    "Semantic Critic warning still proceeds through additive SEO",
+    criticWarningTracker
+      .order
+      .slice(-2)
+      .join(",") ===
+      "critic,seo" &&
+    warningCandidate
+      .seo
+      .quality
+      .draftReady ===
+      true,
+  );
 
   check(
     "Full Case Study Pipeline does not mutate trusted request",

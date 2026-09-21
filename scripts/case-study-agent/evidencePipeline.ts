@@ -88,6 +88,26 @@ export type BuildEvidenceLedgerOptions = {
   reconciliationAuditorClient?: OpenAI;
 };
 
+export type ReconciliationRepairHistoryEntry = {
+  /**
+   * The pipeline permits at most two bounded repair passes.
+   */
+  attempt:
+    1 | 2;
+
+  /**
+   * Reconciler state that failed the independent audit.
+   */
+  reconciliationAudit:
+    ReconciliationAuditEntry[];
+
+  /**
+   * Independent audit that triggered the repair.
+   */
+  auditResult:
+    ReconciliationAuditorResult;
+};
+
 export type EvidencePipelineResult = {
   /**
    * Raw evidence candidates created by the Extractor.
@@ -119,6 +139,16 @@ export type EvidencePipelineResult = {
    */
   reconciliationAuditResult:
     ReconciliationAuditorResult;
+
+  /**
+   * Present only when the independent Auditor forced the
+   * single bounded Reconciler repair pass.
+   *
+   * The final authoritative safety verdict remains
+   * reconciliationAuditResult.
+   */
+  reconciliationRepairHistory?:
+    ReconciliationRepairHistoryEntry[];
 };
 
 /* ── Helpers ────────────────────────────────────────── */
@@ -150,6 +180,30 @@ function toVerifiableClaims(
         ),
     }),
   );
+}
+
+function formatReconciliationAuditErrors(
+  result:
+    ReconciliationAuditorResult,
+): string {
+  return result
+    .findings
+    .filter(
+      (finding) =>
+        finding.severity ===
+        "error",
+    )
+    .map(
+      (finding) =>
+        [
+          finding.id,
+          `category=${finding.category}`,
+          `severity=${finding.severity}`,
+          `claims=${finding.claimIds.join(", ")}`,
+          `message=${finding.message}`,
+        ].join(" | "),
+    )
+    .join("\n");
 }
 
 /* ── Public orchestrator ────────────────────────────── */
@@ -257,7 +311,7 @@ export async function buildEvidenceLedger(
    * Reconciler receives the independent verifier
    * verdicts and cannot rewrite candidate evidence.
    */
-  const reconciliation:
+  let reconciliation:
     ReconciledEvidenceResult =
     await reconcileEvidence(
       {
@@ -290,7 +344,7 @@ export async function buildEvidenceLedger(
    * - every reconciliation decision;
    * - publication-ready AND withheld final claims.
    */
-  const reconciliationAuditResult =
+  let reconciliationAuditResult =
     await auditReconciliation(
       {
         candidates:
@@ -314,34 +368,284 @@ export async function buildEvidenceLedger(
     );
 
   /**
-   * Fail closed on any independent reconciliation error.
+   * Independent Auditor bounded convergence boundary.
    *
-   * Warnings remain safeToContinue=true and are preserved
-   * for later human review.
+   * Maximum sequence:
+   *
+   * Reconciler #1
+   *   -> Auditor #1
+   *
+   * if unsafe:
+   *   -> Repair #1
+   *   -> Auditor #2
+   *
+   * if still unsafe:
+   *   -> Repair #2
+   *   -> Auditor #3
+   *
+   * Auditor #3 still unsafe => FAIL CLOSED.
+   *
+   * There is never an unlimited retry loop.
+   * Warnings never trigger repair.
    */
-  if (
+  const MAX_RECONCILIATION_REPAIR_ATTEMPTS =
+    2 as const;
+
+  const reconciliationRepairHistory:
+    ReconciliationRepairHistoryEntry[] =
+    [];
+
+  /**
+   * Every failed audit contributes its ERROR diagnostics
+   * to subsequent repair passes.
+   *
+   * IDs are namespaced by audit round solely to prevent
+   * collisions between independent Auditor calls.
+   *
+   * Category, message and claimIds are preserved exactly.
+   */
+  const cumulativeRepairFindings:
+    Array<{
+      id: string;
+
+      category:
+        ReconciliationAuditorResult[
+          "findings"
+        ][number]["category"];
+
+      severity:
+        "error";
+
+      message:
+        string;
+
+      claimIds:
+        string[];
+    }> =
+    [];
+
+  for (
+    let repairNumber =
+      1;
+
+    repairNumber <=
+      MAX_RECONCILIATION_REPAIR_ATTEMPTS &&
     !reconciliationAuditResult
-      .safeToContinue
+      .safeToContinue;
+
+    repairNumber++
   ) {
-    const findingIds =
-      reconciliationAuditResult
+    const attempt =
+      repairNumber as
+        1 | 2;
+
+    const failedAudit =
+      reconciliationAuditResult;
+
+    const errorFindings =
+      failedAudit
         .findings
         .filter(
           (finding) =>
             finding.severity ===
             "error",
-        )
-        .map(
-          (finding) =>
-            finding.id,
-        )
-        .join(", ");
+        );
 
-    throw new Error(
-      `Evidence Pipeline failed Reconciliation Auditor: ${findingIds || "unknown reconciliation audit error"}`,
-    );
+    if (
+      errorFindings.length ===
+      0
+    ) {
+      throw new Error(
+        "Evidence Pipeline failed Reconciliation Auditor: safeToContinue=false without an error finding.",
+      );
+    }
+
+    /**
+     * Preserve the complete failed reconciliation
+     * and independent audit before repairing it.
+     */
+    reconciliationRepairHistory.push({
+      attempt,
+
+      reconciliationAudit:
+        reconciliation.audit.map(
+          (entry) => ({
+            ...entry,
+          }),
+        ),
+
+      auditResult: {
+        ...failedAudit,
+
+        findings:
+          failedAudit
+            .findings
+            .map(
+              (finding) => ({
+                ...finding,
+
+                claimIds: [
+                  ...finding.claimIds,
+                ],
+              }),
+            ),
+      },
+    });
+
+    /**
+     * Carry forward every material Auditor error so that
+     * Repair #2 cannot forget a problem identified during
+     * Audit #1.
+     *
+     * The original Auditor finding remains unchanged in
+     * reconciliationRepairHistory. Only the repair-context
+     * ID is namespaced to guarantee uniqueness.
+     */
+    for (
+      const finding
+      of errorFindings
+    ) {
+      cumulativeRepairFindings.push({
+        id:
+          `audit-${attempt}-${finding.id}`,
+
+        category:
+          finding.category,
+
+        severity:
+          "error",
+
+        message:
+          finding.message,
+
+        claimIds: [
+          ...finding.claimIds,
+        ],
+      });
+    }
+
+    /**
+     * Reconcile again from the original trusted evidence
+     * and verifier results.
+     *
+     * The repair feedback is diagnostic context only.
+     * It is never new evidence.
+     */
+    reconciliation =
+      await reconcileEvidence(
+        {
+          sources:
+            request.sources,
+
+          claims:
+            extraction.claims,
+
+          verification,
+
+          repairContext: {
+            attempt,
+
+            findings:
+              cumulativeRepairFindings.map(
+                (finding) => ({
+                  ...finding,
+
+                  claimIds: [
+                    ...finding.claimIds,
+                  ],
+                }),
+              ),
+          },
+
+          model:
+            request.reconcilerModel,
+        },
+        {
+          client:
+            options.reconcilerClient,
+        },
+      );
+
+    /**
+     * Independently audit the complete repaired ledger
+     * again from scratch.
+     */
+    reconciliationAuditResult =
+      await auditReconciliation(
+        {
+          candidates:
+            extraction.claims,
+
+          verification,
+
+          reconciliationAudit:
+            reconciliation.audit,
+
+          claims:
+            reconciliation.claims,
+
+          model:
+            request
+              .reconciliationAuditorModel,
+        },
+        {
+          client:
+            options
+              .reconciliationAuditorClient,
+        },
+      );
   }
 
+  /**
+   * No third repair is permitted.
+   *
+   * If the third independent audit still finds a material
+   * error, the evidence pipeline stops permanently.
+   */
+  if (
+    !reconciliationAuditResult
+      .safeToContinue
+  ) {
+    const auditSections:
+      string[] =
+      [];
+
+    for (
+      let index =
+        0;
+
+      index <
+        reconciliationRepairHistory.length;
+
+      index++
+    ) {
+      auditSections.push(
+        `AUDIT #${index + 1}:`,
+        formatReconciliationAuditErrors(
+          reconciliationRepairHistory[index]
+            .auditResult,
+        ) ||
+          "unknown reconciliation audit error",
+        "",
+      );
+    }
+
+    auditSections.push(
+      `AUDIT #${reconciliationRepairHistory.length + 1}:`,
+      formatReconciliationAuditErrors(
+        reconciliationAuditResult,
+      ) ||
+        "unknown reconciliation audit error",
+    );
+
+    throw new Error(
+      [
+        "Evidence Pipeline failed Reconciliation Auditor after two bounded repair attempts.",
+        "",
+        ...auditSections,
+      ].join("\n"),
+    );
+  }
   return {
     candidates:
       extraction.claims.map(
@@ -464,5 +768,14 @@ export async function buildEvidenceLedger(
       ),
 
     reconciliationAuditResult,
+
+    ...(
+      reconciliationRepairHistory.length >
+      0
+        ? {
+            reconciliationRepairHistory,
+          }
+        : {}
+    ),
   };
 }

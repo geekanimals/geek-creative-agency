@@ -1,4 +1,4 @@
-﻿/**
+/**
  * GOLD STANDARD CASE STUDY AGENT — EVIDENCE RECONCILER
  *
  * Candidate evidence claims
@@ -55,6 +55,14 @@ import type {
   EvidenceVerificationVerdict,
 } from "./verificationSchema";
 
+import {
+  RECONCILIATION_AUDIT_CATEGORIES,
+} from "./reconciliationAuditorSchema";
+
+import type {
+  ReconciliationAuditCategory,
+} from "./reconciliationAuditorSchema";
+
 import type {
   ClaimConfidence,
   EvidenceClaim,
@@ -62,12 +70,46 @@ import type {
 
 /* ── Public contracts ───────────────────────────────── */
 
+export type ReconciliationRepairFinding = {
+  id: string;
+
+  category:
+    ReconciliationAuditCategory;
+
+  severity: "error";
+
+  message: string;
+
+  claimIds: string[];
+};
+
+export type ReconciliationRepairContext = {
+  /**
+   * The pipeline permits at most two bounded repair passes.
+   */
+  attempt:
+    1 | 2;
+
+  /**
+   * Independent Auditor ERROR findings from the previous pass.
+   */
+  findings:
+    ReconciliationRepairFinding[];
+};
+
 export type ReconcileEvidenceRequest = {
   sources: GenerationSource[];
 
   claims: CandidateEvidenceClaim[];
 
   verification: ClaimVerificationBatch;
+
+  /**
+   * Optional bounded feedback from an independent reconciliation
+   * audit. Present only during the single repair pass.
+   */
+  repairContext?:
+    ReconciliationRepairContext;
 
   model?: string;
 };
@@ -431,6 +473,190 @@ function validateVerificationCoverage(
 
 /* ── Request validation ─────────────────────────────── */
 
+function validateRepairContext(
+  repairContext:
+    ReconciliationRepairContext | undefined,
+  allowedClaimIds:
+    Set<string>,
+) {
+  if (!repairContext) {
+    return;
+  }
+
+  if (!isObject(repairContext)) {
+    throw new Error(
+      "Evidence Reconciler repairContext must be an object.",
+    );
+  }
+
+  exactKeys(
+    repairContext,
+    [
+      "attempt",
+      "findings",
+    ],
+    "Evidence Reconciler repairContext",
+  );
+
+  if (
+    repairContext.attempt !==
+      1 &&
+    repairContext.attempt !==
+      2
+  ) {
+    throw new Error(
+      "Evidence Reconciler permits only repair attempt 1 or 2.",
+    );
+  }
+
+  if (
+    !Array.isArray(
+      repairContext.findings,
+    ) ||
+    repairContext.findings.length ===
+      0 ||
+    repairContext.findings.length >
+      100
+  ) {
+    throw new Error(
+      "Evidence Reconciler repairContext requires 1-100 Auditor error findings.",
+    );
+  }
+
+  const findingIds =
+    new Set<string>();
+
+  for (
+    const [
+      index,
+      repairFinding,
+    ]
+    of repairContext.findings.entries()
+  ) {
+    if (!isObject(repairFinding)) {
+      throw new Error(
+        `Evidence Reconciler repair finding[${index}] must be an object.`,
+      );
+    }
+
+    exactKeys(
+      repairFinding,
+      [
+        "id",
+        "category",
+        "severity",
+        "message",
+        "claimIds",
+      ],
+      `Evidence Reconciler repair finding[${index}]`,
+    );
+
+    if (
+      !nonEmpty(
+        repairFinding.id,
+      ) ||
+      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/
+        .test(
+          repairFinding.id.trim(),
+        )
+    ) {
+      throw new Error(
+        `Evidence Reconciler repair finding[${index}].id must be a safe lower-kebab-case ID.`,
+      );
+    }
+
+    if (
+      findingIds.has(
+        repairFinding.id,
+      )
+    ) {
+      throw new Error(
+        `Evidence Reconciler repairContext contains duplicate finding ID: ${repairFinding.id}`,
+      );
+    }
+
+    findingIds.add(
+      repairFinding.id,
+    );
+
+    if (
+      !(
+        RECONCILIATION_AUDIT_CATEGORIES as readonly unknown[]
+      ).includes(
+        repairFinding.category,
+      )
+    ) {
+      throw new Error(
+        `Evidence Reconciler repair finding "${repairFinding.id}" has invalid category.`,
+      );
+    }
+
+    if (
+      repairFinding.severity !==
+      "error"
+    ) {
+      throw new Error(
+        `Evidence Reconciler repair finding "${repairFinding.id}" must have error severity.`,
+      );
+    }
+
+    if (
+      !nonEmpty(
+        repairFinding.message,
+      )
+    ) {
+      throw new Error(
+        `Evidence Reconciler repair finding "${repairFinding.id}" requires message.`,
+      );
+    }
+
+    if (
+      !Array.isArray(
+        repairFinding.claimIds,
+      ) ||
+      repairFinding.claimIds.length ===
+        0
+    ) {
+      throw new Error(
+        `Evidence Reconciler repair finding "${repairFinding.id}" requires at least one claimId.`,
+      );
+    }
+
+    const seenClaimIds =
+      new Set<string>();
+
+    for (
+      const claimId
+      of repairFinding.claimIds
+    ) {
+      if (
+        !nonEmpty(claimId) ||
+        !allowedClaimIds.has(
+          claimId,
+        )
+      ) {
+        throw new Error(
+          `Evidence Reconciler repair finding "${repairFinding.id}" references unknown claimId: ${String(claimId)}`,
+        );
+      }
+
+      if (
+        seenClaimIds.has(
+          claimId,
+        )
+      ) {
+        throw new Error(
+          `Evidence Reconciler repair finding "${repairFinding.id}" contains duplicate claimId: ${claimId}`,
+        );
+      }
+
+      seenClaimIds.add(
+        claimId,
+      );
+    }
+  }
+}
+
 function validateReconcileRequest(
   request: ReconcileEvidenceRequest,
 ): Map<
@@ -461,10 +687,23 @@ function validateReconcileRequest(
     request.sources,
   );
 
-  return validateVerificationCoverage(
-    request.claims,
-    request.verification,
+  const verificationById =
+    validateVerificationCoverage(
+      request.claims,
+      request.verification,
+    );
+
+  validateRepairContext(
+    request.repairContext,
+    new Set(
+      request.claims.map(
+        (claim) =>
+          claim.id,
+      ),
+    ),
   );
+
+  return verificationById;
 }
 
 /* ── Prompt ─────────────────────────────────────────── */
@@ -476,7 +715,9 @@ You receive:
 
 1. evidence candidate claims already bound to exact trusted source excerpts;
 2. independent semantic-verification results for every claim;
-3. trusted source metadata.
+3. trusted source metadata;
+4. optionally, a repairContext containing ERROR findings from an independent
+   Reconciliation Auditor that reviewed a previous reconciliation pass.
 
 Your job is NOT to rewrite evidence.
 
@@ -515,6 +756,53 @@ HARD RULES:
    Mark conflictDisposition="unresolved" only when supplied claims make materially
    incompatible assertions about the same relevant subject, scope, attribution,
    period and meaning, and the supplied evidence does not resolve the difference.
+4A. CROSS-CLAIM QUANTITATIVE CONSISTENCY:
+
+   Evaluate related numerical claims together, not independently.
+
+   Check whether totals, subtotals, averages, rates, percentages,
+   per-unit figures, ranges, and component counts mathematically imply,
+   reconstruct, or materially compete with one another.
+
+   A scope difference may resolve an apparent numerical conflict ONLY
+   when the supplied evidence explicitly establishes the different
+   denominator, population, period, measurement method, or tracking boundary.
+
+   Do not invent a different denominator or measurement boundary merely
+   because two numbers could theoretically coexist.
+
+   If two or more supported claims materially compete and the supplied
+   evidence does not resolve why, mark ALL affected claims as the same
+   unresolved conflict group and withhold them.
+
+   If one claim is merely a derived or ambiguous summary while another
+   is directly tabulated, do not silently prefer either one. The evidence
+   itself must justify the distinction.
+
+4B. AUDITOR REPAIR CONTEXT:
+
+   If repairContext is supplied, this is a bounded repair pass.
+
+   repairContext.attempt may only be 1 or 2.
+
+   There is never an unlimited repair loop.
+
+   The findings are independent safety diagnostics, not new evidence and
+   not instructions to rewrite claims.
+
+   Re-evaluate every referenced claim together with all materially related
+   claims against the original trusted evidence and verifier results.
+
+   Do not blindly agree with an Auditor finding if the supplied evidence
+   clearly resolves it. However, you MUST explicitly address the safety
+   concern using only supplied evidence.
+
+   If the supplied evidence cannot safely resolve the Auditor concern,
+   withhold all materially affected claims and use the appropriate shared
+   unresolved conflict group.
+
+   Never invent facts, denominators, scopes, measurement boundaries,
+   chronology or explanations merely to satisfy the Auditor.
 
 5. DIFFERENT SCOPE IS NOT AUTOMATICALLY A CONFLICT.
 
@@ -736,6 +1024,10 @@ function buildReconcilerPrompt(
           request.claims,
           verificationById,
         ),
+
+      repairContext:
+        request.repairContext ??
+        null,
     },
     null,
     2,
