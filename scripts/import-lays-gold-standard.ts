@@ -110,7 +110,7 @@ async function main() {
     const serviceIds = await idsBySlug(payload, "services", p.serviceSlugs);
     const solutionIds = await idsBySlug(payload, "solutions", p.solutionSlugs);
     await upsert(payload, "projects", p.slug, {
-      title: p.title, slug: p.slug, client: p.client, year: p.year,
+      title: p.title, headline: p.headline, slug: p.slug, client: p.client, year: p.year,
       shortSummary: p.shortSummary, cardSummary: p.cardSummary,
       renderMode: p.renderMode ?? "flexible", projectKind: p.projectKind, heroLegacySrc: p.heroLegacySrc,
       company: companyId, brand: brandId, businessCategories: industryIds, services: serviceIds, solutions: solutionIds,

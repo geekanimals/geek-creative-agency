@@ -1128,8 +1128,7 @@ export async function generateFlexibleSeo(
 
   if (
     !quality.draftReady
-  ) {
-    const codes =
+  ) {    const codes =
       quality.issues
         .filter(
           (issue) =>
