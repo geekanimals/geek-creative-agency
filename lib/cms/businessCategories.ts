@@ -63,3 +63,4 @@ const loadIndustry = cache(async (slug: string, draft: boolean): Promise<Industr
 });
 
 export const getIndustrySlugs = unstable_cache(() => routableSlugs("business-categories"), ["portfolio-industry-routable-slugs"], { tags: ["business-categories"], revalidate: 3600 });
+

@@ -14,8 +14,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const c = await getCompany(slug);
-  if (!c) return { title: "Companies — Geek" };
-  const title = c.seo.metaTitle || `${c.name} — Geek Creative Agency`;
+  if (!c) return { title: "Companies â€” Geek" };
+  const title = c.seo.metaTitle || `${c.name} â€” Geek Creative Agency`;
   const description = c.seo.metaDescription || c.shortSummary || `Geek's work for ${c.name}.`;
   return {
     title, description,

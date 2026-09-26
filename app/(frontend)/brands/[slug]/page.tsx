@@ -14,8 +14,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const b = await getBrand(slug);
-  if (!b) return { title: "Brands — Geek" };
-  const title = b.seo.metaTitle || `${b.name} — Geek Creative Agency`;
+  if (!b) return { title: "Brands â€” Geek" };
+  const title = b.seo.metaTitle || `${b.name} â€” Geek Creative Agency`;
   const description = b.seo.metaDescription || b.shortSummary || `Geek's work with ${b.name}.`;
   return {
     title, description,
@@ -38,7 +38,7 @@ export default async function BrandPage({ params }: { params: Promise<{ slug: st
         { name: b.company?.name ?? "", href: b.company ? `/companies/${b.company.slug}` : undefined },
         { name: b.name },
       ]} />
-      <HubHero eyebrow={[b.company?.name, b.portfolioGroup].filter(Boolean).join(" · ") || "Brand"} title={b.name} summary={b.shortSummary} />
+      <HubHero eyebrow={[b.company?.name, b.portfolioGroup].filter(Boolean).join(" Â· ") || "Brand"} title={b.name} summary={b.shortSummary} />
       {b.introduction && <HubSection heading="Overview"><Prose text={b.introduction} /></HubSection>}
       {b.services.length > 0 && <HubSection heading="Services"><RefChips items={b.services} routePrefix="/services" /></HubSection>}
       {b.solutions.length > 0 && <HubSection heading="Solutions & IP"><RefChips items={b.solutions} routePrefix="/solutions" /></HubSection>}
