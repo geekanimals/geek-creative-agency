@@ -2,8 +2,6 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import { getPayloadClient } from "@/lib/cms/payload";
 import { resolveMedia } from "@/lib/cms/media";
-import { INSIGHTS_NAV_MIN } from "@/lib/insights";
-import { getPublishedInsightsCount } from "@/lib/cms/insights";
 import {
   NAV_FALLBACK, FOOTER_FALLBACK, SITE_SETTINGS_FALLBACK,
   type NavModel, type FooterModel, type SiteSettingsModel, type SeoModel,
@@ -69,25 +67,11 @@ const rawNav = unstable_cache(async () => (await getPayloadClient()).findGlobal(
 const rawFooter = unstable_cache(async () => (await getPayloadClient()).findGlobal({ slug: "footer" }), ["global-footer"], { tags: ["globals"], revalidate: 3600 });
 const rawSettings = unstable_cache(async () => (await getPayloadClient()).findGlobal({ slug: "site-settings", depth: 1 }), ["global-site-settings"], { tags: ["globals"], revalidate: 3600 });
 
-/** Preserve approved behaviour: Insights appears once 3+ articles are published
- *  (now counting CMS-published ∪ static-published articles). */
-function withInsights(nav: NavModel, show: boolean): NavModel {
-  if (!show || nav.items.some((i) => i.href === "/insights")) return nav;
-  const items = [...nav.items];
-  const contactIdx = items.findIndex((i) => i.href === "/contact");
-  const insights = { label: "Insights", href: "/insights" };
-  if (contactIdx >= 0) items.splice(contactIdx, 0, insights);
-  else items.push(insights);
-  return { ...nav, items };
-}
-
 /* ── public getters: CMS-first, static fallback, never throw ──────────────── */
 export async function getNavigation(): Promise<NavModel> {
   let model = NAV_FALLBACK;
   try { const a = adaptNav((await rawNav()) as NavDoc); if (a) model = a; } catch (e) { logCmsError("getNavigation", e); }
-  let show = false;
-  try { show = (await getPublishedInsightsCount()) >= INSIGHTS_NAV_MIN; } catch (e) { logCmsError("getNavigation/insightsCount", e); }
-  return withInsights(model, show);
+  return model;
 }
 export async function getFooter(): Promise<FooterModel> {
   try { return adaptFooter((await rawFooter()) as FooterDoc) ?? FOOTER_FALLBACK; } catch (e) { logCmsError("getFooter", e); return FOOTER_FALLBACK; }

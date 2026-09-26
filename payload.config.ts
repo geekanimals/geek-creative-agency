@@ -11,7 +11,6 @@ import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
 import { Services } from "./collections/Services";
 import { Projects } from "./collections/Projects";
-import { Insights } from "./collections/Insights";
 import { BusinessCategories } from "./collections/BusinessCategories";
 import { Companies } from "./collections/Companies";
 import { Brands } from "./collections/Brands";
@@ -43,7 +42,7 @@ if (process.env.NODE_ENV === "production" && process.env.PAYLOAD_DB_PUSH === "tr
 /**
  * Payload CMS — content backbone for the Geek site.
  *
- * Collections: Users (auth + RBAC), Media, Services, Projects, Insights, and the
+ * Collections: Users (auth + RBAC), Media, Services, Projects, and the
  * portfolio graph (Business Categories/Industries, Companies, Brands, Solutions).
  * Globals cover the editorial page surfaces (Navigation/Footer/SiteSettings,
  * About, WhatWeDo, Creators, Contact, Home).
@@ -71,7 +70,7 @@ export default buildConfig({ sharp,
     meta: { titleSuffix: " — Geek CMS" },
   },
 
-  collections: [Users, Media, Services, Projects, Insights, BusinessCategories, Companies, Brands, Solutions],
+  collections: [Users, Media, Services, Projects, BusinessCategories, Companies, Brands, Solutions],
   globals: [Navigation, Footer, SiteSettings, About, WhatWeDo, CreatorsPage, ContactPage, HomePage],
 
   // Rich-text editor for Projects' flexible content blocks.

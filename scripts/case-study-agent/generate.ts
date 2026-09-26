@@ -1,5 +1,5 @@
-/**
- * GOLD STANDARD CASE STUDY AGENT — GENERATION CLI
+﻿/**
+ * GOLD STANDARD CASE STUDY AGENT â€” GENERATION CLI
  *
  * Generates an evidence-grounded Case Study Agent package from a trusted
  * operator request file.
@@ -34,15 +34,17 @@ import {
   generateCaseStudy,
 } from "./generator";
 
+import { buildGenerationSourcesFromManifest } from "./sourceIntake";
+
 import type {
   GenerateCaseStudyRequest,
 } from "./generator";
 
-/* ── CLI helpers ──────────────────────────────────────────────────── */
+/* â”€â”€ CLI helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function usage() {
   console.log(`
-Gold Standard Case Study Agent — Generate
+Gold Standard Case Study Agent â€” Generate
 
 Usage:
   npx tsx scripts/case-study-agent/generate.ts <request.json>
@@ -114,7 +116,7 @@ function parseArgs(args: string[]) {
   };
 }
 
-/* ── Request loading ──────────────────────────────────────────────── */
+/* â”€â”€ Request loading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function loadRequest(
   filePath: string,
@@ -166,10 +168,18 @@ function loadRequest(
     );
   }
 
-  return parsed as GenerateCaseStudyRequest;
+  const request = parsed as any;
+
+  return {
+    ...request,
+    taxonomy: request.taxonomy ?? request.portfolio?.taxonomy,
+    sources: buildGenerationSourcesFromManifest(
+      request.sourceManifest
+    ).sources,
+  } as GenerateCaseStudyRequest;
 }
 
-/* ── Output path ──────────────────────────────────────────────────── */
+/* â”€â”€ Output path â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function defaultOutputPath(
   requestPath: string,
@@ -187,7 +197,7 @@ function defaultOutputPath(
   );
 }
 
-/* ── Main ─────────────────────────────────────────────────────────── */
+/* â”€â”€ Main â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 async function main() {
   loadCaseStudyAgentMemory();
@@ -217,7 +227,7 @@ async function main() {
     loadRequest(inputPath);
 
   console.log(
-    "\nGold Standard Case Study Agent — Generate\n",
+    "\nGold Standard Case Study Agent â€” Generate\n",
   );
 
   console.log(
@@ -242,7 +252,7 @@ async function main() {
   );
 
   console.log(
-    "\nGenerating evidence-grounded case study…",
+    "\nGenerating evidence-grounded case studyâ€¦",
   );
 
   const built =
@@ -337,3 +347,5 @@ main().catch((error) => {
 
   process.exit(1);
 });
+
+

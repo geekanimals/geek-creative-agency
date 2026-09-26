@@ -71,7 +71,6 @@ export interface Config {
     media: Media;
     services: Service;
     projects: Project;
-    insights: Insight;
     'business-categories': BusinessCategory;
     companies: Company;
     brands: Brand;
@@ -87,7 +86,6 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
-    insights: InsightsSelect<false> | InsightsSelect<true>;
     'business-categories': BusinessCategoriesSelect<false> | BusinessCategoriesSelect<true>;
     companies: CompaniesSelect<false> | CompaniesSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
@@ -1475,77 +1473,6 @@ export interface Solution {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Editorial articles for /insights. Save a draft and use Preview before publishing.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "insights".
- */
-export interface Insight {
-  id: number;
-  /**
-   * Article title (shown as the headline and card title).
-   */
-  title: string;
-  /**
-   * URL segment: /insights/<slug>. Auto-filled from the title on create; keep it stable after publishing to preserve backlinks.
-   */
-  slug?: string | null;
-  /**
-   * Standfirst / dek — the summary shown under the title and on the card.
-   */
-  excerpt?: string | null;
-  /**
-   * Original publication date. Drives ordering, SEO and the sitemap.
-   */
-  publishDate?: string | null;
-  /**
-   * Hero / card image (CMS upload). Or use the legacy path.
-   */
-  heroMedia?: (number | null) | Media;
-  /**
-   * OR an existing /public/assets image path.
-   */
-  heroLegacySrc?: string | null;
-  /**
-   * Article body — headings, paragraphs, lists, links, quotes.
-   */
-  body?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Editorial category (drives the /insights filter).
-   */
-  category:
-    'geek-decoded' | 'creator-economy' | 'brand-building' | 'social-culture' | 'whats-next' | 'case-study-learnings';
-  seo?: {
-    /**
-     * Falls back to “<title> | Geek Insights”.
-     */
-    metaTitle?: string | null;
-    /**
-     * Falls back to the excerpt.
-     */
-    metaDescription?: string | null;
-    ogImage?: (number | null) | Media;
-    noindex?: boolean | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -1584,10 +1511,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'projects';
         value: number | Project;
-      } | null)
-    | ({
-        relationTo: 'insights';
-        value: number | Insight;
       } | null)
     | ({
         relationTo: 'business-categories';
@@ -2024,31 +1947,6 @@ export interface ProjectsSelect<T extends boolean = true> {
         relatedQuestions?: T;
         preferredInternalAnchors?: T;
         searchNotes?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "insights_select".
- */
-export interface InsightsSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  excerpt?: T;
-  publishDate?: T;
-  heroMedia?: T;
-  heroLegacySrc?: T;
-  body?: T;
-  category?: T;
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        ogImage?: T;
-        noindex?: T;
       };
   updatedAt?: T;
   createdAt?: T;

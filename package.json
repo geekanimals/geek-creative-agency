@@ -18,7 +18,8 @@
     "cms:check-env": "node scripts/check-cms-env.mjs",
     "prod:preflight": "node scripts/prod-preflight.mjs",
     "agent:test": "node scripts/case-study-agent/run-regression.mjs",
-    "agent:verify": "node scripts/case-study-agent/run-verification.mjs"
+    "agent:verify": "node scripts/case-study-agent/run-verification.mjs",
+    "import:fmcg": "tsx scripts/import-fmcg-gold-standard.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.88.0",
@@ -26,6 +27,7 @@
     "@payloadcms/richtext-lexical": "3.88.0",
     "@payloadcms/storage-vercel-blob": "3.88.0",
     "@payloadcms/ui": "3.88.0",
+    "dotenv": "^18.0.3",
     "framer-motion": "^11.3.19",
     "next": "16.3.4",
     "payload": "3.88.0",
