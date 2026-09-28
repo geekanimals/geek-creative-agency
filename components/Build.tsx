@@ -22,7 +22,7 @@ export default function Build({ content = HOME_FALLBACK.build }: { content?: Hom
           <a key={s.slug} href={`#work-${s.slug}`} className="group block">
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg sm:aspect-[3/4] lg:aspect-[4/3]">
               <div className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.05]">
-                <Media src={s.src} need={s.need} label={s.brand} caption={s.blurb} index={i} video={i === 0 ? VIDEO.build.desktop : undefined} />
+                <Media src={s.src} need={s.need} label={s.brand} caption={s.blurb} index={i} contain={s.contain} video={i === 0 ? VIDEO.build.desktop : undefined} />
               </div>
               {s.src && (
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 to-transparent p-4">

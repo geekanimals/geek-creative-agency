@@ -1,33 +1,72 @@
 /**
  * Client logo wall (Section 3).
- * `logo` — real monochrome logo (SVG/PNG) once supplied; renders in place of text.
+ * `logo` — real monochrome/color logo from recovered legacy assets (/assets/legacy-geek/); renders in place of text.
  * `need` — required file path for that logo.
+ * If an exact logo asset is not present in legacy-geek, `logo` is omitted to preserve text fallback.
  */
 export type Client = { name: string; slug: string; logo?: string; need: string };
 
-const c = (name: string, slug: string): Client => ({
+const c = (name: string, slug: string, logoFilename?: string): Client => ({
   name,
   slug,
+  logo: logoFilename ? `/assets/legacy-geek/${logoFilename}` : undefined,
   need: `/assets/clients/${slug}.svg`,
 });
 
 export const clients: Client[] = [
-  c("Pepsi", "pepsi"),
-  c("Lay's", "lays"),
+  c("Pepsi", "pepsi", "pepsi.png"),
+  c("Lay's", "lays", "lays.png"),
+  c("Kurkure", "kurkure", "Kurkure.png"),
+  c("Quaker", "quaker", "Quaker.png"),
   c("Doritos", "doritos"),
   c("Coca-Cola", "coca-cola"),
   c("Fastrack", "fastrack"),
-  c("Tanishq", "tanishq"),
+  c("Titan", "titan", "titan_logo.png"),
+  c("Tanishq", "tanishq", "Tanishq.png"),
   c("Durex", "durex"),
   c("POND'S", "ponds"),
   c("AXE", "axe"),
   c("Foreo", "foreo"),
   c("7Up", "7up"),
   c("AirAsia", "airasia"),
-  c("ICICI Bank", "icici"),
+  c("ICICI Bank", "icici", "icici-prudential-logo.png"),
   c("Kotak", "kotak"),
   c("Miller High Life", "miller"),
-  c("High Ultra Lounge", "high-ultra"),
-  c("The Biere Club", "the-biere-club"),
-  c("Croma", "croma"),
+  c("High Ultra Lounge", "high-ultra", "high.png"),
+  c("The Biere Club", "the-biere-club", "thebiereclub.png"),
+  c("Croma", "croma", "croma.png"),
+  c("Lyfe", "lyfe", "lyfe.png"),
+  c("Flipkart", "flipkart", "flipkart.png"),
+  c("Myntra", "myntra", "myntra-logo.png"),
+  c("Cisco", "cisco", "cisco.png"),
+  c("Cognizant", "cognizant", "cognizant.png"),
+  c("Reliance Trends", "reliance-trends", "Reliance-Trends-Logo.png"),
+  c("Apple", "apple", "apple.png"),
+  c("Budweiser", "budweiser", "budweiser.png"),
+  c("Calvin Klein", "calvin-klein", "calvin-klein.png"),
+  c("Emami", "emami", "emami.png"),
+  c("Tommy Hilfiger", "tommy-hilfiger", "tommy-hilfiger.png"),
+  c("Lee", "lee", "lee-logo.png"),
+  c("Intuit", "intuit", "intuit_logo.png"),
+  c("Honeywell", "honeywell", "honeywell_logo.png"),
+  c("Schneider Electric", "schneider", "Schneider-Electric-logo-web.png"),
+  c("McCann", "mccann", "mccann-logo.png"),
+  c("Saatchi & Saatchi", "saatchi", "saatchiu-and-saatchi-logo.png"),
+  c("Xerox", "xerox", "xerox-logo.png"),
+  c("Forevermark", "forevermark", "Forevermark.png"),
+  c("Capillary Technologies", "capillary", "Capillary_Technologies_logo.png"),
+  c("Sobha", "sobha", "sobha.png"),
+  c("Altimetrik", "altimetrik", "altimetrik-logo.png"),
+  c("Arvind", "arvind", "arvind.png"),
+  c("Citrix", "citrix", "citrix.png"),
+  c("iGATE", "igate", "igate.png"),
+  c("BlackBuck", "blackbuck", "blackbuck.png"),
+  c("MakeMyTrip", "makemytrip", "mmt.png"),
+  c("Titan Eye+", "titan-eye", "titaneye_logo.png"),
+  c("Virgin Mobile", "virgin-mobile", "virginmobile.png"),
+  c("William Penn", "william-penn", "williampenn.png"),
+  c("Johnny Rockets", "johnny-rockets", "johny-rockets.png"),
+  c("Oman Air", "oman-air", "oman_air_logo.png"),
+  c("The Leela Palace", "leela-palace", "leelapalace.png"),
+  c("Mahindra Reva", "mahindra-reva", "mahindrareva.png"),
 ];

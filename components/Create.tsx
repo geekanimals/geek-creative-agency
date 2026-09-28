@@ -15,7 +15,7 @@ export default function Create({ content = HOME_FALLBACK.create }: { content?: H
         {createGallery.map((w, i) => (
           <a key={w.slug} href={`#work-${w.slug}`} className="group relative aspect-[4/5] w-40 shrink-0 snap-start overflow-hidden rounded-lg sm:w-48">
             <div className="h-full w-full transition-transform duration-700 group-hover:scale-[1.06]">
-              <Media src={w.src} need={w.need} label={w.brand} index={i} />
+              <Media src={w.src} need={w.need} label={w.brand} index={i} contain={w.contain} />
             </div>
             {w.src && (
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/75 to-transparent p-3">

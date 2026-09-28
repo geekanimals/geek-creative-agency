@@ -89,11 +89,6 @@ export default function Media({
           {label && (
             <p className="font-display text-xs font-semibold uppercase tracking-[0.12em] text-white/90">{label}</p>
           )}
-          {need && (
-            <code className="mt-1 max-w-[92%] truncate text-[9px] tracking-tight text-geek-cyan-bright/70">
-              {need}
-            </code>
-          )}
         </div>
       )}
     </div>

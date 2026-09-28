@@ -13,7 +13,7 @@ export default function WorkWall({ content = HOME_FALLBACK.work }: { content?: H
           <a key={w.slug} href={`#work-${w.slug}`} className="group w-36 shrink-0 sm:w-40">
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
               <div className="h-full w-full transition-transform duration-700 group-hover:scale-[1.06]">
-                <Media src={w.src} need={w.need} label={w.brand} index={i} showSlotLabel={false} />
+                <Media src={w.src} need={w.need} label={w.brand} index={i} showSlotLabel={false} contain={w.contain} />
               </div>
               {/* hover reveal — brand / project / view story */}
               <div className="absolute inset-0 flex flex-col justify-end bg-ink/0 p-3 opacity-0 transition-all duration-500 group-hover:bg-ink/65 group-hover:opacity-100">
