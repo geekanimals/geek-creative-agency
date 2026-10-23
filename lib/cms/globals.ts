@@ -1,6 +1,6 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import { getPayloadClient } from "@/lib/cms/payload";
+import { getPayloadClient, isCmsNotConfiguredError } from "@/lib/cms/payload";
 import { resolveMedia } from "@/lib/cms/media";
 import { INSIGHTS_NAV_MIN } from "@/lib/insights";
 import { getPublishedInsightsCount } from "@/lib/cms/insights";
@@ -11,6 +11,7 @@ import {
 import type { Navigation as NavDoc, Footer as FooterDoc, SiteSetting } from "@/payload-types";
 
 function logCmsError(ctx: string, e: unknown) {
+  if (isCmsNotConfiguredError(e)) return; // CMS off → static content, no noise
   // eslint-disable-next-line no-console
   console.error(`[cms] ${ctx} failed; using static fallback:`, e instanceof Error ? e.message : e);
 }

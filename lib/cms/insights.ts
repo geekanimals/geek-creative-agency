@@ -1,6 +1,6 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import { getPayloadClient } from "@/lib/cms/payload";
+import { getPayloadClient, isCmsNotConfiguredError } from "@/lib/cms/payload";
 import { resolveMedia } from "@/lib/cms/media";
 import {
   type Article,
@@ -23,6 +23,7 @@ type LexicalBody = NonNullable<CmsInsight["body"]>;
 export type ResolvedInsight = Article & { bodyRich?: LexicalBody; source: "cms" | "static" };
 
 function logCmsError(context: string, e: unknown) {
+  if (isCmsNotConfiguredError(e)) return; // CMS off → static content, no noise
   // eslint-disable-next-line no-console
   console.error(`[cms] ${context} failed; falling back to static Insights:`, e instanceof Error ? e.message : e);
 }

@@ -4,7 +4,7 @@ import type { RenderMode, FlagshipRendererKey } from "@/lib/work/renderers";
 import { isFlagshipKey } from "@/lib/work/renderers";
 import { projects as staticProjects, projectBySlug as staticBySlug } from "@/lib/work/projects";
 import { resolveMedia } from "@/lib/cms/media";
-import { getPayloadClient } from "@/lib/cms/payload";
+import { getPayloadClient, isCmsNotConfiguredError } from "@/lib/cms/payload";
 import { entityIsPublicRoutable } from "@/lib/cms/portfolio";
 import type { Project as CmsProject, Service as CmsService, Media as CmsMedia } from "@/payload-types";
 
@@ -72,6 +72,7 @@ const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-"
 
 /** Never let a CMS failure crash a page — log it, callers fall back to static. */
 function logCmsError(context: string, e: unknown) {
+  if (isCmsNotConfiguredError(e)) return; // CMS off → static content, no noise
   // eslint-disable-next-line no-console
   console.error(`[cms] ${context} failed; falling back to static registry:`, e instanceof Error ? e.message : e);
 }

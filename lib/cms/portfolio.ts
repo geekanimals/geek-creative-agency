@@ -1,6 +1,6 @@
 import "server-only";
 import type { Where } from "payload";
-import { getPayloadClient } from "@/lib/cms/payload";
+import { getPayloadClient, isCmsConfigured, isCmsNotConfiguredError } from "@/lib/cms/payload";
 import { resolveMedia } from "@/lib/cms/media";
 import { entityIsPublicRoutable } from "./routable";
 import type {
@@ -33,6 +33,7 @@ export type ProjectCard = {
 };
 
 export function logCmsError(ctx: string, e: unknown) {
+  if (isCmsNotConfiguredError(e)) return; // CMS off → static content, no noise
   // eslint-disable-next-line no-console
   console.error(`[cms] ${ctx} failed; portfolio hub falling back:`, e instanceof Error ? e.message : e);
 }
@@ -149,6 +150,7 @@ export function adaptSeo(seo: { metaTitle?: string | null; metaDescription?: str
 
 /** Fetch a single published (or draft, when previewing) entity by slug. */
 export async function findEntityBySlug<T>(collection: string, slug: string, draft: boolean): Promise<T | null> {
+  if (!isCmsConfigured()) return null; // CMS off → hub doesn't exist (404), not a 5xx
   const payload = await getPayloadClient();
   const res = await payload.find({
     collection: collection as never,

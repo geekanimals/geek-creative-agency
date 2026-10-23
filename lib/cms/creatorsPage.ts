@@ -1,11 +1,12 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import { getPayloadClient } from "@/lib/cms/payload";
+import { getPayloadClient, isCmsNotConfiguredError } from "@/lib/cms/payload";
 import { resolveMedia } from "@/lib/cms/media";
 import { CREATORS_FALLBACK, type CreatorsPageModel } from "@/lib/site/creatorsFallback";
 import type { CreatorsPage as CreatorsDoc } from "@/payload-types";
 
 function logCmsError(ctx: string, e: unknown) {
+  if (isCmsNotConfiguredError(e)) return; // CMS off → static content, no noise
   // eslint-disable-next-line no-console
   console.error(`[cms] ${ctx} failed; using static Creators fallback:`, e instanceof Error ? e.message : e);
 }
