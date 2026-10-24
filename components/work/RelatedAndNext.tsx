@@ -18,7 +18,7 @@ function RelatedTile({ project, index }: { project: CaseStudyType; index: number
       </div>
       <p className="mt-3 font-display text-base font-semibold text-ink">{project.brand}</p>
       <p className="text-sm text-graphite">{project.project}</p>
-      <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-geek-deep">
+      <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-geek-deep">
         {[cat, camp].filter(Boolean).join(" · ")}
       </p>
     </Link>

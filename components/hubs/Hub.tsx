@@ -35,7 +35,7 @@ export function HubTrail({ items }: { items: { name: string; href?: string }[] }
         {shown.map((i, n) => (
           <Fragment key={`${i.name}-${n}`}>
             {n > 0 && <li aria-hidden className="text-mist">→</li>}
-            <li>{i.href ? <Link href={i.href} className="transition hover:text-geek-cyan">{i.name}</Link> : <span className="text-ink">{i.name}</span>}</li>
+            <li>{i.href ? <Link href={i.href} className="-my-2 inline-block py-2 transition hover:text-geek-cyan">{i.name}</Link> : <span className="text-ink">{i.name}</span>}</li>
           </Fragment>
         ))}
       </ol>
@@ -92,7 +92,7 @@ export function ProjectCardGrid({ projects }: { projects: ProjectCard[] }) {
               <Media src={p.heroImage} label={p.title} index={i} showSlotLabel={false} />
             </div>
           </div>
-          {p.brand && <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.14em] text-geek-deep">{p.brand}</p>}
+          {p.brand && <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.14em] text-geek-deep">{p.brand}</p>}
           <h3 className="mt-1 font-display text-lg font-semibold text-ink group-hover:text-geek-cyan">{p.title}</h3>
         </Link>
       ))}

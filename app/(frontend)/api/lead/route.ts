@@ -1,18 +1,15 @@
 import { NextRequest } from "next/server";
 
+import { getTransporter, isSmtpConfigured, leadInboxes, mailFrom } from "@/lib/mail/smtp";
+
 /**
- * Live lead handler for the Four-Doors forms.
+ * Live lead handler for every website form (Client / Creator / Career / Vendor —
+ * Contact page, Creators page and the homepage "Four Doors").
  *
- * It is provider-agnostic — set ONE of the env vars below and leads start
- * delivering with zero code changes. Checked in this order:
- *
- *   RESEND_API_KEY + LEAD_TO_EMAIL   → email via Resend            (recommended)
- *   FORMSPREE_ENDPOINT               → forward to a Formspree form
- *   LEAD_WEBHOOK_URL                 → POST raw JSON to any webhook
- *   LEAD_SLACK_WEBHOOK               → post a message to Slack
- *   (none set)                       → logged server-side, 200 OK (dev mode)
- *
- * See .env.example.
+ * Delivery is SMTP only (see lib/mail/smtp.ts + .env.example):
+ *   1) the lead is emailed to LEAD_TO_EMAIL (reply-to = the person who wrote)
+ *   2) the person immediately gets a "Thank you for contacting Geek" email
+ * With SMTP not configured: dev → logged to the terminal; production → 503.
  */
 
 export const runtime = "nodejs";
@@ -45,14 +42,9 @@ function sanitizeBody(raw: unknown): Record<string, string> {
   return out;
 }
 
-/** Is any delivery provider configured? (Resend / Formspree / webhook / Slack.) */
+/** Is SMTP configured? */
 function hasProvider(): boolean {
-  return Boolean(
-    (process.env.RESEND_API_KEY && process.env.LEAD_TO_EMAIL) ||
-      process.env.FORMSPREE_ENDPOINT ||
-      process.env.LEAD_WEBHOOK_URL ||
-      process.env.LEAD_SLACK_WEBHOOK,
-  );
+  return isSmtpConfigured();
 }
 
 // very light in-memory rate limit (per warm instance)
@@ -112,65 +104,69 @@ async function deliver(kind: FormKind, data: Record<string, string>): Promise<bo
       .join("") +
     `</table>`;
 
-  // 1) Resend email
-  const RESEND_API_KEY = process.env.RESEND_API_KEY;
-  const LEAD_TO_EMAIL = process.env.LEAD_TO_EMAIL;
-  if (RESEND_API_KEY && LEAD_TO_EMAIL) {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: process.env.LEAD_FROM_EMAIL || "Geek Website <onboarding@resend.dev>",
-        to: LEAD_TO_EMAIL.split(",").map((s) => s.trim()),
-        reply_to: isEmail(data.email) ? data.email : undefined,
-        subject,
-        html,
-        text,
-      }),
-    });
-    return res.ok;
+  if (!isSmtpConfigured()) {
+    // No SMTP configured — log for dev and report not-delivered
+    // eslint-disable-next-line no-console
+    console.log(`[GEEK lead:${kind}] (SMTP not configured)\n${text}`);
+    return false;
   }
 
-  // 2) Formspree
-  const FORMSPREE_ENDPOINT = process.env.FORMSPREE_ENDPOINT;
-  if (FORMSPREE_ENDPOINT) {
-    const res = await fetch(FORMSPREE_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ _subject: subject, _form: kind, ...data }),
-    });
-    return res.ok;
-  }
+  const mailer = getTransporter();
+  const from = mailFrom();
+  const visitorEmail = isEmail(data.email) ? data.email : null;
 
-  // 3) Generic webhook
-  const LEAD_WEBHOOK_URL = process.env.LEAD_WEBHOOK_URL;
-  if (LEAD_WEBHOOK_URL) {
-    const res = await fetch(LEAD_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ form: kind, subject, fields: data, receivedAt: new Date().toISOString() }),
-    });
-    return res.ok;
-  }
+  // 1) the lead → Geek inbox(es). This one must succeed.
+  await mailer.sendMail({
+    from,
+    to: leadInboxes(),
+    replyTo: visitorEmail ?? undefined,
+    subject,
+    html,
+    text,
+  });
 
-  // 4) Slack incoming webhook
-  const LEAD_SLACK_WEBHOOK = process.env.LEAD_SLACK_WEBHOOK;
-  if (LEAD_SLACK_WEBHOOK) {
-    const res = await fetch(LEAD_SLACK_WEBHOOK, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: `*${subject}*\n${text}` }),
-    });
-    return res.ok;
+  // 2) instant "thank you" back to the visitor. Best effort — a bounce here must
+  //    never lose the lead, so it's logged instead of failing the request.
+  if (visitorEmail) {
+    const reply = thankYouMail(kind, data);
+    try {
+      await mailer.sendMail({ from, to: visitorEmail, replyTo: leadInboxes()[0], subject: reply.subject, html: reply.html, text: reply.text });
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error("[GEEK lead] thank-you email failed:", e instanceof Error ? e.message : e);
+    }
   }
+  return true;
+}
 
-  // 5) No provider configured — log for dev and report not-delivered
-  // eslint-disable-next-line no-console
-  console.log(`[GEEK lead:${kind}] (no provider configured)\n${text}`);
-  return false;
+/**
+ * The auto-reply. Deliberately contains NO free text from the form except the
+ * visitor's first name (escaped, capped) — so the form can't be abused to send
+ * arbitrary content to arbitrary addresses through our mail server.
+ */
+function thankYouMail(kind: FormKind, d: Record<string, string>) {
+  const first = escapeHtml((d.name || d.company || "").trim().split(/\s+/)[0]?.slice(0, 40) || "there");
+  const lines: Record<FormKind, string> = {
+    client: "Thanks for reaching out to Geek. Your brief is with our team and we'll get back to you within 1–2 working days.",
+    creator: "Thanks for wanting to create with Geek. Our creator team will review your profile and reach out when there's a campaign that fits you.",
+    career: "Thanks for applying to Geek. Our team will go through your application and get in touch if there's a fit.",
+    vendor: "Thanks for your interest in partnering with Geek. Our team will review your details and get back to you.",
+  };
+  const subject = "Thank you for contacting Geek Creative Agency";
+  const body = lines[kind];
+  const site = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "");
+  const text = `Hi ${first},\n\n${body}\n\nIf it's urgent, just reply to this email.\n\n— Team Geek\nGeek Creative Agency${site ? `\n${site}` : ""}`;
+  const html =
+    `<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#0C0D0C">` +
+    `<p style="margin:0 0 4px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#137C93;font-weight:700">Geek Creative Agency</p>` +
+    `<h1 style="margin:0 0 16px;font-size:22px">Thank you for contacting Geek</h1>` +
+    `<p style="margin:0 0 12px;line-height:1.6">Hi ${first},</p>` +
+    `<p style="margin:0 0 12px;line-height:1.6">${body}</p>` +
+    `<p style="margin:0 0 20px;line-height:1.6">If it's urgent, just reply to this email.</p>` +
+    `<p style="margin:0;line-height:1.6">— Team Geek</p>` +
+    (site ? `<p style="margin:16px 0 0"><a href="${site}" style="color:#137C93;font-weight:700">${site.replace(/^https?:\/\//, "")}</a></p>` : "") +
+    `</div>`;
+  return { subject, html, text };
 }
 
 function escapeHtml(s: string): string {

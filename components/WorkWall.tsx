@@ -17,12 +17,12 @@ export default function WorkWall({ content = HOME_FALLBACK.work }: { content?: H
               </div>
               {/* hover reveal — brand / project / view story */}
               <div className="absolute inset-0 flex flex-col justify-end bg-ink/0 p-3 opacity-0 transition-all duration-500 group-hover:bg-ink/65 group-hover:opacity-100">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-geek-cyan-bright">{w.brand}</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-geek-cyan-bright">{w.brand}</p>
                 <p className="text-sm font-semibold text-white">{w.project}</p>
                 <span className="mt-1 text-[11px] font-semibold text-white">View Story →</span>
               </div>
             </div>
-            <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.1em] text-graphite">{w.brand}</p>
+            <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.1em] text-graphite">{w.brand}</p>
           </a>
         ))}
         <div className="flex w-16 shrink-0 items-center justify-center">

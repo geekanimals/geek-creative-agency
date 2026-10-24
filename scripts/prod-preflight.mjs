@@ -75,9 +75,8 @@ line("\nPool:");
 
 // 7) Form provider presence (delivery is optional but report it)
 line("\nForms / lead delivery:");
-if (present("RESEND_API_KEY") && present("LEAD_TO_EMAIL")) ok("Resend configured (RESEND_API_KEY + LEAD_TO_EMAIL)");
-else if (present("FORMSPREE_ENDPOINT") || present("LEAD_WEBHOOK_URL") || present("LEAD_SLACK_WEBHOOK")) ok("A fallback lead provider is configured");
-else soft("No lead provider configured — /api/lead will log only (leads not delivered)");
+if (["SMTP_HOST", "SMTP_USER", "SMTP_PASS", "LEAD_TO_EMAIL"].every(present)) ok("SMTP configured (leads + thank-you emails)");
+else soft("SMTP not configured — set SMTP_HOST, SMTP_USER, SMTP_PASS, LEAD_TO_EMAIL (forms return 503 in production)");
 
 // 8) Migrations present
 line("\nMigrations:");

@@ -35,14 +35,14 @@ export default function MediaChanged() {
   const reduce = useReducedMotion();
   return (
     <section id="what-we-do" className="border-t border-mist bg-white">
-      <div className="no-scrollbar overflow-x-auto">
-        <div className="mx-auto flex min-w-max items-stretch gap-px bg-mist">
+      <div className="no-scrollbar mx-auto max-w-edge overflow-x-auto px-5 sm:px-8">
+        <div className="flex min-w-max items-stretch gap-px bg-mist">
           {eras.map((e, i) => (
             <motion.div
               key={e.pre + e.post}
               initial={reduce ? false : { opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10%" }}
+              viewport={{ once: true, margin: "0px 0px -10% 0px" }}
               transition={{ duration: 0.55, delay: i * 0.05 }}
               className="flex w-[220px] shrink-0 flex-col justify-between bg-white p-5 sm:w-[240px]"
             >

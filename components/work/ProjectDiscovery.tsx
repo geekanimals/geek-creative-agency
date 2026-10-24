@@ -33,7 +33,7 @@ export default function ProjectDiscovery({ project }: { project: ResolvedProject
           {trail.map((t, i) => (
             <li key={t.href} className="flex items-center gap-2">
               {i > 0 && <span aria-hidden className="text-mist">→</span>}
-              <Link href={t.href} className="transition hover:text-geek-cyan">{t.name}</Link>
+              <Link href={t.href} className="-my-2 inline-block py-2 transition hover:text-geek-cyan">{t.name}</Link>
             </li>
           ))}
         </ol>

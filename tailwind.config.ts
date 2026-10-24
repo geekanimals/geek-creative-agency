@@ -34,7 +34,7 @@ const config: Config = {
         tightest: "-0.055em",
       },
       maxWidth: {
-        edge: "1600px",
+        edge: "1400px", // site-wide content width; side padding = px-5 (20px) mobile, sm:px-8 (32px) desktop
       },
       keyframes: {
         marquee: {

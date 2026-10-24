@@ -16,7 +16,7 @@ export default function WorkTile({ project, index = 0 }: { project: CaseStudy; i
         <Media src={project.heroImage} need={project.heroImageNeed} label={project.brand} index={index} showSlotLabel={false} />
       </div>
       <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink/85 via-ink/10 to-transparent p-5 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-        {category && <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-geek-cyan-bright">{category}</span>}
+        {category && <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-geek-cyan-bright">{category}</span>}
         <span className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/80">{project.brand}</span>
         <span className="font-display text-lg font-semibold leading-tight text-white">{project.project}</span>
         <span className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-white">

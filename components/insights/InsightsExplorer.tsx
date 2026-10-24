@@ -22,10 +22,10 @@ export default function InsightsExplorer({ articles }: { articles: Article[] }) 
     <div>
       {/* Category filter */}
       <div className="border-y border-mist">
-        <div className="no-scrollbar mx-auto flex max-w-edge gap-6 overflow-x-auto px-5 py-5 sm:px-8">
+        <div className="no-scrollbar mx-auto flex max-w-edge gap-6 overflow-x-auto px-5 py-3 sm:px-8">
           <button
             onClick={() => setCategory("")}
-            className={`whitespace-nowrap text-sm font-semibold uppercase tracking-[0.1em] transition-colors ${active === "" ? "text-geek-deep" : "text-graphite hover:text-ink"}`}
+            className={`whitespace-nowrap py-2 text-sm font-semibold uppercase tracking-[0.1em] transition-colors ${active === "" ? "text-geek-deep" : "text-graphite hover:text-ink"}`}
           >
             All
           </button>
@@ -33,7 +33,7 @@ export default function InsightsExplorer({ articles }: { articles: Article[] }) 
             <button
               key={c.slug}
               onClick={() => setCategory(c.slug)}
-              className={`whitespace-nowrap text-sm font-semibold uppercase tracking-[0.1em] transition-colors ${active === c.slug ? "text-geek-deep" : "text-graphite hover:text-ink"}`}
+              className={`whitespace-nowrap py-2 text-sm font-semibold uppercase tracking-[0.1em] transition-colors ${active === c.slug ? "text-geek-deep" : "text-graphite hover:text-ink"}`}
             >
               {c.label}
             </button>
@@ -60,7 +60,7 @@ export default function InsightsExplorer({ articles }: { articles: Article[] }) 
                     <span className="absolute left-3 top-3 rounded-full bg-amber-400 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-ink">Draft · dev</span>
                   )}
                 </div>
-                <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.14em] text-geek-deep">{insightCategoryMap[a.category]}</p>
+                <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.14em] text-geek-deep">{insightCategoryMap[a.category]}</p>
                 <h3 className="mt-1 font-display text-lg font-semibold text-ink group-hover:text-geek-cyan">{a.title}</h3>
                 {a.dek && <p className="mt-1 line-clamp-2 text-sm text-graphite">{a.dek}</p>}
               </Link>

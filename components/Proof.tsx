@@ -31,15 +31,15 @@ export default function Proof({ content = HOME_FALLBACK.proof }: { content?: Hom
     >
       <div className="space-y-6">
         {proof.map((c) => (
-          <div key={c.brand} className="grid grid-cols-[70px_1fr] items-center gap-4 sm:grid-cols-[90px_1fr]">
+          <div key={c.brand} className="grid grid-cols-1 items-center gap-2 sm:grid-cols-[90px_1fr] sm:gap-4">
             <p className="h-display text-xl text-ink sm:text-2xl">{c.brand}</p>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-3 sm:gap-4">
               {c.stats.map((s) => (
                 <div key={s.label}>
-                  <div className="h-display text-[clamp(1.5rem,3.2vw,2.6rem)] leading-none text-geek-cyan">
+                  <div className="h-display text-[clamp(1.6rem,3.2vw,2.6rem)] leading-none text-geek-cyan">
                     <CountUp value={s.value} suffix={s.suffix} />
                   </div>
-                  <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-graphite">
+                  <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-graphite sm:tracking-[0.12em]">
                     {s.label}
                   </p>
                 </div>

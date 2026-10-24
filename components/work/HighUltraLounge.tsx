@@ -392,7 +392,7 @@ export default function HighUltraLounge({ project }: { project: CaseStudyType })
                   ].map((x) => (
                     <div key={x.l} className="rounded-md border py-4" style={{ borderColor: HAIR }}>
                       <p className="h-display" style={{ fontSize: "1.9rem", color: CREAM }}>{x.n}</p>
-                      <p className="mt-1 text-[0.6rem] font-semibold uppercase tracking-[0.16em]" style={{ color: MUTED }}>{x.l}</p>
+                      <p className="mt-1 text-[0.7rem] font-semibold uppercase tracking-[0.16em]" style={{ color: MUTED }}>{x.l}</p>
                     </div>
                   ))}
                 </div>

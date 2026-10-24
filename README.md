@@ -42,19 +42,19 @@ showing the exact required path (`need`). Never fabricate a campaign visual.
    `logo` in `lib/data/clients.ts`.
 5. **Logo**: real Geek wordmark already wired (`components/ui/GeekLogo.tsx`).
 
-## Forms — live handler
-Four modal forms (Client / Creator / Career / Vendor) in `components/forms/`
-POST to the **live** route `app/api/lead/route.ts`. It's provider-agnostic —
-set ONE env var in `.env.local` and leads start delivering (no code change):
+## Forms — live handler (SMTP)
+All four forms (Client / Creator / Career / Vendor — Contact page, Creators page
+and the homepage "Four Doors") POST to `app/api/lead/route.ts`, which sends mail
+over **SMTP** (`lib/mail/smtp.ts`):
 
-- `RESEND_API_KEY` + `LEAD_TO_EMAIL` → email (recommended)
-- `FORMSPREE_ENDPOINT` → Formspree
-- `LEAD_WEBHOOK_URL` → any webhook (Zapier / CRM)
-- `LEAD_SLACK_WEBHOOK` → Slack
+1. the lead → `LEAD_TO_EMAIL` (reply-to = the visitor)
+2. an instant **"Thank you for contacting Geek Creative Agency"** email → the visitor
 
-See `.env.example`. With nothing set, submissions succeed in the UI and are
-logged server-side (dev). Built in: honeypot spam trap (`company_website`),
-per-IP rate limit, email validation, and reply-to set to the lead's email.
+Set `SMTP_HOST`, `SMTP_PORT` (465/587), `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM`,
+`LEAD_TO_EMAIL` in `.env.local` (see `.env.example`). Without SMTP: dev logs the
+lead to the terminal; production answers 503. Built in: honeypot spam trap
+(`company_website`), per-IP rate limit, field allowlist + size limits, and the
+auto-reply never echoes visitor-written text.
 
 ## Layout system
 The homepage uses a compact **editorial band** system (`components/ui/Band.tsx`):

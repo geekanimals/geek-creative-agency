@@ -7,6 +7,8 @@ import "@payloadcms/next/css";
 import { RootLayout, handleServerFunctions } from "@payloadcms/next/layouts";
 import React from "react";
 import { importMap } from "./admin/importMap.js";
+import { getCmsAdminProblem } from "@/lib/cms/adminGuard";
+import CmsSetupNotice from "@/components/cms/CmsSetupNotice";
 
 type Args = { children: React.ReactNode };
 
@@ -17,10 +19,15 @@ const serverFunction: ServerFunctionClient = async function (args) {
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
-const Layout = ({ children }: Args) => (
-  <RootLayout config={config} importMap={importMap} serverFunction={serverFunction}>
-    {children}
-  </RootLayout>
-);
+const Layout = async ({ children }: Args) => {
+  // No DB / DB unreachable → show a clear setup page instead of crashing.
+  const problem = await getCmsAdminProblem();
+  if (problem) return <CmsSetupNotice problem={problem} />;
+  return (
+    <RootLayout config={config} importMap={importMap} serverFunction={serverFunction}>
+      {children}
+    </RootLayout>
+  );
+};
 
 export default Layout;

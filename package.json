@@ -28,6 +28,7 @@
     "@payloadcms/ui": "3.88.0",
     "framer-motion": "^11.3.19",
     "next": "16.3.4",
+    "nodemailer": "^10.2.1",
     "payload": "3.88.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
+    "@types/nodemailer": "^8.0.2",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "autoprefixer": "^10.4.19",

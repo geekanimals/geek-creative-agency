@@ -28,6 +28,7 @@ function Logo({ name, logo }: { name: string; logo?: string }) {
 export default function LogoWall({ content = HOME_FALLBACK.logoWall }: { content?: HomePageModel["logoWall"] }) {
   return (
     <section className="border-t border-mist bg-white py-8">
+      <div className="mx-auto max-w-edge overflow-hidden px-5 sm:px-8">
       <p className="mb-6 text-center text-sm font-bold uppercase tracking-[0.14em] text-ink">
         <HighlightedLines text={content.heading} highlight={content.headingHighlight} />
       </p>
@@ -39,6 +40,7 @@ export default function LogoWall({ content = HOME_FALLBACK.logoWall }: { content
           <span className="text-xs font-bold uppercase tracking-[0.14em] text-geek-cyan">&amp; more</span>
         </div>
       </Marquee>
+      </div>
     </section>
   );
 }

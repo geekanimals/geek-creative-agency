@@ -17,7 +17,7 @@ function Story({ project, index, className = "" }: { project: CaseStudy; index: 
       <div className="relative flex h-full flex-col justify-between p-6 sm:p-7">
         <span className="font-display text-sm font-bold text-white/50">{String(index + 1).padStart(2, "0")}</span>
         <div>
-          {cat && <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-geek-cyan-bright">{cat}</span>}
+          {cat && <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-geek-cyan-bright">{cat}</span>}
           <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/75">{project.brand}</p>
           <h3 className="h-display text-2xl uppercase text-white sm:text-3xl">{project.project}</h3>
           <span className="mt-3 inline-block text-xs font-semibold uppercase tracking-[0.12em] text-white/80 transition group-hover:text-white">

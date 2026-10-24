@@ -62,34 +62,35 @@ export default function NavClient({ nav }: { nav: NavModel }) {
             </a>
           )}
           <button
-            className="lg:hidden"
-            aria-label="Menu"
+            className="-mr-2.5 flex h-11 w-11 items-center justify-center lg:hidden"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
             onClick={() => setOpen((o) => !o)}
           >
-            <div className="space-y-1.5">
-              <span className="block h-0.5 w-6 bg-ink" />
-              <span className="block h-0.5 w-6 bg-ink" />
-            </div>
+            <span className="relative block h-3.5 w-6">
+              <span className={`absolute left-0 block h-0.5 w-6 bg-ink transition-transform duration-200 ${open ? "top-1.5 rotate-45" : "top-0"}`} />
+              <span className={`absolute left-0 block h-0.5 w-6 bg-ink transition-transform duration-200 ${open ? "top-1.5 -rotate-45" : "top-3"}`} />
+            </span>
           </button>
         </div>
       </div>
 
       {open && (
-        <div className="border-t border-mist bg-white px-5 py-4 lg:hidden">
-          <nav className="flex flex-col gap-4">
+        <div className="max-h-[calc(100dvh-72px)] overflow-y-auto border-t border-mist bg-white px-5 py-4 sm:px-8 lg:hidden">
+          <nav className="flex flex-col">
             {links.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
                 {...ext(l.external, l.newTab)}
                 onClick={() => setOpen(false)}
-                className="text-lg font-medium text-ink"
+                className="py-2.5 text-lg font-medium text-ink"
               >
                 {l.label}
               </a>
             ))}
             {cta && (
-              <a href={cta.href} onClick={() => setOpen(false)} className="text-lg font-semibold text-geek-deep">
+              <a href={cta.href} onClick={() => setOpen(false)} className="py-2.5 text-lg font-semibold text-geek-deep">
                 {cta.label} →
               </a>
             )}

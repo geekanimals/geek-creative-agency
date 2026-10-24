@@ -92,7 +92,7 @@ export default function WorkExplorer({ projects = staticProjects }: { projects?:
           <div className="flex items-center justify-between py-4 lg:hidden">
             <button
               onClick={() => setSheetOpen(true)}
-              className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.12em] text-ink"
+              className="-my-2 flex items-center gap-2 py-3 text-sm font-bold uppercase tracking-[0.12em] text-ink"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
                 <path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />

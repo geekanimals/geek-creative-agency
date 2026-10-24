@@ -50,14 +50,14 @@ export default function EndFooterClient({ footer, socials }: { footer: FooterMod
             <GeekLogo variant="cyan" className="h-7" />
             <p className="hidden max-w-[34ch] text-xs text-graphite sm:block">{tagline}</p>
           </div>
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
+          <div className="flex flex-wrap gap-x-6 gap-y-0">
             {socials.map((s) => (
               <a
                 key={s.platform + s.url}
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-semibold uppercase tracking-[0.1em] text-graphite transition hover:text-geek-cyan"
+                className="py-2 text-xs font-semibold uppercase tracking-[0.1em] text-graphite transition hover:text-geek-cyan"
               >
                 {s.label}
               </a>

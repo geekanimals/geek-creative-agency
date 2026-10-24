@@ -97,7 +97,7 @@ const DEV = process.env.NODE_ENV !== "production";
 function DraftNote({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   return (
     <div className={`mt-5 rounded-md border border-dashed p-4 text-sm ${dark ? "border-white/25 text-white/70" : "border-amber-400/60 text-graphite"}`}>
-      <span className="mb-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-amber-500">Draft — not final · dev only</span>
+      <span className="mb-1 block text-[11px] font-bold uppercase tracking-[0.16em] text-amber-500">Draft — not final · dev only</span>
       {children}
     </div>
   );
@@ -286,7 +286,7 @@ function RelatedTile({ project, index }: { project: CaseStudyType; index: number
       </div>
       <p className="mt-3 font-display text-base font-semibold text-ink">{project.brand}</p>
       <p className="text-sm text-graphite">{project.project}</p>
-      <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-geek-deep">
+      <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-geek-deep">
         {[cat, camp].filter(Boolean).join(" · ")}
       </p>
     </Link>

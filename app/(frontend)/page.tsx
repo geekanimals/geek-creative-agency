@@ -16,6 +16,7 @@ import FourDoors from "@/components/FourDoors";
 import EndFooter from "@/components/EndFooter";
 import { getHomePage } from "@/lib/cms/homePage";
 import { getSiteSettings } from "@/lib/cms/globals";
+import { getGeekOsCreators } from "@/lib/geekos/creators";
 
 // Homepage inherits the site-default SEO (layout / Site Settings) unless an
 // editor sets homepage-specific overrides — returning {} keeps the layout
@@ -39,7 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const { isEnabled: draft } = await draftMode();
-  const home = await getHomePage({ draft });
+  const [home, creators] = await Promise.all([getHomePage({ draft }), getGeekOsCreators(48)]);
   return (
     <>
       <Nav />
@@ -54,7 +55,7 @@ export default async function Home() {
         <LogoWall content={home.logoWall} />            {/* 3  — Client Logo Wall */}
         <Build content={home.build} />                  {/* 4  — BUILD */}
         <Create content={home.create} />                {/* 5  — CREATE */}
-        <Influence content={home.influence} />          {/* 6  — INFLUENCE */}
+        <Influence content={home.influence} creators={creators} /> {/* 6  — INFLUENCE (live Geek OS creators) */}
         <Proof content={home.proof} />                  {/* 7  — PROOF */}
         <Process content={home.process} />              {/* 8  — Big idea to last mile */}
         <BuiltByGeek content={home.builtByGeek} />      {/* 9  — Built by Geek */}

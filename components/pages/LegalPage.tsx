@@ -31,7 +31,7 @@ export default function LegalPage({
 
           {placeholder && (
             <div className="mt-6 rounded-md border border-dashed border-amber-400/60 p-4 text-sm text-graphite">
-              <span className="mb-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-amber-500">Editable placeholder</span>
+              <span className="mb-1 block text-[11px] font-bold uppercase tracking-[0.16em] text-amber-500">Editable placeholder</span>
               This is a structured placeholder layout. Final {title.toLowerCase()} wording should be supplied/approved by
               Geek&apos;s legal counsel before launch — no legal obligations have been invented.
             </div>

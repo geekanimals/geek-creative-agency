@@ -55,7 +55,7 @@ function PressCard({ item }: { item: PressItem }) {
         <span className="text-sm font-bold uppercase tracking-[0.1em] text-geek-deep">{item.publisher}</span>
         {date && <span className="text-[11px] text-graphite">{date}</span>}
         {item.geekMentioned && (
-          <span className="rounded-full bg-geek-cyan/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em] text-geek-deep">
+          <span className="rounded-full bg-geek-cyan/15 px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-geek-deep">
             Geek featured
           </span>
         )}

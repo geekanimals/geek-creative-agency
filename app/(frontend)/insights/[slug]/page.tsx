@@ -85,7 +85,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           {isArticleDraft(a) && (
             <div className="mt-6 rounded-md border border-dashed border-amber-400/60 p-4 text-sm text-graphite">
-              <span className="mb-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-amber-500">
+              <span className="mb-1 block text-[11px] font-bold uppercase tracking-[0.16em] text-amber-500">
                 {a.source === "cms" ? "Preview — draft (not public)" : "Draft — dev only"}
               </span>
               {a.source === "cms"
