@@ -18,7 +18,8 @@
     "cms:check-env": "node scripts/check-cms-env.mjs",
     "prod:preflight": "node scripts/prod-preflight.mjs",
     "agent:test": "node scripts/case-study-agent/run-regression.mjs",
-    "agent:verify": "node scripts/case-study-agent/run-verification.mjs"
+    "agent:verify": "node scripts/case-study-agent/run-verification.mjs",
+    "case-study:draft": "tsx scripts/claude-case-study/write-draft.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.88.0",

@@ -1,0 +1,52 @@
+{
+  "slug": "brand-campaign-name",
+  "title": "Campaign name",
+  "client": "Brand name",
+  "year": 2026,
+  "location": "India",
+  "shortSummary": "One sentence: what Geek did and what it achieved.",
+  "cardSummary": "Shorter line for the /work grid card.",
+  "projectKind": "campaign",
+  "featured": false,
+  "order": 100,
+  "heroLegacySrc": "",
+
+  "taxonomy": {
+    "company": "company-slug-from-cms",
+    "brand": "brand-slug-from-cms",
+    "services": ["influencer-marketing"],
+    "industries": ["fmcg"],
+    "solutions": [],
+    "campaignTypes": ["influencer-campaign"]
+  },
+
+  "story": {
+    "headline": "Big headline for the case study.",
+    "challenge": { "question": "The question the brand faced?", "copy": "Two or three sentences on the problem." },
+    "insight": "The human or cultural truth the idea was built on.",
+    "idea": { "statement": "The idea in one line.", "copy": "How the idea works." },
+    "execution": "What was actually done: creators, formats, platforms, timeline.",
+    "outcome": "Why it mattered. Only verified results.",
+    "quote": { "text": "", "attribution": "" }
+  },
+
+  "metrics": [
+    { "value": "0", "label": "creators activated", "note": "Geek-tracked subset", "source": "src-1" }
+  ],
+
+  "sources": [
+    { "id": "src-1", "title": "Name of the report or document the figure comes from", "note": "page or section" }
+  ],
+
+  "seo": {
+    "metaTitle": "Campaign name | Brand case study | Geek",
+    "metaDescription": "Under 160 characters: what, for whom, and the headline result."
+  },
+
+  "faqs": [
+    { "question": "What was the campaign?", "answer": "Short, factual answer." }
+  ],
+
+  "pressCoverage": [],
+  "awards": []
+}

@@ -1,0 +1,4 @@
+# Case-study drafts may hold unpublished client figures. Never commit them.
+*
+!.gitignore
+!README.md
