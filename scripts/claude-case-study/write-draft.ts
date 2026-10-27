@@ -19,6 +19,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import nextEnv from "@next/env";
+import { campaignTypes as CAMPAIGN_TYPES } from "../../lib/work/taxonomy";
 
 type Metric = { value: string; label: string; prefix?: string; suffix?: string; note?: string; source: string };
 type Input = {
@@ -66,7 +67,17 @@ const err = (m: string) => errors.push(m);
 const warn = (m: string) => warnings.push(m);
 const str = (v: unknown) => typeof v === "string" && v.trim().length > 0;
 
+const KNOWN_KEYS = new Set([
+  "slug", "title", "client", "year", "location", "shortSummary", "cardSummary", "projectKind", "featured", "order",
+  "heroLegacySrc", "heroVideo", "taxonomy", "story", "metrics", "seo", "faqs", "pressCoverage", "awards",
+  "searchStrategy", "sources",
+]);
+
 function validate(d: Input) {
+  for (const k of Object.keys(d)) if (!KNOWN_KEYS.has(k)) err(`unknown field "${k}" (typo?). Allowed: ${[...KNOWN_KEYS].join(", ")}.`);
+  const allowedTypes = new Set(CAMPAIGN_TYPES.map((t) => t.slug));
+  for (const t of d.taxonomy?.campaignTypes ?? []) if (!allowedTypes.has(t)) err(`campaignTypes "${t}" is not a valid type. Use one of: ${[...allowedTypes].join(", ")}.`);
+  if (d.projectKind && !["campaign", "ongoing-program", "platform", "activation"].includes(d.projectKind)) err(`projectKind must be campaign, ongoing-program, platform or activation.`);
   if (!str(d.title)) err("title is required.");
   if (!str(d.slug) || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(d.slug)) err("slug must be lowercase words joined by hyphens, e.g. lays-heartwork.");
   if (d.year != null && (!Number.isInteger(d.year) || d.year < 2000 || d.year > 2100)) err("year must be a 4-digit year.");
@@ -130,9 +141,17 @@ async function main() {
   const businessCategories = await many("business-categories", tx.industries);
   const solutions = await many("solutions", tx.solutions);
 
+  // A brand belongs to one company (Lay's -> PepsiCo). Catch a mismatch before saving.
+  if (brand != null && company != null) {
+    const b = await payload.findByID({ collection: "brands", id: brand as number, depth: 0, overrideAccess: true, draft: true }).catch(() => null);
+    const bc = b && (typeof b.company === "object" ? (b.company as { id?: number | string } | null)?.id : b.company);
+    if (bc != null && String(bc) !== String(company)) err(`brand "${tx.brand}" does not belong to company "${tx.company}". Fix the company, or leave it out so it is taken from the brand.`);
+  }
+
   const existing = await payload.find({ collection: "projects", where: { slug: { equals: data.slug } }, limit: 1, depth: 0, overrideAccess: true, draft: true });
   const current = existing.docs[0] as { id: number | string; renderMode?: string; _status?: string } | undefined;
   if (current?.renderMode === "flagship") err(`"${data.slug}" is a flagship (bespoke) project and is never changed by this script.`);
+  else if (current?.renderMode === "flexible") err(`"${data.slug}" uses the flexible section layout; this script writes the standard layout and would replace it. Edit it in /admin instead.`);
   if (current && !allowUpdate) err(`A project with slug "${data.slug}" already exists. Use a new slug, or add --update to replace its draft (the live version is not changed).`);
 
   for (const w of warnings) console.log(`  ! ${w}`);
