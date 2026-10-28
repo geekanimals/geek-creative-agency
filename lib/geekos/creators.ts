@@ -41,7 +41,9 @@ export async function getGeekOsCreators(limit = 48): Promise<GeekCreator[]> {
     const res = await fetch(`${base}/rest/v1/rpc/website_instagram_creators`, {
       method: "POST",
       headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ p_limit: Math.min(limit, 100) }),
+      // Ask for extra rows: a few may be skipped (expired picture, bad handle),
+      // and the grid should still be filled with `limit` creators.
+      body: JSON.stringify({ p_limit: Math.min(limit + 20, 100) }),
       next: { revalidate: REVALIDATE_SECONDS, tags: ["geek-os-creators"] },
       signal: AbortSignal.timeout(6000),
     });

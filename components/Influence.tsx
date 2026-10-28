@@ -12,10 +12,8 @@ const ROWS = 4;
 const COUNT = COLS * ROWS; // 48 tiles — always the 48 latest creators
 
 /** One creator tile: Instagram profile picture → opens their Instagram. */
-function CreatorTile({ creator, index }: { creator: GeekCreator; index: number }) {
+function CreatorTile({ creator }: { creator: GeekCreator }) {
   const [broken, setBroken] = useState(false);
-  // Expired / blocked picture → fall back to the on-brand placeholder tile.
-  if (broken) return <Media label={`@${creator.username}`} index={index} showSlotLabel={false} />;
   return (
     <a
       href={`https://www.instagram.com/${encodeURIComponent(creator.username)}/`}
@@ -27,7 +25,14 @@ function CreatorTile({ creator, index }: { creator: GeekCreator; index: number }
     >
       {/* Loaded straight from Instagram's CDN by the browser (no-referrer), exactly
           like Geek OS does — Instagram blocks server-side fetching of these. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {broken ? (
+        // Picture failed to load (expired / blocked): keep the tile clickable and
+        // show the creator's initial instead of an empty dark box.
+        <span className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-geek-cyan to-ink text-2xl font-semibold uppercase text-white">
+          {creator.username.replace(/[^a-z0-9]/gi, "").charAt(0) || "@"}
+        </span>
+      ) : (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={creator.picture}
         alt={`@${creator.username}`}
@@ -37,6 +42,7 @@ function CreatorTile({ creator, index }: { creator: GeekCreator; index: number }
         className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-105"
         onError={() => setBroken(true)}
       />
+      )}
       <span className="pointer-events-none absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-black/75 to-transparent px-1 pb-0.5 pt-3 text-center text-[9px] font-semibold text-white opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100">
         @{creator.username}
       </span>
@@ -92,7 +98,7 @@ export default function Influence({
               transition={{ duration: 0.45, delay: reduce ? 0 : ((i % COLS) + Math.floor(i / COLS)) * 0.02, ease: [0.16, 1, 0.3, 1] }}
             >
               {creator ? (
-                <CreatorTile creator={creator} index={i} />
+                <CreatorTile creator={creator} />
               ) : (
                 <>
                   <Media need={`/assets/work/creators/${i + 1}.jpg`} label={`Creator ${i + 1}`} index={i} showSlotLabel={false} />
