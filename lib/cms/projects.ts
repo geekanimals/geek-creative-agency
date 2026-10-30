@@ -2,7 +2,7 @@ import "server-only";
 import type { CaseStudy, Stat } from "@/lib/work/types";
 import type { RenderMode, FlagshipRendererKey } from "@/lib/work/renderers";
 import { isFlagshipKey } from "@/lib/work/renderers";
-import { projects as staticProjects, projectBySlug as staticBySlug } from "@/lib/work/projects";
+import { projects as staticProjects, projectBySlug as staticBySlug, isPublished as staticIsPublished } from "@/lib/work/projects";
 import { resolveMedia } from "@/lib/cms/media";
 import { getPayloadClient, isCmsNotConfiguredError } from "@/lib/cms/payload";
 import { entityIsPublicRoutable } from "@/lib/cms/portfolio";
@@ -217,7 +217,8 @@ function refFrom(x: unknown, collection: string, nameKey: "name" | "label"): Pro
  * error, falls back to the pure static registry so /work never goes down.
  */
 export async function getWorkProjects(): Promise<ResolvedProject[]> {
-  const staticResolved = staticProjects.map(fromStatic);
+  // Only published static entries reach /work — no "coming soon" tiles.
+  const staticResolved = staticProjects.filter(staticIsPublished).map(fromStatic);
   let cms: ResolvedProject[] = [];
   try {
     const payload = await getPayloadClient();
