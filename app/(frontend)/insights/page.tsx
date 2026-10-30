@@ -8,7 +8,7 @@ import { getInsightsIndex } from "@/lib/cms/insights";
 export const metadata: Metadata = {
   title: "Insights — What we're geeking out on | Geek",
   description:
-    "Geek's thinking on brand building, the creator economy, social & culture, and what's next. New editorial, coming soon.",
+    "Geek's thinking on brand building, the creator economy, social & culture, and what's next.",
   alternates: { canonical: "/insights" },
   openGraph: { title: "Insights — Geek", description: "What we're geeking out on.", url: "/insights", type: "website" },
 };

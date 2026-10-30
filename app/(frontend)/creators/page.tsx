@@ -8,6 +8,19 @@ import { CreatorForm } from "@/components/forms/Forms";
 import { getCreatorsPage } from "@/lib/cms/creatorsPage";
 import { CREATORS_FALLBACK } from "@/lib/site/creatorsFallback";
 
+/** Real creator content from Geek campaigns (public campaign posts / creator videos). */
+const CREATOR_MOSAIC = [
+  "/assets/work/kurkure/kurkure-chatpata-cheese/creator-01.jpg",
+  "/assets/work/lays/lays-paper-thin-wafer-thin/hero.jpg",
+  "/assets/work/kurkure/kurkure-puffballs/creator-02.jpg",
+  "/assets/work/sting/sting-macha-de-challenge/sting-macha-de-challenge-creator-01.jpg",
+  "/assets/work/doritos/doritos-chips-nahi-fire/hero.jpg",
+  "/assets/work/mountain-dew/mountain-dew-conquer-with-courage/mountain-dew-conquer-with-courage-creator-01.jpg",
+  "/assets/work/pepsi/pepsi-check-my-fizz/pepsi-check-my-fizz-creator-01.jpg",
+  "/assets/work/lays/mylaysrelationchip/mylaysrelationchip-creator-01.jpg",
+  "/assets/work/kurkure/kurkure-puffballs/hero.jpg",
+];
+
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getCreatorsPage();
   const title = seo.metaTitle || CREATORS_FALLBACK.seo.metaTitle;
@@ -48,9 +61,9 @@ export default async function CreatorsPage() {
           </div>
           {/* creator mosaic (decorative slots — code-controlled) */}
           <div className="grid grid-cols-3 gap-2">
-            {Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className="relative aspect-square overflow-hidden rounded-md">
-                <Media need={`/assets/work/creators/${i + 1}.jpg`} label={`Creator ${i + 1}`} index={i} showSlotLabel={false} />
+            {CREATOR_MOSAIC.map((src, i) => (
+              <div key={src} className="relative aspect-square overflow-hidden rounded-md">
+                <Media src={src} label={`Geek creator content ${i + 1}`} index={i} showSlotLabel={false} />
                 {i === 4 && <div className="absolute inset-0 bg-geek-cyan/85" />}
               </div>
             ))}
