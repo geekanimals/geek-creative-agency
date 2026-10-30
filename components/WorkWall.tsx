@@ -10,7 +10,7 @@ export default function WorkWall({ content = HOME_FALLBACK.work }: { content?: H
     <Band label={<BandLabel title={content.title} sub={content.sub} href="#work" />}>
       <div className="no-scrollbar -mr-5 flex gap-3 overflow-x-auto pr-5 sm:-mr-8 sm:pr-8">
         {workWall.map((w, i) => (
-          <a key={w.slug} href={`#work-${w.slug}`} className="group w-36 shrink-0 sm:w-40">
+          <a key={w.slug} href={`/work/${w.slug}`} className="group w-36 shrink-0 sm:w-40">
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg">
               <div className="h-full w-full transition-transform duration-700 group-hover:scale-[1.06]">
                 <Media src={w.src} need={w.need} label={w.brand} index={i} showSlotLabel={false} />
