@@ -31,11 +31,18 @@ export const brandLabelMap = (list?: CaseStudy[]): Record<string, string> =>
 
 /** The four filter groups, in display order. Brand is derived at call time. */
 export function filterGroups(list?: CaseStudy[]): { key: FilterKey; label: string; items: TaxonomyItem[] }[] {
+  // Only offer options that at least one listed case study actually has,
+  // so no filter choice ever leads to an empty grid.
+  const src = list ?? projects;
+  const used = (pick: (p: CaseStudy) => string[]) => new Set(src.flatMap(pick));
+  const cats = used((p) => p.businessCategory);
+  const svcs = used((p) => p.services);
+  const camps = used((p) => p.campaignTypes);
   return [
-    { key: "category", label: "Business Category", items: businessCategories },
+    { key: "category", label: "Business Category", items: businessCategories.filter((t) => cats.has(t.slug)) },
     { key: "brand", label: "Brand", items: deriveBrands(list) },
-    { key: "service", label: "Service", items: services },
-    { key: "campaign", label: "Campaign Type", items: campaignTypes },
+    { key: "service", label: "Service", items: services.filter((t) => svcs.has(t.slug)) },
+    { key: "campaign", label: "Campaign Type", items: campaignTypes.filter((t) => camps.has(t.slug)) },
   ];
 }
 
