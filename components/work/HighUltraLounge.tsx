@@ -161,7 +161,7 @@ const CHAIN = [
 ];
 
 /* ── page ──────────────────────────────────────────────────────────────── */
-export default function HighUltraLounge({ project }: { project: CaseStudyType }) {
+export default function HighUltraLounge({ project, pool }: { project: CaseStudyType; pool?: CaseStudyType[] }) {
   const reduce = useReducedMotion();
   return (
     <article style={{ backgroundColor: "#0B0B0E", color: CREAM }} className="overflow-hidden">
@@ -824,7 +824,7 @@ export default function HighUltraLounge({ project }: { project: CaseStudyType })
       </div>
 
       {/* shared related / next module (light chrome — belongs to the Geek site) */}
-      <RelatedAndNext project={project} />
+      <RelatedAndNext project={project} pool={pool} />
     </article>
   );
 }

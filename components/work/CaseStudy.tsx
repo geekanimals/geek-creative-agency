@@ -295,9 +295,9 @@ function RelatedTile({ project, index }: { project: CaseStudyType; index: number
 
 /* ── template ──────────────────────────────────────────────────────────── */
 
-export default function CaseStudy({ project }: { project: CaseStudyType }) {
-  const related = relatedProjects(project, 3);
-  const next = nextProjectFor(project);
+export default function CaseStudy({ project, pool }: { project: CaseStudyType; pool?: CaseStudyType[] }) {
+  const related = relatedProjects(project, 3, pool);
+  const next = nextProjectFor(project, pool);
 
   return (
     <article>

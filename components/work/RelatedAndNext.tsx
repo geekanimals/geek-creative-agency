@@ -30,9 +30,9 @@ function RelatedTile({ project, index }: { project: CaseStudyType; index: number
  * Uses the central related/next logic (a project never recommends itself,
  * and the Next module is hidden when no other published project exists).
  */
-export default function RelatedAndNext({ project }: { project: CaseStudyType }) {
-  const related = relatedProjects(project, 3);
-  const next = nextProjectFor(project);
+export default function RelatedAndNext({ project, pool }: { project: CaseStudyType; pool?: CaseStudyType[] }) {
+  const related = relatedProjects(project, 3, pool);
+  const next = nextProjectFor(project, pool);
   return (
     <>
       {related.length > 0 && (

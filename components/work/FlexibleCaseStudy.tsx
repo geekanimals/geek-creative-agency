@@ -62,7 +62,7 @@ function getHeartworkBlockTone(block: SectionBlock): "dark" | "light" {
  * semantics come from the CMS; all styling lives here (React owns presentation).
  * Uses the site's existing design tokens so it reads as part of the Geek site.
  */
-export default function FlexibleCaseStudy({ project }: { project: ResolvedProject }) {
+export default function FlexibleCaseStudy({ project, pool }: { project: ResolvedProject; pool?: ResolvedProject[] | import("@/lib/work/types").CaseStudy[] }) {
   const sections = project.sections ?? [];
   const hero = resolveMedia(undefined, project.heroImage);
   const isHeartwork = project.slug === "lays-heartwork";
@@ -234,7 +234,7 @@ export default function FlexibleCaseStudy({ project }: { project: ResolvedProjec
         })}
       </div>
 
-      <RelatedAndNext project={project} />
+      <RelatedAndNext project={project} pool={pool as import("@/lib/work/types").CaseStudy[] | undefined} />
     </article>
   );
 }

@@ -10,7 +10,7 @@ import CaseStudy_ from "./CaseStudy";
  * never inject an arbitrary import. Unknown/missing keys fail safe to the shared
  * standard template. Add a future flagship renderer by adding one entry here.
  */
-type Renderer = (props: { project: CaseStudy }) => ReactNode;
+type Renderer = (props: { project: CaseStudy; pool?: CaseStudy[] }) => ReactNode;
 
 const flagshipRenderers: Record<FlagshipRendererKey, Renderer> = {
   "high-ultra-lounge": HighUltraLounge,

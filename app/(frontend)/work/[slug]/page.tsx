@@ -11,7 +11,8 @@ import ProjectFaqs from "@/components/work/ProjectFaqs";
 import { getFlagshipRenderer } from "@/components/work/flagshipRegistry";
 import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
 import { IS_STRICT_PROD } from "@/lib/work/projects";
-import { getProjectBySlug, getAllProjectSlugs } from "@/lib/cms/projects";
+import { getProjectBySlug, getAllProjectSlugs, getWorkProjects } from "@/lib/cms/projects";
+import type { CaseStudy as CaseStudyType } from "@/lib/work/types";
 
 export async function generateStaticParams() {
   // Production: published only. Dev/Preview: include drafts for review. CMS ∪ static;
@@ -48,15 +49,26 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
 
   const showDraftBanner = draft || !published;
 
+  // "More Like This" / "Next Project" pool: every PUBLISHED case study (CMS +
+  // static), trimmed to card fields so client renderers stay light.
+  const pool = (await getWorkProjects())
+    .filter((p) => p.publishStatus === "published")
+    .map((p) => ({
+      slug: p.slug, brand: p.brand, brandSlug: p.brandSlug, project: p.project, headline: p.headline,
+      heroImage: p.heroImage, heroImageNeed: p.heroImageNeed, businessCategory: p.businessCategory,
+      services: p.services, campaignTypes: p.campaignTypes, featured: p.featured,
+      publishStatus: p.publishStatus, nextProject: p.nextProject,
+    })) as CaseStudyType[];
+
   // Hybrid dispatch — one uniform path for CMS and static projects.
   let body: React.ReactNode;
   if (project.renderMode === "flagship") {
     const Renderer = getFlagshipRenderer(project.flagshipRendererKey);
-    body = <Renderer project={project} />;
+    body = <Renderer project={project} pool={pool} />;
   } else if (project.renderMode === "flexible") {
-    body = <FlexibleCaseStudy project={project} />;
+    body = <FlexibleCaseStudy project={project} pool={pool} />;
   } else {
-    body = <CaseStudy project={project} />;
+    body = <CaseStudy project={project} pool={pool} />;
   }
 
   return (
