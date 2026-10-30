@@ -6,6 +6,7 @@ import WorkExplorer from "@/components/work/WorkExplorer";
 import FeaturedStories from "@/components/work/FeaturedStories";
 import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
 import { getWorkProjects } from "@/lib/cms/projects";
+import { FEATURED_STORY_SLUGS } from "@/lib/work/projects";
 
 export const metadata: Metadata = {
   title: "The Work — Geek Creative Agency",
@@ -24,6 +25,8 @@ export default async function WorkPage() {
   // Unified list: static registry + published CMS projects (CMS wins), with
   // automatic static fallback if the CMS is unavailable.
   const allProjects = await getWorkProjects();
+  // Featured stories come from the same CMS-merged, published-only list.
+  const featured = FEATURED_STORY_SLUGS.map((slug) => allProjects.find((p) => p.slug === slug)).filter((p): p is NonNullable<typeof p> => !!p && p.publishStatus === "published");
   return (
     <>
       <JsonLd data={breadcrumbLd([{ name: "Home", path: "/" }, { name: "Work", path: "/work" }])} />
@@ -36,7 +39,7 @@ export default async function WorkPage() {
         </section>
 
         {/* Featured editorial intro */}
-        <FeaturedStories />
+        <FeaturedStories stories={featured} />
 
         {/* Explore all work → filters */}
         <div className="mx-auto max-w-edge px-5 pb-2 pt-10 sm:px-8">
