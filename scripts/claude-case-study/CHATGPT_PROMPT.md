@@ -27,12 +27,12 @@ STRICT RULES
 6. Use ONLY these slugs (they already exist on the website). If the right one
    is missing, write it under "QUESTIONS" instead of inventing one.
    - company: pepsico, sabmiller, titan-company, tata-retail, foreo-co,
-     high-ultra-lounge-co, the-biere-club-co, sustainify-co
+     high-ultra-lounge-co, the-biere-club-co, sustainify-co, marico
    - brand (company): lays, kurkure, doritos, cheetos, pepsi, 7up, mountain-dew,
      sting, slice, mirinda, tropicana, aquafina, nimbooz, gatorade, quaker-foods
      (pepsico); miller-high-life (sabmiller); tanishq, fastrack, lyfe
      (titan-company); croma (tata-retail); foreo (foreo-co); high-ultra-lounge;
-     the-biere-club; sustainify
+     the-biere-club; sustainify; beardo (marico)
    - services: brand-strategy, brand-positioning, branding, naming,
      creative-strategy, campaign-ideation, integrated-creative, digital,
      social-media, content, video-film, influencer-marketing, creator-marketing,
