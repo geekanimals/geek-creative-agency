@@ -8,17 +8,18 @@ type Era = {
   pre: string;
   post: string;
   need?: string;
+  src?: string;
   label?: string;
   transitional?: boolean;
 };
 
 const eras: Era[] = [
-  { pre: "The web", post: "changed.", label: "Web · early Geek sites", need: "/assets/work/archive/web.jpg" },
-  { pre: "Social", post: "changed.", label: "Social · Fastrack / Lyfe", need: "/assets/work/archive/social.jpg" },
-  { pre: "Mobile", post: "changed.", label: "Mobile · Geek app / iPad", need: "/assets/work/archive/mobile.jpg" },
-  { pre: "Creators", post: "changed everything.", label: "Creators · influencer mosaics", need: "/assets/work/archive/creators.jpg" },
+  { pre: "The web", post: "changed.", label: "Web · Tanishq One", src: "/assets/work/tanishq/tanishq-one-range.jpg" },
+  { pre: "Social", post: "changed.", label: "Social · Fastrack × The Music Run", src: "/assets/work/fastrack/tmr-challenge.jpg" },
+  { pre: "Mobile", post: "changed.", label: "Mobile · Lyfe app launch", src: "/assets/work/lyfe/change-begins-now.jpg" },
+  { pre: "Creators", post: "changed everything.", label: "Creators · influencer mosaics", src: "/assets/work/doritos/doritos-blame-it-on-crunch/hero.jpg" },
   { pre: "It'll", post: "change again.", transitional: true },
-  { pre: "Our job", post: "won't.", label: "Geek", need: "/assets/work/archive/geek.jpg" },
+  { pre: "Our job", post: "won't.", label: "Geek", src: "/assets/work/give-back-to-gurugram/together-for-gurugram.png" },
 ];
 
 function Arrow() {
@@ -60,7 +61,7 @@ export default function MediaChanged() {
                     <div className="absolute inset-0" style={{ backgroundImage: "repeating-linear-gradient(135deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 12px)" }} />
                   </div>
                 ) : (
-                  <Media need={e.need} label={e.label} index={i} showSlotLabel={false} />
+                  <Media src={e.src} need={e.need} label={e.label} index={i} showSlotLabel={false} />
                 )}
               </div>
               <div>

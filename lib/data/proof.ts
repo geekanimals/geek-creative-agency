@@ -9,6 +9,7 @@ export const proof: ProofCase[] = [
     brand: "Doritos",
     folder: "doritos",
     need: "/assets/work/doritos/campaign.jpg",
+    src: "/assets/work/doritos/doritos-blame-it-on-crunch/hero.jpg",
     stats: [
       { value: 2229, label: "Creators" },
       { value: 3942, label: "Content Assets" },
@@ -19,6 +20,7 @@ export const proof: ProofCase[] = [
     brand: "Lay's",
     folder: "lays",
     need: "/assets/work/lays/campaign.jpg",
+    src: "/assets/work/lays/mylaysrelationchip/mylaysrelationchip-hero.jpg",
     stats: [
       { value: 1058, label: "Creators" },
       { value: 1738, label: "Content Assets" },
