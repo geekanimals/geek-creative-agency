@@ -17,7 +17,7 @@ export const Solutions: CollectionConfig = {
   slug: "solutions",
   labels: { singular: "Solution", plural: "Solutions" },
   admin: {
-    group: "Portfolio",
+    group: "Hub Pages",
     useAsTitle: "name",
     defaultColumns: ["name", "slug", "solutionType", "_status", "updatedAt"],
     description: "Geek solution / IP hub pages at /solutions/[slug]. Publish only when useful content exists.",

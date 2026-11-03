@@ -24,6 +24,12 @@ import { WhatWeDo } from "./globals/WhatWeDo";
 import { CreatorsPage } from "./globals/CreatorsPage";
 import { ContactPage } from "./globals/ContactPage";
 import { HomePage } from "./globals/HomePage";
+import { BuildMyBrandPage, CareersPage, PartnersPage } from "./globals/DoorPageGlobals";
+import { DoorPages } from "./globals/DoorPages";
+import { WorkPage } from "./globals/WorkPage";
+import { BuildPage } from "./globals/BuildPage";
+import { CreatePage } from "./globals/CreatePage";
+import { InfluencePage } from "./globals/InfluencePage";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -71,8 +77,11 @@ export default buildConfig({ sharp,
     meta: { titleSuffix: " — Geek CMS" },
   },
 
-  collections: [Users, Media, Services, Projects, Insights, BusinessCategories, Companies, Brands, Solutions],
-  globals: [Navigation, Footer, SiteSettings, About, WhatWeDo, CreatorsPage, ContactPage, HomePage],
+  collections: [Projects, Insights, BusinessCategories, Companies, Brands, Services, Solutions, Media, Users],
+  // Admin menu: one entry per website page (Pages), then the case-study and
+  // hub-page lists, then site-wide header/footer/settings, then media + users.
+  // Order = the admin sidebar order: Home, then the pages it leads to, then the rest.
+  globals: [HomePage, WhatWeDo, BuildPage, CreatePage, InfluencePage, WorkPage, About, CreatorsPage, ContactPage, BuildMyBrandPage, CareersPage, PartnersPage, Navigation, Footer, SiteSettings, DoorPages],
 
   // Rich-text editor for Projects' flexible content blocks.
   editor: lexicalEditor(),
@@ -97,7 +106,12 @@ export default buildConfig({ sharp,
     // releases connections promptly so ephemeral instances don't hold the pooler.
     pool: {
       connectionString: process.env.DATABASE_URL || "",
-      max: Number(process.env.PGPOOL_MAX ?? 6),
+      // Supabase's session pooler allows 15 clients for EVERY app on this database
+      // (local dev, the live server, a build). 3 per app keeps us under it: a build
+      // runs at most 3 workers (next.config.mjs → 9), plus dev or live (3 each).
+      // Don't go below 2: a Payload read can need a 2nd connection while holding
+      // one, and with 1 the build waits forever. Blank PGPOOL_MAX → 3 (not 0).
+      max: Number(process.env.PGPOOL_MAX) > 0 ? Number(process.env.PGPOOL_MAX) : 3,
       idleTimeoutMillis: Number(process.env.PG_IDLE_TIMEOUT ?? 10000),
       connectionTimeoutMillis: Number(process.env.PG_CONNECT_TIMEOUT ?? 10000),
     },

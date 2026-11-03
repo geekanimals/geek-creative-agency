@@ -1,4 +1,5 @@
 import type { Block, Field } from "payload";
+import { videoField } from "./video";
 
 /**
  * Reusable media picker for blocks: either a CMS-managed upload (Vercel Blob)
@@ -36,6 +37,15 @@ export const sectionBlocks: Block[] = [
     slug: "mediaBlock",
     labels: { singular: "Media", plural: "Media" },
     fields: [...mediaFields],
+  },
+  {
+    slug: "videoBlock",
+    labels: { singular: "Video", plural: "Videos" },
+    fields: [
+      videoField({ name: "video", label: "Video", description: "Upload a video OR paste a YouTube link. Plays with controls and sound." }),
+      { name: "caption", type: "text" },
+      { name: "credit", type: "text" },
+    ],
   },
   {
     slug: "fullBleedMedia",

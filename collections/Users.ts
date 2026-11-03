@@ -17,7 +17,7 @@ export const Users: CollectionConfig = {
   },
   admin: {
     useAsTitle: "email",
-    group: "System",
+    group: "Media & Users",
     defaultColumns: ["name", "email", "role"],
   },
   access: {

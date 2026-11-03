@@ -10,6 +10,7 @@ export type TaxonomyItem = { slug: string; label: string };
 /** Which URL query key each filter dimension uses. */
 export const FILTER_KEYS = {
   category: "category",
+  company: "company",
   brand: "brand",
   service: "service",
   campaign: "campaign",
@@ -131,6 +132,7 @@ export function labelFor(dimension: FilterKey, slug: string, brandLabels?: Recor
     case "campaign":
       return campaignMap[slug] ?? slug;
     case "brand":
+    case "company":
       return brandLabels?.[slug] ?? slug;
   }
 }

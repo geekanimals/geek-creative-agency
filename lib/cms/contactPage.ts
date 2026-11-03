@@ -2,7 +2,7 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import { getPayloadClient, isCmsNotConfiguredError } from "@/lib/cms/payload";
 import { resolveMedia } from "@/lib/cms/media";
-import { CONTACT_FALLBACK, type ContactPageModel, type ContactDoor } from "@/lib/site/contactFallback";
+import { CONTACT_FALLBACK, type ContactPageModel, type ContactDoor, type ContactOffice } from "@/lib/site/contactFallback";
 import type { ContactPage as ContactDoc } from "@/payload-types";
 
 function logCmsError(ctx: string, e: unknown) {
@@ -31,6 +31,19 @@ function adaptDoors(cms: ContactDoc["doors"]): ContactPageModel["doors"] {
   };
 }
 
+/** CMS offices; an empty list in the admin falls back to the code offices. */
+function adaptOffices(cms: ContactDoc["offices"]): ContactPageModel["offices"] {
+  const F = CONTACT_FALLBACK.offices;
+  const items: ContactOffice[] = (cms?.items ?? [])
+    .filter((i) => i.city && i.address)
+    .map((i) => ({ city: i.city as string, address: i.address as string, mapQuery: i.mapQuery || undefined }));
+  return {
+    eyebrow: cms?.eyebrow || F.eyebrow,
+    heading: cms?.heading || F.heading,
+    items: items.length ? items : F.items,
+  };
+}
+
 /** Payload Contact Global → normalized model, filling empty pieces from the
  *  approved fallback so no section renders empty. */
 function adaptContact(g: ContactDoc | null): ContactPageModel {
@@ -43,6 +56,7 @@ function adaptContact(g: ContactDoc | null): ContactPageModel {
       formEyebrow: g.hero?.formEyebrow || F.hero.formEyebrow,
     },
     doors: adaptDoors(g.doors),
+    offices: adaptOffices(g.offices),
     seo: {
       metaTitle: g.seo?.metaTitle || undefined,
       metaDescription: g.seo?.metaDescription || undefined,

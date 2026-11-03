@@ -2,7 +2,7 @@
  * Developer-controlled allowlist of FLAGSHIP renderer keys. The CMS may only
  * store one of these values — it can never inject an arbitrary React component
  * name. The registry that maps each key → a React component lives in
- * components/work/flagshipRegistry.tsx; an unknown/missing key fails safe there.
+ * components/work/case-study/flagshipRegistry.jsx; an unknown/missing key fails safe there.
  *
  * This file contains NO React, so it is safe to import from Payload collection
  * config (server) and from the frontend alike.

@@ -12,7 +12,7 @@ import { isEditorUp, isAdminOrOwner } from "../access/roles";
  */
 export const Media: CollectionConfig = {
   slug: "media",
-  admin: { group: "Media", useAsTitle: "filename", description: "Public CMS-managed media. (Existing /public/assets are unaffected.)" },
+  admin: { group: "Media & Users", useAsTitle: "filename", description: "Public CMS-managed media. (Existing /public/assets are unaffected.)" },
   access: {
     read: () => true, // public website assets
     create: isEditorUp,

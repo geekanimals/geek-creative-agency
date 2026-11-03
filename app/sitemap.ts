@@ -7,6 +7,7 @@ import { getCompanySlugs } from "@/lib/cms/companies";
 import { getBrandSlugs } from "@/lib/cms/brands";
 import { getServiceSlugs } from "@/lib/cms/services";
 import { getSolutionSlugs } from "@/lib/cms/solutions";
+import { workValueSlugs } from "@/lib/work/routes";
 
 const asDate = (v: string | undefined): Date | undefined => {
   if (!v) return undefined;
@@ -25,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getIndustrySlugs(), getCompanySlugs(), getBrandSlugs(), getServiceSlugs(), getSolutionSlugs(),
   ]);
 
-  const core = ["/", "/work", "/what-we-do", "/about", "/creators", "/contact", "/privacy", "/terms"];
+  const core = ["/", "/work", "/what-we-do", "/build", "/create", "/influence", "/about", "/creators", "/contact", "/build-my-brand", "/careers", "/partners", "/privacy", "/terms"];
   // /insights only when at least one real article is published
   if (insights.length > 0) core.push("/insights");
 
@@ -41,6 +42,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // entries have no reliable date, so omit rather than fabricate.
   for (const p of projects) {
     entries.push({ url: `${SITE_URL}/work/${p.slug}`, lastModified: asDate(p.updatedAt), changeFrequency: "monthly", priority: 0.8 });
+  }
+  // Work filter pages — /work/<value> for every value with published work
+  // (values that share a story's slug are the story itself, listed above).
+  for (const slug of workValueSlugs(projects)) {
+    entries.push({ url: `${SITE_URL}/work/${slug}`, changeFrequency: "monthly", priority: 0.6 });
   }
   // Insights — publish date where available.
   for (const a of insights) {

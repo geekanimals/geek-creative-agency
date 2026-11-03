@@ -12,7 +12,7 @@ import { revalidateGlobals } from "./hooks";
 export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
   label: "Site Settings",
-  admin: { group: "Site" },
+  admin: { group: "Header, Footer & Settings" },
   versions: true,
   access: { read: () => true, update: isEditorUp },
   fields: [
@@ -47,6 +47,34 @@ export const SiteSettings: GlobalConfig = {
                 { name: "url", type: "text", required: true },
               ],
             },
+          ],
+        },
+        {
+          label: "Floating buttons (Meeting, WhatsApp, Instagram)",
+          description: "The round buttons at the bottom-right of every page.",
+          fields: [
+            { name: "floatingContact", type: "group", label: false, fields: [
+              { name: "whatsappNumber", label: "WhatsApp number", type: "text", admin: {
+                placeholder: "919876543210",
+                description: "Country code + number, digits only (e.g. 919876543210). Set it and a tap opens a chat straight with this number. Empty = WhatsApp opens with the message and asks which chat.",
+              }, validate: (v: unknown) => (!v || /^\+?[\d\s-]{8,18}$/.test(String(v)) ? true : "Use digits only, with country code — e.g. 919876543210.") },
+              { name: "whatsappMessage", label: "WhatsApp message", type: "textarea", admin: {
+                description: "Pre-filled in the chat when someone taps the button.",
+              } },
+              { name: "instagramUrl", label: "Instagram link", type: "text", admin: {
+                placeholder: "https://www.instagram.com/geekanimals",
+                description: "Empty = uses the Instagram link from the “Social links” tab.",
+              } },
+              { name: "meetingUrl", label: "Book a meeting link", type: "text", admin: {
+                placeholder: "https://calendly.com/geek/30min",
+                description: "Your Calendly (free plan), Google Calendar appointment page or Cal.com link. Connect that tool to Google Calendar once, and days/times already busy in your calendar are never shown. Empty = meeting button hidden.",
+              }, validate: (v: unknown) => (!v || /^https:\/\/\S+$/.test(String(v)) ? true : "Paste the full https:// booking link.") },
+              { name: "meetingLabel", label: "Meeting button text", type: "text", admin: {
+                placeholder: "Book a meeting",
+                description: "Shown on hover and as the popup title.",
+              } },
+              { name: "hideButtons", label: "Hide all buttons", type: "checkbox", defaultValue: false },
+            ] },
           ],
         },
         {

@@ -24,8 +24,9 @@ const slugify = (s: string) =>
  */
 export const Insights: CollectionConfig = {
   slug: "insights",
-  labels: { singular: "Insight", plural: "Insights" },
+  labels: { singular: "Article", plural: "Articles" },
   admin: {
+    group: "Insights",
     useAsTitle: "title",
     defaultColumns: ["title", "category", "publishDate", "_status", "updatedAt"],
     description: "Editorial articles for /insights. Save a draft and use Preview before publishing.",

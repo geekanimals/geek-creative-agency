@@ -1,4 +1,6 @@
 import "server-only";
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import type { CaseStudy, Stat } from "@/lib/work/types";
 import type { RenderMode, FlagshipRendererKey } from "@/lib/work/renderers";
 import { isFlagshipKey } from "@/lib/work/renderers";
@@ -7,6 +9,7 @@ import { resolveMedia } from "@/lib/cms/media";
 import { getPayloadClient, isCmsNotConfiguredError } from "@/lib/cms/payload";
 import { entityIsPublicRoutable } from "@/lib/cms/portfolio";
 import type { Project as CmsProject, Service as CmsService, Media as CmsMedia } from "@/payload-types";
+import { resolveVideo } from "@/lib/cms/video";
 
 /**
  * Resolved project = the shared CaseStudy shape the renderers consume, plus the
@@ -74,7 +77,13 @@ const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-"
 function logCmsError(context: string, e: unknown) {
   if (isCmsNotConfiguredError(e)) return; // CMS off → static content, no noise
   // eslint-disable-next-line no-console
-  console.error(`[cms] ${context} failed; falling back to static registry:`, e instanceof Error ? e.message : e);
+  // Show the real database reason (e.cause) instead of the whole generated SQL query.
+  const cause = e instanceof Error && e.cause instanceof Error ? e.cause.message : undefined;
+  const msg = e instanceof Error ? e.message.split("\nparams:")[0] : String(e);
+  console.error(
+    `[cms] ${context} failed; falling back to static registry:`,
+    cause ?? (msg.length > 300 ? `${msg.slice(0, 300)}…` : msg),
+  );
 }
 
 /* ── static entry → ResolvedProject (infers render mode from the registry) ── */
@@ -109,13 +118,21 @@ function fromCms(doc: CmsProject): ResolvedProject {
     slug: doc.slug,
     brand: doc.client || doc.title,
     brandSlug: doc.client ? slugify(doc.client) : doc.slug,
+    ...companyOf(doc.company),
     project: doc.title,
     year: doc.year ?? undefined,
     businessCategory: (doc.businessCategory ?? []) as string[],
     services,
     campaignTypes: (doc.campaignTypes ?? []) as string[],
     heroImage: hero?.src,
-    heroVideo: doc.heroVideo ?? undefined,
+    brandLogo: resolveMedia((doc as unknown as { brandLogo?: never }).brandLogo)?.src,
+    // Hero video: the admin "Hero video" (upload or YouTube) wins over the older path field.
+    ...((): { heroVideo?: string; heroVideoMobile?: string; heroYoutube?: string } => {
+      const v = resolveVideo((doc as unknown as { heroVideoMedia?: never }).heroVideoMedia);
+      if (v?.kind === "youtube") return { heroYoutube: v.youtubeId };
+      if (v?.kind === "file") return { heroVideo: v.src, heroVideoMobile: v.mobileSrc };
+      return { heroVideo: doc.heroVideo ?? undefined };
+    })(),
     headline: doc.headline || doc.title,
     oneLineSummary: doc.shortSummary ?? "",
     challenge: doc.challenge?.question ? { question: doc.challenge.question, copy: doc.challenge.copy ?? undefined } : undefined,
@@ -201,6 +218,13 @@ function relRefs(v: unknown, collection: string, nameKey: "name" | "label"): Pro
     .filter((r): r is ProjectRef => !!r);
 }
 /** Map a populated single relationship to a routable {slug,name} ref. */
+/** Parent company for the /work "Company" filter (any status, so a brand never loses it). */
+function companyOf(v: unknown): { company?: string; companySlug?: string } {
+  if (!v || typeof v !== "object" || !("slug" in v)) return {};
+  const o = v as Record<string, string>;
+  return o.slug ? { company: o.name || o.slug, companySlug: o.slug } : {};
+}
+
 function singleRef(v: unknown, collection: string, nameKey: "name" | "label"): ProjectRef | undefined {
   return refFrom(v, collection, nameKey) ?? undefined;
 }
@@ -216,20 +240,46 @@ function refFrom(x: unknown, collection: string, nameKey: "name" | "label"): Pro
  * projects overriding by slug, plus CMS-only projects appended. On any CMS
  * error, falls back to the pure static registry so /work never goes down.
  */
-export async function getWorkProjects(): Promise<ResolvedProject[]> {
+async function findPublishedProjects() {
+  const payload = await getPayloadClient();
+  return payload.find({
+    collection: "projects",
+    where: { _status: { equals: "published" } },
+    depth: 1,
+    limit: 200,
+    pagination: false,
+  });
+}
+
+/**
+ * Published CMS stories, already mapped. Cached across requests (tag "projects")
+ * so pages don't re-run the heavy Supabase query on every visit — saving a story
+ * in the admin clears it (collections/revalidateProject.ts). Errors are thrown,
+ * never cached. A failed query is retried once (momentary pool hiccup).
+ */
+const cachedCmsProjects = unstable_cache(
+  async (): Promise<ResolvedProject[]> => {
+    let res;
+    try {
+      res = await findPublishedProjects();
+    } catch (first) {
+      if (isCmsNotConfiguredError(first)) throw first;
+      await new Promise((r) => setTimeout(r, 400));
+      res = await findPublishedProjects();
+    }
+    return res.docs.map(fromCms);
+  },
+  ["cms-published-projects"],
+  { tags: ["projects"], revalidate: 3600 },
+);
+
+/** Deduped per request (React `cache`) on top of the cross-request cache. */
+export const getWorkProjects = cache(async function getWorkProjects(): Promise<ResolvedProject[]> {
   // Only published static entries reach /work — no "coming soon" tiles.
   const staticResolved = staticProjects.filter(staticIsPublished).map(fromStatic);
   let cms: ResolvedProject[] = [];
   try {
-    const payload = await getPayloadClient();
-    const res = await payload.find({
-      collection: "projects",
-      where: { _status: { equals: "published" } },
-      depth: 1,
-      limit: 200,
-      pagination: false,
-    });
-    cms = res.docs.map(fromCms);
+    cms = await cachedCmsProjects();
   } catch (e) {
     logCmsError("getWorkProjects", e);
     return staticResolved; // static-only fallback
@@ -237,14 +287,42 @@ export async function getWorkProjects(): Promise<ResolvedProject[]> {
   const bySlug = new Map<string, ResolvedProject>();
   for (const p of staticResolved) bySlug.set(p.slug, p);
   for (const c of cms) bySlug.set(c.slug, c); // CMS wins
-  return [...bySlug.values()];
-}
+  // Static-only stories inherit the company of the same brand from the CMS.
+  const companyByBrand = new Map<string, { company?: string; companySlug?: string }>();
+  for (const c of cms) if (c.companySlug) companyByBrand.set(c.brandSlug, { company: c.company, companySlug: c.companySlug });
+  return [...bySlug.values()].map((p) =>
+    p.companySlug || !companyByBrand.has(p.brandSlug) ? p : { ...p, ...companyByBrand.get(p.brandSlug) },
+  );
+});
 
 /**
  * Resolve a single project by slug. CMS-first (published, or draft when
  * `draft`), then merges deep static content for flagship projects the CMS does
  * not fully model, then falls back to the static registry.
  */
+async function findProjectDoc(slug: string, draft: boolean): Promise<CmsProject | null> {
+  const payload = await getPayloadClient();
+  const res = await payload.find({
+    collection: "projects",
+    where: { slug: { equals: slug } },
+    depth: 2,
+    limit: 1,
+    draft,
+    overrideAccess: draft, // draft preview is gated upstream (validated secret)
+    pagination: false,
+  });
+  return (res.docs[0] as CmsProject) ?? null;
+}
+
+/** Published single-story read, cached across requests + deduped per request
+ *  (metadata + page). Cleared by tag "projects" when a story is saved. */
+const cachedProjectDoc = cache((slug: string) =>
+  unstable_cache(() => findProjectDoc(slug, false), ["cms-project-doc", slug], {
+    tags: ["projects"],
+    revalidate: 3600,
+  })(),
+);
+
 export async function getProjectBySlug(
   slug: string,
   opts: {
@@ -255,17 +333,7 @@ export async function getProjectBySlug(
   const draft = Boolean(opts.draft);
   const requireCmsDraft = Boolean(opts.requireCmsDraft);
   try {
-    const payload = await getPayloadClient();
-    const res = await payload.find({
-      collection: "projects",
-      where: { slug: { equals: slug } },
-      depth: 2,
-      limit: 1,
-      draft,
-      overrideAccess: draft, // draft preview is gated upstream (validated secret)
-      pagination: false,
-    });
-    const doc = res.docs[0];
+    const doc = draft ? await findProjectDoc(slug, true) : await cachedProjectDoc(slug);
     if (doc && (draft || doc._status === "published")) {
       let resolved = fromCms(doc);
       // Transitional flagship hybrid: keep deep static content (e.g. The Coolest

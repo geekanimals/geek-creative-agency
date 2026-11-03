@@ -17,8 +17,9 @@ import { revalidateEntityHooks } from "./revalidate";
  */
 export const Services: CollectionConfig = {
   slug: "services",
+  labels: { singular: "Service", plural: "Services" },
   admin: {
-    group: "Taxonomy",
+    group: "Hub Pages",
     useAsTitle: "label",
     defaultColumns: ["label", "slug", "order", "_status"],
     description: "What Geek does. Doubles as a /services/[slug] SEO page — publish only when it has real content.",

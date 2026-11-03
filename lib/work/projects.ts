@@ -370,7 +370,7 @@ export const projects: CaseStudy[] = [
     storyPending: true,
   },
   // ── FLAGSHIP #2 — HIGH ULTRA LOUNGE (long-term brand partnership) ─────────
-  // Rendered by a bespoke campaign-skin template (components/work/HighUltraLounge)
+  // Rendered by a bespoke campaign-skin template (components/work/case-study/HighUltraLounge)
   // dispatched from the shared /work/[slug] route — this entry supplies the shared
   // metadata (routing, Work grid card, filters, related/next, SEO/OG). Copy + asset
   // selection are locked to approved source docs. Claim guardrails: 421 ft only

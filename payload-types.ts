@@ -67,15 +67,15 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
-    media: Media;
-    services: Service;
     projects: Project;
     insights: Insight;
     'business-categories': BusinessCategory;
     companies: Company;
     brands: Brand;
+    services: Service;
     solutions: Solution;
+    media: Media;
+    users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -83,15 +83,15 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
-    services: ServicesSelect<false> | ServicesSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     insights: InsightsSelect<false> | InsightsSelect<true>;
     'business-categories': BusinessCategoriesSelect<false> | BusinessCategoriesSelect<true>;
     companies: CompaniesSelect<false> | CompaniesSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
     solutions: SolutionsSelect<false> | SolutionsSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -102,24 +102,40 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
+    'home-page': HomePage;
+    'what-we-do': WhatWeDo;
+    'build-page': BuildPage;
+    'create-page': CreatePage;
+    'influence-page': InfluencePage;
+    'work-page': WorkPage;
+    about: About;
+    'creators-page': CreatorsPage;
+    'contact-page': ContactPage;
+    'build-my-brand-page': BuildMyBrandPage;
+    'careers-page': CareersPage;
+    'partners-page': PartnersPage;
     navigation: Navigation;
     footer: Footer;
     'site-settings': SiteSetting;
-    about: About;
-    'what-we-do': WhatWeDo;
-    'creators-page': CreatorsPage;
-    'contact-page': ContactPage;
-    'home-page': HomePage;
+    'door-pages': DoorPage;
   };
   globalsSelect: {
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    'what-we-do': WhatWeDoSelect<false> | WhatWeDoSelect<true>;
+    'build-page': BuildPageSelect<false> | BuildPageSelect<true>;
+    'create-page': CreatePageSelect<false> | CreatePageSelect<true>;
+    'influence-page': InfluencePageSelect<false> | InfluencePageSelect<true>;
+    'work-page': WorkPageSelect<false> | WorkPageSelect<true>;
+    about: AboutSelect<false> | AboutSelect<true>;
+    'creators-page': CreatorsPageSelect<false> | CreatorsPageSelect<true>;
+    'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
+    'build-my-brand-page': BuildMyBrandPageSelect<false> | BuildMyBrandPageSelect<true>;
+    'careers-page': CareersPageSelect<false> | CareersPageSelect<true>;
+    'partners-page': PartnersPageSelect<false> | PartnersPageSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
-    about: AboutSelect<false> | AboutSelect<true>;
-    'what-we-do': WhatWeDoSelect<false> | WhatWeDoSelect<true>;
-    'creators-page': CreatorsPageSelect<false> | CreatorsPageSelect<true>;
-    'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
-    'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    'door-pages': DoorPagesSelect<false> | DoorPagesSelect<true>;
   };
   locale: null;
   widgets: {
@@ -150,221 +166,6 @@ export interface UserAuthOperations {
   };
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  name: string;
-  /**
-   * Owner = full control · Admin = content+users (not owner) · Editor = content/media · Viewer = read-only
-   */
-  role: 'owner' | 'admin' | 'editor' | 'viewer';
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-  collection: 'users';
-}
-/**
- * Public CMS-managed media. (Existing /public/assets are unaffected.)
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  /**
-   * Describe the image for accessibility & SEO. Required.
-   */
-  altText: string;
-  caption?: string | null;
-  /**
-   * Photographer / source / attribution.
-   */
-  credit?: string | null;
-  /**
-   * Usage rights. 'HOLD' = not cleared for public use.
-   */
-  rightsStatus: 'geek-owned' | 'client-archive' | 'licensed' | 'press-reference' | 'unknown' | 'hold';
-  /**
-   * Licence terms, expiry, restrictions, approval source.
-   */
-  rightsNotes?: string | null;
-  /**
-   * e.g. 'No public event photography of identifiable guests.'
-   */
-  usageRestrictions?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    card?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    content?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    hero?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    og?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
-}
-/**
- * What Geek does. Doubles as a /services/[slug] SEO page — publish only when it has real content.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "services".
- */
-export interface Service {
-  id: number;
-  /**
-   * Display name, e.g. “Influencer Marketing”.
-   */
-  label: string;
-  /**
-   * Stable URL/filter value, e.g. “influencer-marketing”. Matches lib/work/taxonomy.ts. Do not change after launch.
-   */
-  slug: string;
-  /**
-   * Lower sorts first.
-   */
-  order?: number | null;
-  hero?: {
-    /**
-     * Service page headline (falls back to the label).
-     */
-    heading?: string | null;
-    shortSummary?: string | null;
-  };
-  introduction?: string | null;
-  /**
-   * Optional structured capabilities.
-   */
-  capabilities?:
-    | {
-        title: string;
-        description?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Optional — how Geek approaches this service.
-   */
-  approach?: string | null;
-  seo?: {
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    ogImage?: (number | null) | Media;
-    noindex?: boolean | null;
-  };
-  /**
-   * Genuinely useful reader questions with concise, evidence-backed answers. Not keyword spam.
-   */
-  faqs?:
-    | {
-        question: string;
-        /**
-         * Concise, accurate answer shown to readers.
-         */
-        answer: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Editorial guidance for SEO/AEO research. These fields do NOT directly output a meta-keywords tag and are not publicly rendered unless explicitly mapped elsewhere.
-   */
-  searchStrategy?: {
-    /**
-     * Single primary target phrase, e.g. “MyLaysRelationchip campaign”.
-     */
-    primaryKeyword?: string | null;
-    /**
-     * Supporting keyword phrases (press Enter between them).
-     */
-    secondaryKeywords?: string[] | null;
-    /**
-     * Dominant intent for this entity/page.
-     */
-    searchIntent?: ('informational' | 'commercial' | 'branded' | 'transactional' | 'mixed') | null;
-    /**
-     * e.g. “India”. Free text — not a normalized geography collection.
-     */
-    targetMarket?: string | null;
-    /**
-     * When this research was captured.
-     */
-    keywordResearchDate?: string | null;
-    /**
-     * Real search/AEO questions found during research. Can seed the FAQ editor.
-     */
-    relatedQuestions?: string[] | null;
-    /**
-     * Editorial internal-linking hints only. NOT auto-injected as exact-match anchors.
-     */
-    preferredInternalAnchors?: string[] | null;
-    /**
-     * Internal strategy notes (SERP patterns, competitors, ambiguity, cannibalization, insight source). Never rendered publicly.
-     */
-    searchNotes?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
  * Case studies. Drafts stay private; publish to go live. Existing /public/assets paths keep working.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -387,6 +188,10 @@ export interface Project {
   year?: number | null;
   location?: string | null;
   /**
+   * The brand's logo (PNG/WebP, ideally transparent). When this story is published, the brand appears with this logo in the homepage “We've made a few friends” strip.
+   */
+  brandLogo?: (number | null) | Media;
+  /**
    * One-line summary used at the top of the case study.
    */
   shortSummary?: string | null;
@@ -394,14 +199,6 @@ export interface Project {
    * Shorter line for the /work card (falls back to shortSummary).
    */
   cardSummary?: string | null;
-  /**
-   * How this project renders. Flagship = bespoke developer renderer.
-   */
-  renderMode: 'standard' | 'flexible' | 'flagship';
-  /**
-   * Which developer-built renderer to use (flagship only).
-   */
-  flagshipRendererKey?: ('high-ultra-lounge' | 'the-coolest-job') | null;
   /**
    * Hero/card image (CMS). Or use heroLegacySrc.
    */
@@ -411,21 +208,31 @@ export interface Project {
    */
   heroLegacySrc?: string | null;
   /**
-   * Optional hero video path/URL.
+   * Plays in the hero instead of the image. Upload a video OR paste a YouTube link.
+   */
+  heroVideoMedia?: {
+    source?: ('none' | 'upload' | 'youtube') | null;
+    /**
+     * MP4 (H.264) or WebM. Keep it short and well compressed — it autoplays muted and loops.
+     */
+    file?: (number | null) | Media;
+    /**
+     * A lighter or portrait cut for phones. Leave empty to use the main video.
+     */
+    mobileFile?: (number | null) | Media;
+    /**
+     * Any YouTube link works: watch, youtu.be, Shorts or embed. In a case-study Video block you can also paste an Instagram reel or post link.
+     */
+    youtubeUrl?: string | null;
+    /**
+     * Shown before the video plays. Leave empty to keep the current image.
+     */
+    poster?: (number | null) | Media;
+  };
+  /**
+   * Older option: a /public/assets path or direct MP4 URL. Used only when “Hero video” above is empty.
    */
   heroVideo?: string | null;
-  /**
-   * What the work IS (separate from Render Mode, which is how it's PRESENTED). Programs vs campaigns group differently on the Brand hub.
-   */
-  projectKind?: ('campaign' | 'ongoing-program' | 'platform' | 'activation') | null;
-  /**
-   * Show in Featured Stories.
-   */
-  featured?: boolean | null;
-  /**
-   * Lower sorts first in the grid.
-   */
-  order?: number | null;
   /**
    * What Geek did (reusable Services taxonomy). Also powers the /work Service filter.
    */
@@ -589,6 +396,35 @@ export interface Project {
           }
         | {
             /**
+             * Upload a video OR paste a YouTube link. Plays with controls and sound.
+             */
+            video?: {
+              source?: ('none' | 'upload' | 'youtube') | null;
+              /**
+               * MP4 (H.264) or WebM. Keep it short and well compressed — it autoplays muted and loops.
+               */
+              file?: (number | null) | Media;
+              /**
+               * A lighter or portrait cut for phones. Leave empty to use the main video.
+               */
+              mobileFile?: (number | null) | Media;
+              /**
+               * Any YouTube link works: watch, youtu.be, Shorts or embed. In a case-study Video block you can also paste an Instagram reel or post link.
+               */
+              youtubeUrl?: string | null;
+              /**
+               * Shown before the video plays. Leave empty to keep the current image.
+               */
+              poster?: (number | null) | Media;
+            };
+            caption?: string | null;
+            credit?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'videoBlock';
+          }
+        | {
+            /**
              * CMS media (Vercel Blob). Leave empty to use a legacy path instead.
              */
             media?: (number | null) | Media;
@@ -707,6 +543,26 @@ export interface Project {
           }
       )[]
     | null;
+  /**
+   * How this project renders. Flagship = bespoke developer renderer.
+   */
+  renderMode: 'standard' | 'flexible' | 'flagship';
+  /**
+   * Which developer-built renderer to use (flagship only).
+   */
+  flagshipRendererKey?: ('high-ultra-lounge' | 'the-coolest-job') | null;
+  /**
+   * What the work IS (separate from Render Mode, which is how it's PRESENTED). Programs vs campaigns group differently on the Brand hub.
+   */
+  projectKind?: ('campaign' | 'ongoing-program' | 'platform' | 'activation') | null;
+  /**
+   * Show in Featured Stories.
+   */
+  featured?: boolean | null;
+  /**
+   * Lower sorts first in the grid.
+   */
+  order?: number | null;
   seo?: {
     /**
      * Falls back to “<title> — <client> | Geek”.
@@ -811,6 +667,191 @@ export interface Project {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Genuinely useful reader questions with concise, evidence-backed answers. Not keyword spam.
+   */
+  faqs?:
+    | {
+        question: string;
+        /**
+         * Concise, accurate answer shown to readers.
+         */
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Editorial guidance for SEO/AEO research. These fields do NOT directly output a meta-keywords tag and are not publicly rendered unless explicitly mapped elsewhere.
+   */
+  searchStrategy?: {
+    /**
+     * Single primary target phrase, e.g. “MyLaysRelationchip campaign”.
+     */
+    primaryKeyword?: string | null;
+    /**
+     * Supporting keyword phrases (press Enter between them).
+     */
+    secondaryKeywords?: string[] | null;
+    /**
+     * Dominant intent for this entity/page.
+     */
+    searchIntent?: ('informational' | 'commercial' | 'branded' | 'transactional' | 'mixed') | null;
+    /**
+     * e.g. “India”. Free text — not a normalized geography collection.
+     */
+    targetMarket?: string | null;
+    /**
+     * When this research was captured.
+     */
+    keywordResearchDate?: string | null;
+    /**
+     * Real search/AEO questions found during research. Can seed the FAQ editor.
+     */
+    relatedQuestions?: string[] | null;
+    /**
+     * Editorial internal-linking hints only. NOT auto-injected as exact-match anchors.
+     */
+    preferredInternalAnchors?: string[] | null;
+    /**
+     * Internal strategy notes (SERP patterns, competitors, ambiguity, cannibalization, insight source). Never rendered publicly.
+     */
+    searchNotes?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Public CMS-managed media. (Existing /public/assets are unaffected.)
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * Describe the image for accessibility & SEO. Required.
+   */
+  altText: string;
+  caption?: string | null;
+  /**
+   * Photographer / source / attribution.
+   */
+  credit?: string | null;
+  /**
+   * Usage rights. 'HOLD' = not cleared for public use.
+   */
+  rightsStatus: 'geek-owned' | 'client-archive' | 'licensed' | 'press-reference' | 'unknown' | 'hold';
+  /**
+   * Licence terms, expiry, restrictions, approval source.
+   */
+  rightsNotes?: string | null;
+  /**
+   * e.g. 'No public event photography of identifiable guests.'
+   */
+  usageRestrictions?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    content?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * What Geek does. Doubles as a /services/[slug] SEO page — publish only when it has real content.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: number;
+  /**
+   * Display name, e.g. “Influencer Marketing”.
+   */
+  label: string;
+  /**
+   * Stable URL/filter value, e.g. “influencer-marketing”. Matches lib/work/taxonomy.ts. Do not change after launch.
+   */
+  slug: string;
+  /**
+   * Lower sorts first.
+   */
+  order?: number | null;
+  hero?: {
+    /**
+     * Service page headline (falls back to the label).
+     */
+    heading?: string | null;
+    shortSummary?: string | null;
+  };
+  introduction?: string | null;
+  /**
+   * Optional structured capabilities.
+   */
+  capabilities?:
+    | {
+        title: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Optional — how Geek approaches this service.
+   */
+  approach?: string | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noindex?: boolean | null;
+  };
   /**
    * Genuinely useful reader questions with concise, evidence-backed answers. Not keyword spam.
    */
@@ -1547,6 +1588,36 @@ export interface Insight {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  name: string;
+  /**
+   * Owner = full control · Admin = content+users (not owner) · Editor = content/media · Viewer = read-only
+   */
+  role: 'owner' | 'admin' | 'editor' | 'viewer';
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1570,18 +1641,6 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: number | Media;
-      } | null)
-    | ({
-        relationTo: 'services';
-        value: number | Service;
-      } | null)
-    | ({
         relationTo: 'projects';
         value: number | Project;
       } | null)
@@ -1602,8 +1661,20 @@ export interface PayloadLockedDocument {
         value: number | Brand;
       } | null)
     | ({
+        relationTo: 'services';
+        value: number | Service;
+      } | null)
+    | ({
         relationTo: 'solutions';
         value: number | Solution;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1649,161 +1720,6 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
- */
-export interface UsersSelect<T extends boolean = true> {
-  name?: T;
-  role?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  altText?: T;
-  caption?: T;
-  credit?: T;
-  rightsStatus?: T;
-  rightsNotes?: T;
-  usageRestrictions?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-  sizes?:
-    | T
-    | {
-        thumbnail?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        card?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        content?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        hero?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        og?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-      };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "services_select".
- */
-export interface ServicesSelect<T extends boolean = true> {
-  label?: T;
-  slug?: T;
-  order?: T;
-  hero?:
-    | T
-    | {
-        heading?: T;
-        shortSummary?: T;
-      };
-  introduction?: T;
-  capabilities?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        id?: T;
-      };
-  approach?: T;
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        ogImage?: T;
-        noindex?: T;
-      };
-  faqs?:
-    | T
-    | {
-        question?: T;
-        answer?: T;
-        id?: T;
-      };
-  searchStrategy?:
-    | T
-    | {
-        primaryKeyword?: T;
-        secondaryKeywords?: T;
-        searchIntent?: T;
-        targetMarket?: T;
-        keywordResearchDate?: T;
-        relatedQuestions?: T;
-        preferredInternalAnchors?: T;
-        searchNotes?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "projects_select".
  */
 export interface ProjectsSelect<T extends boolean = true> {
@@ -1812,16 +1728,21 @@ export interface ProjectsSelect<T extends boolean = true> {
   client?: T;
   year?: T;
   location?: T;
+  brandLogo?: T;
   shortSummary?: T;
   cardSummary?: T;
-  renderMode?: T;
-  flagshipRendererKey?: T;
   heroMedia?: T;
   heroLegacySrc?: T;
+  heroVideoMedia?:
+    | T
+    | {
+        source?: T;
+        file?: T;
+        mobileFile?: T;
+        youtubeUrl?: T;
+        poster?: T;
+      };
   heroVideo?: T;
-  projectKind?: T;
-  featured?: T;
-  order?: T;
   services?: T;
   campaignTypes?: T;
   businessCategories?: T;
@@ -1886,6 +1807,23 @@ export interface ProjectsSelect<T extends boolean = true> {
               media?: T;
               legacySrc?: T;
               alt?: T;
+              caption?: T;
+              credit?: T;
+              id?: T;
+              blockName?: T;
+            };
+        videoBlock?:
+          | T
+          | {
+              video?:
+                | T
+                | {
+                    source?: T;
+                    file?: T;
+                    mobileFile?: T;
+                    youtubeUrl?: T;
+                    poster?: T;
+                  };
               caption?: T;
               credit?: T;
               id?: T;
@@ -1969,6 +1907,11 @@ export interface ProjectsSelect<T extends boolean = true> {
               blockName?: T;
             };
       };
+  renderMode?: T;
+  flagshipRendererKey?: T;
+  projectKind?: T;
+  featured?: T;
+  order?: T;
   seo?:
     | T
     | {
@@ -2247,6 +2190,60 @@ export interface BrandsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  label?: T;
+  slug?: T;
+  order?: T;
+  hero?:
+    | T
+    | {
+        heading?: T;
+        shortSummary?: T;
+      };
+  introduction?: T;
+  capabilities?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  approach?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noindex?: T;
+      };
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  searchStrategy?:
+    | T
+    | {
+        primaryKeyword?: T;
+        secondaryKeywords?: T;
+        searchIntent?: T;
+        targetMarket?: T;
+        keywordResearchDate?: T;
+        relatedQuestions?: T;
+        preferredInternalAnchors?: T;
+        searchNotes?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "solutions_select".
  */
 export interface SolutionsSelect<T extends boolean = true> {
@@ -2317,6 +2314,107 @@ export interface SolutionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  altText?: T;
+  caption?: T;
+  credit?: T;
+  rightsStatus?: T;
+  rightsNotes?: T;
+  usageRestrictions?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        content?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        hero?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        og?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -2354,6 +2452,1365 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * The homepage ( / ). The tabs follow the page from top to bottom — each section's text, images and video are in its own tab. Save a draft and use Preview before publishing.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  hero?: {
+    /**
+     * The big headline. Use line breaks for the three lines.
+     */
+    headingBlock?: string | null;
+    /**
+     * Word/phrase shown highlighted cyan (e.g. “matter.”).
+     */
+    headingHighlight?: string | null;
+    subline?: string | null;
+    ctaPrimaryLabel?: string | null;
+    ctaPrimaryHref?: string | null;
+    ctaSecondaryLabel?: string | null;
+    ctaSecondaryHref?: string | null;
+    /**
+     * The big showreel next to the headline. Upload a video OR paste a YouTube link. Empty = the photo collage.
+     */
+    video?: {
+      source?: ('none' | 'upload' | 'youtube') | null;
+      /**
+       * MP4 (H.264) or WebM. Keep it short and well compressed — it autoplays muted and loops.
+       */
+      file?: (number | null) | Media;
+      /**
+       * A lighter or portrait cut for phones. Leave empty to use the main video.
+       */
+      mobileFile?: (number | null) | Media;
+      /**
+       * Any YouTube link works: watch, youtu.be, Shorts or embed. In a case-study Video block you can also paste an Instagram reel or post link.
+       */
+      youtubeUrl?: string | null;
+      /**
+       * Shown before the video plays. Leave empty to keep the current image.
+       */
+      poster?: (number | null) | Media;
+    };
+  };
+  /**
+   * The strip under the hero: “The web changed. Social changed. …”. Each card shows a VIDEO if one is set, otherwise the IMAGE. Leave the list empty to keep the current cards.
+   */
+  mediaChanged?: {
+    eras?:
+      | {
+          /**
+           * Dark words, e.g. “The web”
+           */
+          pre: string;
+          /**
+           * Grey words, e.g. “changed.”
+           */
+          post: string;
+          /**
+           * Card image (also the poster while a video loads).
+           */
+          image?: (number | null) | Media;
+          /**
+           * Optional link when the card is clicked, e.g. /work/tanishq
+           */
+          href?: string | null;
+          /**
+           * Upload a video OR paste a YouTube link. Plays muted on loop; leave “None” to show the image.
+           */
+          video?: {
+            source?: ('none' | 'upload' | 'youtube') | null;
+            /**
+             * MP4 (H.264) or WebM. Keep it short and well compressed — it autoplays muted and loops.
+             */
+            file?: (number | null) | Media;
+            /**
+             * A lighter or portrait cut for phones. Leave empty to use the main video.
+             */
+            mobileFile?: (number | null) | Media;
+            /**
+             * Any YouTube link works: watch, youtu.be, Shorts or embed. In a case-study Video block you can also paste an Instagram reel or post link.
+             */
+            youtubeUrl?: string | null;
+            /**
+             * Shown before the video plays. Leave empty to keep the current image.
+             */
+            poster?: (number | null) | Media;
+          };
+          /**
+           * Short description of the picture (for SEO / screen readers).
+           */
+          label?: string | null;
+          /**
+           * Like the “It’ll change again.” card.
+           */
+          animated?: boolean | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Cyan end card, small line (e.g. “Make brands”).
+     */
+    finaleKicker?: string | null;
+    /**
+     * Big brush word (e.g. “Matter.”).
+     */
+    finaleWord?: string | null;
+  };
+  /**
+   * The “We've made a few friends along the way” logo strip. Brands with a published case study are added automatically (with the Brand logo from that case study). Add the other clients below.
+   */
+  logoWall?: {
+    heading?: string | null;
+    /**
+     * Word highlighted cyan (e.g. “friends”).
+     */
+    headingHighlight?: string | null;
+    /**
+     * Clients without a case study (e.g. Coca-Cola, Durex). Drag to reorder. Leave the list empty to keep the current set.
+     */
+    logos?:
+      | {
+          /**
+           * Shown next to the logo.
+           */
+          name: string;
+          /**
+           * Logo image (PNG/WebP, transparent if possible).
+           */
+          logo?: (number | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * “Build.” band. The cards open their case studies; the button opens /build.
+   */
+  build?: {
+    title?: string | null;
+    sub?: string | null;
+    trailing?: string | null;
+    /**
+     * Button that opens the /build page (e.g. “See how we build”). Edit that page in Pages → Build Page.
+     */
+    buttonLabel?: string | null;
+    /**
+     * Plays on the first card (The Coolest Job). Upload a video OR paste a YouTube link. Empty = the image.
+     */
+    video?: {
+      source?: ('none' | 'upload' | 'youtube') | null;
+      /**
+       * MP4 (H.264) or WebM. Keep it short and well compressed — it autoplays muted and loops.
+       */
+      file?: (number | null) | Media;
+      /**
+       * A lighter or portrait cut for phones. Leave empty to use the main video.
+       */
+      mobileFile?: (number | null) | Media;
+      /**
+       * Any YouTube link works: watch, youtu.be, Shorts or embed. In a case-study Video block you can also paste an Instagram reel or post link.
+       */
+      youtubeUrl?: string | null;
+      /**
+       * Shown before the video plays. Leave empty to keep the current image.
+       */
+      poster?: (number | null) | Media;
+    };
+    /**
+     * The picture cards. Drag to reorder. Empty = the current three (The Coolest Job, High Ultra Lounge, High on Power).
+     */
+    cards?:
+      | {
+          image: number | Media;
+          /**
+           * Opens on click, e.g. /work/the-coolest-job
+           */
+          href: string;
+          /**
+           * White title on the picture (e.g. “The Coolest Job”).
+           */
+          title: string;
+          /**
+           * Cyan line under it.
+           */
+          line?: string | null;
+          /**
+           * Small grey line under the card.
+           */
+          blurb?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * “Create.” band. Use a line break in the sub for the two lines.
+   */
+  create?: {
+    title?: string | null;
+    sub?: string | null;
+    /**
+     * Button that opens the /create page (e.g. “See how we run campaigns”). Edit that page in Pages → Create Page.
+     */
+    buttonLabel?: string | null;
+    /**
+     * The creator photos in the slider. Drag to reorder. Empty = the current eight.
+     */
+    cards?:
+      | {
+          image: number | Media;
+          /**
+           * Brand shown on the photo.
+           */
+          title: string;
+          /**
+           * Case study, e.g. /work/kurkure-puffballs
+           */
+          href: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * “Influence.” band. The creator photos come live from Geek Influencer OS.
+   */
+  influence?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    sub?: string | null;
+    /**
+     * e.g. “Celebrity. Macro. Micro. Nano. UGC. Regional.”
+     */
+    list?: string | null;
+    linkLabel?: string | null;
+    linkHref?: string | null;
+    /**
+     * Button that opens the /influence page (e.g. “See how influence works”). Edit that page in Pages → Influence Page.
+     */
+    buttonLabel?: string | null;
+  };
+  /**
+   * “Proof.” band: heading + the brand number rows.
+   */
+  proof?: {
+    eyebrow?: string | null;
+    sub?: string | null;
+    /**
+     * One row of numbers per brand. Only real numbers from a campaign report. Empty = the current Doritos + Lay's rows.
+     */
+    cases?:
+      | {
+          brand: string;
+          /**
+           * Small thumbnail.
+           */
+          image?: (number | null) | Media;
+          /**
+           * Optional link, e.g. /work/lays-heartwork
+           */
+          href?: string | null;
+          stats?:
+            | {
+                /**
+                 * e.g. 27.5
+                 */
+                value: number;
+                /**
+                 * e.g. M+
+                 */
+                suffix?: string | null;
+                /**
+                 * e.g. Engagements
+                 */
+                label: string;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * The process rail: heading + the steps.
+   */
+  process?: {
+    heading?: string | null;
+    /**
+     * Part of the heading highlighted cyan (e.g. “to the last mile.”).
+     */
+    headingHighlight?: string | null;
+    /**
+     * e.g. “We make it happen.”
+     */
+    trailing?: string | null;
+    /**
+     * The steps on the rail, in order (the icons follow the order). Empty = Idea → Design → Create → Influence → Produce → Pack → Ship → Activate → Measure.
+     */
+    steps?:
+      | {
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * The dark “Built by Geek” section: headings, the story cards and the first story's video.
+   */
+  builtByGeek?: {
+    eyebrow?: string | null;
+    /**
+     * Main heading. Use a line break for the two lines.
+     */
+    headingBlock?: string | null;
+    /**
+     * The cyan line under the heading (e.g. “We write our own.”).
+     */
+    headingCyan?: string | null;
+    /**
+     * The closing statement.
+     */
+    closing?: string | null;
+    /**
+     * Word highlighted cyan (e.g. “exist.”).
+     */
+    closingHighlight?: string | null;
+    /**
+     * Plays on the first story (Give Back to Gurugram). Upload a video OR paste a YouTube link. Empty = the image.
+     */
+    video?: {
+      source?: ('none' | 'upload' | 'youtube') | null;
+      /**
+       * MP4 (H.264) or WebM. Keep it short and well compressed — it autoplays muted and loops.
+       */
+      file?: (number | null) | Media;
+      /**
+       * A lighter or portrait cut for phones. Leave empty to use the main video.
+       */
+      mobileFile?: (number | null) | Media;
+      /**
+       * Any YouTube link works: watch, youtu.be, Shorts or embed. In a case-study Video block you can also paste an Instagram reel or post link.
+       */
+      youtubeUrl?: string | null;
+      /**
+       * Shown before the video plays. Leave empty to keep the current image.
+       */
+      poster?: (number | null) | Media;
+    };
+    /**
+     * The big story cards. Empty = Give Back to Gurugram + Sustainify.
+     */
+    stories?:
+      | {
+          image: number | Media;
+          /**
+           * e.g. /work/sustainify or a full https:// link
+           */
+          href: string;
+          /**
+           * e.g. Sustainify
+           */
+          title: string;
+          /**
+           * e.g. Then Earth did.
+           */
+          kicker?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  geekWay?: {
+    title?: string | null;
+    principles?:
+      | {
+          title: string;
+          body?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * The big finale. Use a line break for the two lines (e.g. “We win” / “when you win.”).
+     */
+    finaleBlock?: string | null;
+    /**
+     * Word(s) highlighted cyan. Separate several with commas, e.g. “We, you”.
+     */
+    finaleHighlight?: string | null;
+    finaleSub?: string | null;
+  };
+  /**
+   * “The Work.” slider: heading + which case studies come first.
+   */
+  work?: {
+    title?: string | null;
+    sub?: string | null;
+    /**
+     * Case studies shown first in the slider, in this order (their hero image is used). The rest load with “& more”. Empty = the current eight.
+     */
+    stories?: (number | Project)[] | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noindex?: boolean | null;
+  };
+  videos?: {
+    /**
+     * Upload a video file OR paste a YouTube link. Leave empty to show the image instead.
+     */
+    hero?: {
+      source?: ('none' | 'upload' | 'youtube') | null;
+      /**
+       * MP4 (H.264) or WebM. Keep it short and well compressed — it autoplays muted and loops.
+       */
+      file?: (number | null) | Media;
+      /**
+       * A lighter or portrait cut for phones. Leave empty to use the main video.
+       */
+      mobileFile?: (number | null) | Media;
+      /**
+       * Any YouTube link works: watch, youtu.be, Shorts or embed. In a case-study Video block you can also paste an Instagram reel or post link.
+       */
+      youtubeUrl?: string | null;
+      /**
+       * Shown before the video plays. Leave empty to keep the current image.
+       */
+      poster?: (number | null) | Media;
+    };
+    /**
+     * Upload a video file OR paste a YouTube link. Leave empty to show the image instead.
+     */
+    build?: {
+      source?: ('none' | 'upload' | 'youtube') | null;
+      /**
+       * MP4 (H.264) or WebM. Keep it short and well compressed — it autoplays muted and loops.
+       */
+      file?: (number | null) | Media;
+      /**
+       * A lighter or portrait cut for phones. Leave empty to use the main video.
+       */
+      mobileFile?: (number | null) | Media;
+      /**
+       * Any YouTube link works: watch, youtu.be, Shorts or embed. In a case-study Video block you can also paste an Instagram reel or post link.
+       */
+      youtubeUrl?: string | null;
+      /**
+       * Shown before the video plays. Leave empty to keep the current image.
+       */
+      poster?: (number | null) | Media;
+    };
+    /**
+     * Upload a video file OR paste a YouTube link. Leave empty to show the image instead.
+     */
+    builtByGeek?: {
+      source?: ('none' | 'upload' | 'youtube') | null;
+      /**
+       * MP4 (H.264) or WebM. Keep it short and well compressed — it autoplays muted and loops.
+       */
+      file?: (number | null) | Media;
+      /**
+       * A lighter or portrait cut for phones. Leave empty to use the main video.
+       */
+      mobileFile?: (number | null) | Media;
+      /**
+       * Any YouTube link works: watch, youtu.be, Shorts or embed. In a case-study Video block you can also paste an Instagram reel or post link.
+       */
+      youtubeUrl?: string | null;
+      /**
+       * Shown before the video plays. Leave empty to keep the current image.
+       */
+      poster?: (number | null) | Media;
+    };
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /what-we-do page. Save a draft and use Preview before publishing.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "what-we-do".
+ */
+export interface WhatWeDo {
+  id: number;
+  hero?: {
+    /**
+     * First heading block. Use line breaks for the intended wrapping.
+     */
+    block1?: string | null;
+    /**
+     * Second heading block (muted).
+     */
+    block2?: string | null;
+    /**
+     * Word in the second block shown highlighted (e.g. “problem.”).
+     */
+    highlight?: string | null;
+    intro?: string | null;
+  };
+  /**
+   * The Build / Create / Connect / Influence / Amplify bands.
+   */
+  capabilities?:
+    | {
+        /**
+         * e.g. “Build.”
+         */
+        label: string;
+        /**
+         * The capability words listed under the label.
+         */
+        items?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * The big statement. Use a line break for the two lines.
+         */
+        thought?: string | null;
+        /**
+         * Optional part of the statement to highlight cyan.
+         */
+        thoughtHighlight?: string | null;
+        /**
+         * Optional link under the statement.
+         */
+        linkLabel?: string | null;
+        linkHref?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Page-specific button (separate from the global footer CTA).
+   */
+  cta?: {
+    label?: string | null;
+    href?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noindex?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /build page (opened from the “Build.” section on Home). Save a draft and use Preview before publishing.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "build-page".
+ */
+export interface BuildPage {
+  id: number;
+  hero?: {
+    /**
+     * Small label above the heading (e.g. “Build.”).
+     */
+    eyebrow?: string | null;
+    /**
+     * Big heading. Use line breaks for the wrapping.
+     */
+    heading?: string | null;
+    /**
+     * Part of the heading shown in cyan (e.g. “people choose.”).
+     */
+    highlight?: string | null;
+    intro?: string | null;
+  };
+  phases?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    items?:
+      | {
+          /**
+           * e.g. Phase 01
+           */
+          label?: string | null;
+          /**
+           * e.g. Brand Creation.
+           */
+          title: string;
+          /**
+           * e.g. Concept & Identity
+           */
+          subtitle?: string | null;
+          body?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  steps?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    /**
+     * Line under the steps (e.g. “Listen. Measure. Engage. Repeat.”).
+     */
+    closing?: string | null;
+    /**
+     * Numbered automatically (01, 02 …) in this order.
+     */
+    items?:
+      | {
+          title: string;
+          body: string;
+          /**
+           * Optional — e.g. the case study name.
+           */
+          linkLabel?: string | null;
+          /**
+           * e.g. /work/the-coolest-job
+           */
+          linkHref?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  capabilities?: {
+    heading?: string | null;
+    items?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * The three cards from the Home “Build.” section always show first; these case studies are added after them.
+   */
+  showcase?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    /**
+     * Case studies to show. Empty → Lyfe, The Biere Club, Sustainify.
+     */
+    stories?: (number | Project)[] | null;
+  };
+  /**
+   * Names of brands Geek launched or branded (no links).
+   */
+  portfolio?: {
+    heading?: string | null;
+    /**
+     * Small source line, e.g. “As listed in Geek's credentials.”
+     */
+    note?: string | null;
+    items?:
+      | {
+          name: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Only real numbers from a case study — link each one to its story.
+   */
+  proof?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    items?:
+      | {
+          /**
+           * e.g. 421 ft
+           */
+          value: string;
+          label: string;
+          /**
+           * Case study link, e.g. /work/high-ultra-lounge
+           */
+          href?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  cta?: {
+    heading?: string | null;
+    highlight?: string | null;
+    label?: string | null;
+    href?: string | null;
+    secondaryLabel?: string | null;
+    secondaryHref?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noindex?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /create page (opened from the “Create.” section on Home). Save a draft and use Preview before publishing.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "create-page".
+ */
+export interface CreatePage {
+  id: number;
+  hero?: {
+    /**
+     * Small label above the heading (e.g. “Build.”).
+     */
+    eyebrow?: string | null;
+    /**
+     * Big heading. Use line breaks for the wrapping.
+     */
+    heading?: string | null;
+    /**
+     * Part of the heading shown in cyan (e.g. “people choose.”).
+     */
+    highlight?: string | null;
+    intro?: string | null;
+  };
+  phases?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    items?:
+      | {
+          /**
+           * e.g. 01
+           */
+          label?: string | null;
+          /**
+           * e.g. Creator challenges.
+           */
+          title: string;
+          /**
+           * e.g. Filters · dances · trends
+           */
+          subtitle?: string | null;
+          body?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  steps?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    /**
+     * Line under the steps.
+     */
+    closing?: string | null;
+    /**
+     * Numbered automatically (01, 02 …) in this order.
+     */
+    items?:
+      | {
+          title: string;
+          body: string;
+          /**
+           * Optional — e.g. the case study name.
+           */
+          linkLabel?: string | null;
+          /**
+           * e.g. /work/the-coolest-job
+           */
+          linkHref?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  capabilities?: {
+    heading?: string | null;
+    items?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Campaign case studies shown as cards. Empty → the default list.
+   */
+  showcase?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    /**
+     * Case studies to show.
+     */
+    stories?: (number | Project)[] | null;
+  };
+  /**
+   * What Geek tracks and reports on a campaign.
+   */
+  portfolio?: {
+    heading?: string | null;
+    /**
+     * Small note under the list.
+     */
+    note?: string | null;
+    items?:
+      | {
+          name: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Only real numbers from a case study — link each one to its story.
+   */
+  proof?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    items?:
+      | {
+          /**
+           * e.g. 421 ft
+           */
+          value: string;
+          label: string;
+          /**
+           * Case study link, e.g. /work/high-ultra-lounge
+           */
+          href?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  cta?: {
+    heading?: string | null;
+    highlight?: string | null;
+    label?: string | null;
+    href?: string | null;
+    secondaryLabel?: string | null;
+    secondaryHref?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noindex?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /influence page (opened from the “Influence.” section on Home). Save a draft and use Preview before publishing.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "influence-page".
+ */
+export interface InfluencePage {
+  id: number;
+  hero?: {
+    eyebrow?: string | null;
+    /**
+     * Use line breaks for the wrapping.
+     */
+    heading?: string | null;
+    /**
+     * Part of the heading shown in cyan.
+     */
+    highlight?: string | null;
+    intro?: string | null;
+    primaryLabel?: string | null;
+    primaryHref?: string | null;
+    brandLoginLabel?: string | null;
+    /**
+     * Geek Influencer OS brand login.
+     */
+    brandLoginHref?: string | null;
+  };
+  tiers?: {
+    heading?: string | null;
+    items?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  models?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    items?:
+      | {
+          title: string;
+          /**
+           * Small label (e.g. “Lay's · Barter”).
+           */
+          tag?: string | null;
+          body: string;
+          /**
+           * Optional link, e.g. /work/lays-heartwork
+           */
+          href?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  steps?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    closing?: string | null;
+    /**
+     * Numbered automatically in this order.
+     */
+    items?:
+      | {
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  platform?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    body?: string | null;
+    features?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    buttonLabel?: string | null;
+    buttonHref?: string | null;
+    creatorLabel?: string | null;
+    creatorHref?: string | null;
+  };
+  hampers?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    intro?: string | null;
+    items?:
+      | {
+          title: string;
+          /**
+           * Small label (e.g. “Lay's · Barter”).
+           */
+          tag?: string | null;
+          body: string;
+          /**
+           * Optional link, e.g. /work/lays-heartwork
+           */
+          href?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  stories?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    /**
+     * Story boxes. Add a link when the campaign has a case study on the site.
+     */
+    items?:
+      | {
+          title: string;
+          /**
+           * Small label (e.g. “Lay's · Barter”).
+           */
+          tag?: string | null;
+          body: string;
+          /**
+           * Optional link, e.g. /work/lays-heartwork
+           */
+          href?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  clients?: {
+    heading?: string | null;
+    items?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  cta?: {
+    heading?: string | null;
+    highlight?: string | null;
+    label?: string | null;
+    href?: string | null;
+    secondaryLabel?: string | null;
+    secondaryHref?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noindex?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Headings on /work. The case studies themselves are managed under Work → Projects.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "work-page".
+ */
+export interface WorkPage {
+  id: number;
+  /**
+   * e.g. “The Work.”
+   */
+  title?: string | null;
+  /**
+   * e.g. “Ideas that made an impact.”
+   */
+  lede?: string | null;
+  /**
+   * e.g. “Explore All Work.”
+   */
+  exploreTitle?: string | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noindex?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /about page. Save a draft and use Preview to review before publishing.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about".
+ */
+export interface About {
+  id: number;
+  hero?: {
+    /**
+     * First line of the big heading (e.g. “Why”).
+     */
+    headingLine1?: string | null;
+    /**
+     * Second line — shown highlighted (e.g. “Geek”?).
+     */
+    headingLine2?: string | null;
+    /**
+     * The bold opening line under the heading.
+     */
+    lead?: string | null;
+    paragraphs?:
+      | {
+          text?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  evolution?: {
+    /**
+     * Small label above the era words (e.g. “Since 2008”).
+     */
+    eyebrow?: string | null;
+    /**
+     * The evolution words; the last one is shown highlighted.
+     */
+    eras?:
+      | {
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Heading, main part.
+     */
+    headingMain?: string | null;
+    /**
+     * Heading, muted second part.
+     */
+    headingMuted?: string | null;
+  };
+  win?: {
+    eyebrow?: string | null;
+    /**
+     * First line (e.g. “We win”).
+     */
+    headingLine1?: string | null;
+    /**
+     * Second line (e.g. “when you win.”).
+     */
+    headingLine2?: string | null;
+    /**
+     * The word in the second line to highlight (e.g. “you”).
+     */
+    highlight?: string | null;
+    subcopy?: string | null;
+  };
+  geekWay?: {
+    heading?: string | null;
+    /**
+     * The numbered list; the last item is shown highlighted.
+     */
+    principles?:
+      | {
+          title: string;
+          body?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    /**
+     * Exclude this page from search indexing (rarely needed).
+     */
+    noindex?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /creators page. Save a draft and use Preview before publishing.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "creators-page".
+ */
+export interface CreatorsPage {
+  id: number;
+  hero?: {
+    /**
+     * Main heading. Use a line break for the two lines.
+     */
+    headingBlock?: string | null;
+    /**
+     * Part of the heading shown highlighted (e.g. “With great brands.”).
+     */
+    headingHighlight?: string | null;
+    subline?: string | null;
+    ctaLabel?: string | null;
+    /**
+     * e.g. #join (scrolls to the form) or another route.
+     */
+    ctaHref?: string | null;
+  };
+  oneDegree?: {
+    /**
+     * Use a line break for the two lines.
+     */
+    heading?: string | null;
+    body?: string | null;
+    opportunities?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  whyGeek?: {
+    eyebrow?: string | null;
+    /**
+     * Use line breaks for each line.
+     */
+    heading?: string | null;
+    /**
+     * Line to highlight (e.g. “Real opportunities.”).
+     */
+    headingHighlight?: string | null;
+  };
+  /**
+   * Copy above the registration form (the form itself is fixed).
+   */
+  join?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    subcopy?: string | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noindex?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /contact page. Save a draft and use Preview before publishing. The forms themselves are fixed.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page".
+ */
+export interface ContactPage {
+  id: number;
+  hero?: {
+    /**
+     * The big heading. Use a line break for the two lines (e.g. “What should” / “we make matter next?”).
+     */
+    headingBlock?: string | null;
+    /**
+     * Word in the heading shown highlighted cyan (e.g. “matter”).
+     */
+    headingHighlight?: string | null;
+    /**
+     * Small label above the form (e.g. “Tell us the problem”).
+     */
+    formEyebrow?: string | null;
+  };
+  /**
+   * The office cards with a Google Map on the Contact page. Tapping a card opens the location in Google Maps. Leave the list empty to show the default offices.
+   */
+  offices?: {
+    /**
+     * e.g. “The G spot.”
+     */
+    eyebrow?: string | null;
+    /**
+     * e.g. “Come say hi.”
+     */
+    heading?: string | null;
+    items?:
+      | {
+          /**
+           * e.g. “Bangalore”
+           */
+          city: string;
+          /**
+           * Full address, shown on the card.
+           */
+          address: string;
+          /**
+           * What the map should search for, if the address alone lands in the wrong spot — e.g. “Geek Creative Agency, HMT Layout, Bengaluru” or a Google Maps place name. Empty → the address is used.
+           */
+          mapQuery?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * The “What brings you to Geek?” section. You can relabel the four doors, but their forms and styling are fixed.
+   */
+  doors?: {
+    /**
+     * e.g. “Four doors.”
+     */
+    eyebrow?: string | null;
+    /**
+     * e.g. “What brings you to Geek?”
+     */
+    heading?: string | null;
+    /**
+     * One row per door. The Type selects which fixed door/form this labels; Title and Sub are the editable text.
+     */
+    items?:
+      | {
+          /**
+           * Which fixed door this labels.
+           */
+          key: 'client' | 'creator' | 'career' | 'vendor';
+          /**
+           * e.g. “Build my brand.”
+           */
+          title: string;
+          /**
+           * e.g. “For Clients.”
+           */
+          sub: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noindex?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /build-my-brand page — heading, intro and SEO. The form itself is fixed.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "build-my-brand-page".
+ */
+export interface BuildMyBrandPage {
+  id: number;
+  /**
+   * Big heading, e.g. “Build my brand.”
+   */
+  title?: string | null;
+  /**
+   * The paragraph under the heading.
+   */
+  intro?: string | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noindex?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /careers page — heading, intro and SEO. The form itself is fixed.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "careers-page".
+ */
+export interface CareersPage {
+  id: number;
+  /**
+   * Big heading, e.g. “Work at Geek.”
+   */
+  title?: string | null;
+  /**
+   * The paragraph under the heading.
+   */
+  intro?: string | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noindex?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /partners page — heading, intro and SEO. The form itself is fixed.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners-page".
+ */
+export interface PartnersPage {
+  id: number;
+  /**
+   * Big heading, e.g. “Work with Geek.”
+   */
+  title?: string | null;
+  /**
+   * The paragraph under the heading.
+   */
+  intro?: string | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noindex?: boolean | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2463,6 +3920,29 @@ export interface SiteSetting {
         id?: string | null;
       }[]
     | null;
+  floatingContact?: {
+    /**
+     * Country code + number, digits only (e.g. 919876543210). Set it and a tap opens a chat straight with this number. Empty = WhatsApp opens with the message and asks which chat.
+     */
+    whatsappNumber?: string | null;
+    /**
+     * Pre-filled in the chat when someone taps the button.
+     */
+    whatsappMessage?: string | null;
+    /**
+     * Empty = uses the Instagram link from the “Social links” tab.
+     */
+    instagramUrl?: string | null;
+    /**
+     * Your Calendly (free plan), Google Calendar appointment page or Cal.com link. Connect that tool to Google Calendar once, and days/times already busy in your calendar are never shown. Empty = meeting button hidden.
+     */
+    meetingUrl?: string | null;
+    /**
+     * Shown on hover and as the popup title.
+     */
+    meetingLabel?: string | null;
+    hideButtons?: boolean | null;
+  };
   seo?: {
     /**
      * Homepage / default browser title.
@@ -2486,439 +3966,60 @@ export interface SiteSetting {
   createdAt?: string | null;
 }
 /**
- * The /about page. Save a draft and use Preview to review before publishing.
+ * Heading, intro and SEO for /build-my-brand, /careers and /partners. The forms are fixed.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "about".
+ * via the `definition` "door-pages".
  */
-export interface About {
+export interface DoorPage {
   id: number;
-  hero?: {
+  client?: {
     /**
-     * First line of the big heading (e.g. “Why”).
+     * Big heading, e.g. “Build my brand.”
      */
-    headingLine1?: string | null;
+    title?: string | null;
     /**
-     * Second line — shown highlighted (e.g. “Geek”?).
+     * The paragraph under the heading.
      */
-    headingLine2?: string | null;
-    /**
-     * The bold opening line under the heading.
-     */
-    lead?: string | null;
-    paragraphs?:
-      | {
-          text?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  evolution?: {
-    /**
-     * Small label above the era words (e.g. “Since 2008”).
-     */
-    eyebrow?: string | null;
-    /**
-     * The evolution words; the last one is shown highlighted.
-     */
-    eras?:
-      | {
-          label: string;
-          id?: string | null;
-        }[]
-      | null;
-    /**
-     * Heading, main part.
-     */
-    headingMain?: string | null;
-    /**
-     * Heading, muted second part.
-     */
-    headingMuted?: string | null;
-  };
-  win?: {
-    eyebrow?: string | null;
-    /**
-     * First line (e.g. “We win”).
-     */
-    headingLine1?: string | null;
-    /**
-     * Second line (e.g. “when you win.”).
-     */
-    headingLine2?: string | null;
-    /**
-     * The word in the second line to highlight (e.g. “you”).
-     */
-    highlight?: string | null;
-    subcopy?: string | null;
-  };
-  geekWay?: {
-    heading?: string | null;
-    /**
-     * The numbered list; the last item is shown highlighted.
-     */
-    principles?:
-      | {
-          title: string;
-          body?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  seo?: {
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    ogImage?: (number | null) | Media;
-    /**
-     * Exclude this page from search indexing (rarely needed).
-     */
-    noindex?: boolean | null;
-  };
-  _status?: ('draft' | 'published') | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * The /what-we-do page. Save a draft and use Preview before publishing.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "what-we-do".
- */
-export interface WhatWeDo {
-  id: number;
-  hero?: {
-    /**
-     * First heading block. Use line breaks for the intended wrapping.
-     */
-    block1?: string | null;
-    /**
-     * Second heading block (muted).
-     */
-    block2?: string | null;
-    /**
-     * Word in the second block shown highlighted (e.g. “problem.”).
-     */
-    highlight?: string | null;
     intro?: string | null;
+    seo?: {
+      metaTitle?: string | null;
+      metaDescription?: string | null;
+      ogImage?: (number | null) | Media;
+      noindex?: boolean | null;
+    };
   };
-  /**
-   * The Build / Create / Connect / Influence / Amplify bands.
-   */
-  capabilities?:
-    | {
-        /**
-         * e.g. “Build.”
-         */
-        label: string;
-        /**
-         * The capability words listed under the label.
-         */
-        items?:
-          | {
-              text: string;
-              id?: string | null;
-            }[]
-          | null;
-        /**
-         * The big statement. Use a line break for the two lines.
-         */
-        thought?: string | null;
-        /**
-         * Optional part of the statement to highlight cyan.
-         */
-        thoughtHighlight?: string | null;
-        /**
-         * Optional link under the statement.
-         */
-        linkLabel?: string | null;
-        linkHref?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Page-specific button (separate from the global footer CTA).
-   */
-  cta?: {
-    label?: string | null;
-    href?: string | null;
-  };
-  seo?: {
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    ogImage?: (number | null) | Media;
-    noindex?: boolean | null;
-  };
-  _status?: ('draft' | 'published') | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * The /creators page. Save a draft and use Preview before publishing.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "creators-page".
- */
-export interface CreatorsPage {
-  id: number;
-  hero?: {
+  career?: {
     /**
-     * Main heading. Use a line break for the two lines.
+     * Big heading, e.g. “Work at Geek.”
      */
-    headingBlock?: string | null;
-    /**
-     * Part of the heading shown highlighted (e.g. “With great brands.”).
-     */
-    headingHighlight?: string | null;
-    subline?: string | null;
-    ctaLabel?: string | null;
-    /**
-     * e.g. #join (scrolls to the form) or another route.
-     */
-    ctaHref?: string | null;
-  };
-  oneDegree?: {
-    /**
-     * Use a line break for the two lines.
-     */
-    heading?: string | null;
-    body?: string | null;
-    opportunities?:
-      | {
-          text: string;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  whyGeek?: {
-    eyebrow?: string | null;
-    /**
-     * Use line breaks for each line.
-     */
-    heading?: string | null;
-    /**
-     * Line to highlight (e.g. “Real opportunities.”).
-     */
-    headingHighlight?: string | null;
-  };
-  /**
-   * Copy above the registration form (the form itself is fixed).
-   */
-  join?: {
-    eyebrow?: string | null;
-    heading?: string | null;
-    subcopy?: string | null;
-  };
-  seo?: {
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    ogImage?: (number | null) | Media;
-    noindex?: boolean | null;
-  };
-  _status?: ('draft' | 'published') | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * The /contact page. Save a draft and use Preview before publishing. The forms themselves are fixed.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-page".
- */
-export interface ContactPage {
-  id: number;
-  hero?: {
-    /**
-     * The big heading. Use a line break for the two lines (e.g. “What should” / “we make matter next?”).
-     */
-    headingBlock?: string | null;
-    /**
-     * Word in the heading shown highlighted cyan (e.g. “matter”).
-     */
-    headingHighlight?: string | null;
-    /**
-     * Small label above the form (e.g. “Tell us the problem”).
-     */
-    formEyebrow?: string | null;
-  };
-  /**
-   * The “What brings you to Geek?” section. You can relabel the four doors, but their forms and styling are fixed.
-   */
-  doors?: {
-    /**
-     * e.g. “Four doors.”
-     */
-    eyebrow?: string | null;
-    /**
-     * e.g. “What brings you to Geek?”
-     */
-    heading?: string | null;
-    /**
-     * One row per door. The Type selects which fixed door/form this labels; Title and Sub are the editable text.
-     */
-    items?:
-      | {
-          /**
-           * Which fixed door this labels.
-           */
-          key: 'client' | 'creator' | 'career' | 'vendor';
-          /**
-           * e.g. “Build my brand.”
-           */
-          title: string;
-          /**
-           * e.g. “For Clients.”
-           */
-          sub: string;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  seo?: {
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    ogImage?: (number | null) | Media;
-    noindex?: boolean | null;
-  };
-  _status?: ('draft' | 'published') | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * The homepage ( / ). Editorial copy only — layout, motion and imagery are fixed. Save a draft and use Preview before publishing.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home-page".
- */
-export interface HomePage {
-  id: number;
-  hero?: {
-    /**
-     * The big headline. Use line breaks for the three lines.
-     */
-    headingBlock?: string | null;
-    /**
-     * Word/phrase shown highlighted cyan (e.g. “matter.”).
-     */
-    headingHighlight?: string | null;
-    subline?: string | null;
-    ctaPrimaryLabel?: string | null;
-    ctaPrimaryHref?: string | null;
-    ctaSecondaryLabel?: string | null;
-    ctaSecondaryHref?: string | null;
-  };
-  /**
-   * The client logo marquee heading (the logos themselves are fixed).
-   */
-  logoWall?: {
-    heading?: string | null;
-    /**
-     * Word highlighted cyan (e.g. “friends”).
-     */
-    headingHighlight?: string | null;
-  };
-  /**
-   * “Build.” band (the work cards are fixed).
-   */
-  build?: {
     title?: string | null;
-    sub?: string | null;
-    trailing?: string | null;
+    /**
+     * The paragraph under the heading.
+     */
+    intro?: string | null;
+    seo?: {
+      metaTitle?: string | null;
+      metaDescription?: string | null;
+      ogImage?: (number | null) | Media;
+      noindex?: boolean | null;
+    };
   };
-  /**
-   * “Create.” band. Use a line break in the sub for the two lines.
-   */
-  create?: {
+  vendor?: {
+    /**
+     * Big heading, e.g. “Work with Geek.”
+     */
     title?: string | null;
-    sub?: string | null;
-  };
-  /**
-   * “Influence.” band (the creator mosaic is fixed).
-   */
-  influence?: {
-    eyebrow?: string | null;
-    heading?: string | null;
-    sub?: string | null;
     /**
-     * e.g. “Celebrity. Macro. Micro. Nano. UGC. Regional.”
+     * The paragraph under the heading.
      */
-    list?: string | null;
-    linkLabel?: string | null;
-    linkHref?: string | null;
-  };
-  /**
-   * “Proof.” band (the metrics are fixed).
-   */
-  proof?: {
-    eyebrow?: string | null;
-    sub?: string | null;
-  };
-  /**
-   * The process rail (the steps + icons are fixed).
-   */
-  process?: {
-    heading?: string | null;
-    /**
-     * Part of the heading highlighted cyan (e.g. “to the last mile.”).
-     */
-    headingHighlight?: string | null;
-    /**
-     * e.g. “We make it happen.”
-     */
-    trailing?: string | null;
-  };
-  /**
-   * The dark “Built by Geek” section (the two stories are fixed).
-   */
-  builtByGeek?: {
-    eyebrow?: string | null;
-    /**
-     * Main heading. Use a line break for the two lines.
-     */
-    headingBlock?: string | null;
-    /**
-     * The cyan line under the heading (e.g. “We write our own.”).
-     */
-    headingCyan?: string | null;
-    /**
-     * The closing statement.
-     */
-    closing?: string | null;
-    /**
-     * Word highlighted cyan (e.g. “exist.”).
-     */
-    closingHighlight?: string | null;
-  };
-  geekWay?: {
-    title?: string | null;
-    principles?:
-      | {
-          title: string;
-          body?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    /**
-     * The big finale. Use a line break for the two lines (e.g. “We win” / “when you win.”).
-     */
-    finaleBlock?: string | null;
-    /**
-     * Word highlighted cyan (e.g. “you”).
-     */
-    finaleHighlight?: string | null;
-    finaleSub?: string | null;
-  };
-  /**
-   * “The Work.” band heading (the work wall items are fixed).
-   */
-  work?: {
-    title?: string | null;
-    sub?: string | null;
-  };
-  seo?: {
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    ogImage?: (number | null) | Media;
-    noindex?: boolean | null;
+    intro?: string | null;
+    seo?: {
+      metaTitle?: string | null;
+      metaDescription?: string | null;
+      ogImage?: (number | null) | Media;
+      noindex?: boolean | null;
+    };
   };
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
@@ -2926,73 +4027,675 @@ export interface HomePage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "navigation_select".
+ * via the `definition` "home-page_select".
  */
-export interface NavigationSelect<T extends boolean = true> {
-  items?:
+export interface HomePageSelect<T extends boolean = true> {
+  hero?:
     | T
     | {
-        label?: T;
-        href?: T;
-        enabled?: T;
-        openInNewTab?: T;
-        id?: T;
-      };
-  cta?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer_select".
- */
-export interface FooterSelect<T extends boolean = true> {
-  cta?:
-    | T
-    | {
-        headingPrefix?: T;
+        headingBlock?: T;
         headingHighlight?: T;
-        headingSuffix?: T;
-        buttonLabel?: T;
-        buttonHref?: T;
+        subline?: T;
+        ctaPrimaryLabel?: T;
+        ctaPrimaryHref?: T;
+        ctaSecondaryLabel?: T;
+        ctaSecondaryHref?: T;
+        video?:
+          | T
+          | {
+              source?: T;
+              file?: T;
+              mobileFile?: T;
+              youtubeUrl?: T;
+              poster?: T;
+            };
       };
-  tagline?: T;
-  copyrightText?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-settings_select".
- */
-export interface SiteSettingsSelect<T extends boolean = true> {
-  name?: T;
-  short?: T;
-  description?: T;
-  socialLinks?:
+  mediaChanged?:
     | T
     | {
-        platform?: T;
-        label?: T;
-        url?: T;
-        id?: T;
+        eras?:
+          | T
+          | {
+              pre?: T;
+              post?: T;
+              image?: T;
+              href?: T;
+              video?:
+                | T
+                | {
+                    source?: T;
+                    file?: T;
+                    mobileFile?: T;
+                    youtubeUrl?: T;
+                    poster?: T;
+                  };
+              label?: T;
+              animated?: T;
+              id?: T;
+            };
+        finaleKicker?: T;
+        finaleWord?: T;
+      };
+  logoWall?:
+    | T
+    | {
+        heading?: T;
+        headingHighlight?: T;
+        logos?:
+          | T
+          | {
+              name?: T;
+              logo?: T;
+              id?: T;
+            };
+      };
+  build?:
+    | T
+    | {
+        title?: T;
+        sub?: T;
+        trailing?: T;
+        buttonLabel?: T;
+        video?:
+          | T
+          | {
+              source?: T;
+              file?: T;
+              mobileFile?: T;
+              youtubeUrl?: T;
+              poster?: T;
+            };
+        cards?:
+          | T
+          | {
+              image?: T;
+              href?: T;
+              title?: T;
+              line?: T;
+              blurb?: T;
+              id?: T;
+            };
+      };
+  create?:
+    | T
+    | {
+        title?: T;
+        sub?: T;
+        buttonLabel?: T;
+        cards?:
+          | T
+          | {
+              image?: T;
+              title?: T;
+              href?: T;
+              id?: T;
+            };
+      };
+  influence?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        sub?: T;
+        list?: T;
+        linkLabel?: T;
+        linkHref?: T;
+        buttonLabel?: T;
+      };
+  proof?:
+    | T
+    | {
+        eyebrow?: T;
+        sub?: T;
+        cases?:
+          | T
+          | {
+              brand?: T;
+              image?: T;
+              href?: T;
+              stats?:
+                | T
+                | {
+                    value?: T;
+                    suffix?: T;
+                    label?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  process?:
+    | T
+    | {
+        heading?: T;
+        headingHighlight?: T;
+        trailing?: T;
+        steps?:
+          | T
+          | {
+              label?: T;
+              id?: T;
+            };
+      };
+  builtByGeek?:
+    | T
+    | {
+        eyebrow?: T;
+        headingBlock?: T;
+        headingCyan?: T;
+        closing?: T;
+        closingHighlight?: T;
+        video?:
+          | T
+          | {
+              source?: T;
+              file?: T;
+              mobileFile?: T;
+              youtubeUrl?: T;
+              poster?: T;
+            };
+        stories?:
+          | T
+          | {
+              image?: T;
+              href?: T;
+              title?: T;
+              kicker?: T;
+              id?: T;
+            };
+      };
+  geekWay?:
+    | T
+    | {
+        title?: T;
+        principles?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+        finaleBlock?: T;
+        finaleHighlight?: T;
+        finaleSub?: T;
+      };
+  work?:
+    | T
+    | {
+        title?: T;
+        sub?: T;
+        stories?: T;
       };
   seo?:
     | T
     | {
-        defaultTitle?: T;
-        titleTemplate?: T;
-        defaultDescription?: T;
-        defaultOgImage?: T;
-        orgName?: T;
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noindex?: T;
       };
+  videos?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              source?: T;
+              file?: T;
+              mobileFile?: T;
+              youtubeUrl?: T;
+              poster?: T;
+            };
+        build?:
+          | T
+          | {
+              source?: T;
+              file?: T;
+              mobileFile?: T;
+              youtubeUrl?: T;
+              poster?: T;
+            };
+        builtByGeek?:
+          | T
+          | {
+              source?: T;
+              file?: T;
+              mobileFile?: T;
+              youtubeUrl?: T;
+              poster?: T;
+            };
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "what-we-do_select".
+ */
+export interface WhatWeDoSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        block1?: T;
+        block2?: T;
+        highlight?: T;
+        intro?: T;
+      };
+  capabilities?:
+    | T
+    | {
+        label?: T;
+        items?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        thought?: T;
+        thoughtHighlight?: T;
+        linkLabel?: T;
+        linkHref?: T;
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noindex?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "build-page_select".
+ */
+export interface BuildPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        highlight?: T;
+        intro?: T;
+      };
+  phases?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        items?:
+          | T
+          | {
+              label?: T;
+              title?: T;
+              subtitle?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  steps?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        closing?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+              linkLabel?: T;
+              linkHref?: T;
+              id?: T;
+            };
+      };
+  capabilities?:
+    | T
+    | {
+        heading?: T;
+        items?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  showcase?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        stories?: T;
+      };
+  portfolio?:
+    | T
+    | {
+        heading?: T;
+        note?: T;
+        items?:
+          | T
+          | {
+              name?: T;
+              id?: T;
+            };
+      };
+  proof?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        items?:
+          | T
+          | {
+              value?: T;
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+      };
+  cta?:
+    | T
+    | {
+        heading?: T;
+        highlight?: T;
+        label?: T;
+        href?: T;
+        secondaryLabel?: T;
+        secondaryHref?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noindex?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "create-page_select".
+ */
+export interface CreatePageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        highlight?: T;
+        intro?: T;
+      };
+  phases?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        items?:
+          | T
+          | {
+              label?: T;
+              title?: T;
+              subtitle?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  steps?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        closing?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+              linkLabel?: T;
+              linkHref?: T;
+              id?: T;
+            };
+      };
+  capabilities?:
+    | T
+    | {
+        heading?: T;
+        items?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  showcase?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        stories?: T;
+      };
+  portfolio?:
+    | T
+    | {
+        heading?: T;
+        note?: T;
+        items?:
+          | T
+          | {
+              name?: T;
+              id?: T;
+            };
+      };
+  proof?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        items?:
+          | T
+          | {
+              value?: T;
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+      };
+  cta?:
+    | T
+    | {
+        heading?: T;
+        highlight?: T;
+        label?: T;
+        href?: T;
+        secondaryLabel?: T;
+        secondaryHref?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noindex?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "influence-page_select".
+ */
+export interface InfluencePageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        highlight?: T;
+        intro?: T;
+        primaryLabel?: T;
+        primaryHref?: T;
+        brandLoginLabel?: T;
+        brandLoginHref?: T;
+      };
+  tiers?:
+    | T
+    | {
+        heading?: T;
+        items?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  models?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              tag?: T;
+              body?: T;
+              href?: T;
+              id?: T;
+            };
+      };
+  steps?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        closing?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  platform?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        body?: T;
+        features?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        buttonLabel?: T;
+        buttonHref?: T;
+        creatorLabel?: T;
+        creatorHref?: T;
+      };
+  hampers?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        intro?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              tag?: T;
+              body?: T;
+              href?: T;
+              id?: T;
+            };
+      };
+  stories?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              tag?: T;
+              body?: T;
+              href?: T;
+              id?: T;
+            };
+      };
+  clients?:
+    | T
+    | {
+        heading?: T;
+        items?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  cta?:
+    | T
+    | {
+        heading?: T;
+        highlight?: T;
+        label?: T;
+        href?: T;
+        secondaryLabel?: T;
+        secondaryHref?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noindex?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "work-page_select".
+ */
+export interface WorkPageSelect<T extends boolean = true> {
+  title?: T;
+  lede?: T;
+  exploreTitle?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noindex?: T;
+      };
+  _status?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -3048,54 +4751,6 @@ export interface AboutSelect<T extends boolean = true> {
               body?: T;
               id?: T;
             };
-      };
-  seo?:
-    | T
-    | {
-        metaTitle?: T;
-        metaDescription?: T;
-        ogImage?: T;
-        noindex?: T;
-      };
-  _status?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "what-we-do_select".
- */
-export interface WhatWeDoSelect<T extends boolean = true> {
-  hero?:
-    | T
-    | {
-        block1?: T;
-        block2?: T;
-        highlight?: T;
-        intro?: T;
-      };
-  capabilities?:
-    | T
-    | {
-        label?: T;
-        items?:
-          | T
-          | {
-              text?: T;
-              id?: T;
-            };
-        thought?: T;
-        thoughtHighlight?: T;
-        linkLabel?: T;
-        linkHref?: T;
-        id?: T;
-      };
-  cta?:
-    | T
-    | {
-        label?: T;
-        href?: T;
       };
   seo?:
     | T
@@ -3175,6 +4830,20 @@ export interface ContactPageSelect<T extends boolean = true> {
         headingHighlight?: T;
         formEyebrow?: T;
       };
+  offices?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        items?:
+          | T
+          | {
+              city?: T;
+              address?: T;
+              mapQuery?: T;
+              id?: T;
+            };
+      };
   doors?:
     | T
     | {
@@ -3204,92 +4873,11 @@ export interface ContactPageSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home-page_select".
+ * via the `definition` "build-my-brand-page_select".
  */
-export interface HomePageSelect<T extends boolean = true> {
-  hero?:
-    | T
-    | {
-        headingBlock?: T;
-        headingHighlight?: T;
-        subline?: T;
-        ctaPrimaryLabel?: T;
-        ctaPrimaryHref?: T;
-        ctaSecondaryLabel?: T;
-        ctaSecondaryHref?: T;
-      };
-  logoWall?:
-    | T
-    | {
-        heading?: T;
-        headingHighlight?: T;
-      };
-  build?:
-    | T
-    | {
-        title?: T;
-        sub?: T;
-        trailing?: T;
-      };
-  create?:
-    | T
-    | {
-        title?: T;
-        sub?: T;
-      };
-  influence?:
-    | T
-    | {
-        eyebrow?: T;
-        heading?: T;
-        sub?: T;
-        list?: T;
-        linkLabel?: T;
-        linkHref?: T;
-      };
-  proof?:
-    | T
-    | {
-        eyebrow?: T;
-        sub?: T;
-      };
-  process?:
-    | T
-    | {
-        heading?: T;
-        headingHighlight?: T;
-        trailing?: T;
-      };
-  builtByGeek?:
-    | T
-    | {
-        eyebrow?: T;
-        headingBlock?: T;
-        headingCyan?: T;
-        closing?: T;
-        closingHighlight?: T;
-      };
-  geekWay?:
-    | T
-    | {
-        title?: T;
-        principles?:
-          | T
-          | {
-              title?: T;
-              body?: T;
-              id?: T;
-            };
-        finaleBlock?: T;
-        finaleHighlight?: T;
-        finaleSub?: T;
-      };
-  work?:
-    | T
-    | {
-        title?: T;
-        sub?: T;
-      };
+export interface BuildMyBrandPageSelect<T extends boolean = true> {
+  title?: T;
+  intro?: T;
   seo?:
     | T
     | {
@@ -3297,6 +4885,181 @@ export interface HomePageSelect<T extends boolean = true> {
         metaDescription?: T;
         ogImage?: T;
         noindex?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "careers-page_select".
+ */
+export interface CareersPageSelect<T extends boolean = true> {
+  title?: T;
+  intro?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noindex?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners-page_select".
+ */
+export interface PartnersPageSelect<T extends boolean = true> {
+  title?: T;
+  intro?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noindex?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        enabled?: T;
+        openInNewTab?: T;
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  cta?:
+    | T
+    | {
+        headingPrefix?: T;
+        headingHighlight?: T;
+        headingSuffix?: T;
+        buttonLabel?: T;
+        buttonHref?: T;
+      };
+  tagline?: T;
+  copyrightText?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  name?: T;
+  short?: T;
+  description?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  floatingContact?:
+    | T
+    | {
+        whatsappNumber?: T;
+        whatsappMessage?: T;
+        instagramUrl?: T;
+        meetingUrl?: T;
+        meetingLabel?: T;
+        hideButtons?: T;
+      };
+  seo?:
+    | T
+    | {
+        defaultTitle?: T;
+        titleTemplate?: T;
+        defaultDescription?: T;
+        defaultOgImage?: T;
+        orgName?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "door-pages_select".
+ */
+export interface DoorPagesSelect<T extends boolean = true> {
+  client?:
+    | T
+    | {
+        title?: T;
+        intro?: T;
+        seo?:
+          | T
+          | {
+              metaTitle?: T;
+              metaDescription?: T;
+              ogImage?: T;
+              noindex?: T;
+            };
+      };
+  career?:
+    | T
+    | {
+        title?: T;
+        intro?: T;
+        seo?:
+          | T
+          | {
+              metaTitle?: T;
+              metaDescription?: T;
+              ogImage?: T;
+              noindex?: T;
+            };
+      };
+  vendor?:
+    | T
+    | {
+        title?: T;
+        intro?: T;
+        seo?:
+          | T
+          | {
+              metaTitle?: T;
+              metaDescription?: T;
+              ogImage?: T;
+              noindex?: T;
+            };
       };
   _status?: T;
   updatedAt?: T;

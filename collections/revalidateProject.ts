@@ -36,7 +36,10 @@ type ProjectLike = Record<string, unknown> | null | undefined;
  *  outside a request/render context (seed/CLI). */
 export async function revalidateProjectAndHubs(payload: Payload, doc: ProjectLike, previousDoc: ProjectLike): Promise<void> {
   try {
-    const { revalidatePath } = await import("next/cache");
+    const { revalidatePath, revalidateTag } = await import("next/cache");
+    // Cached story list + story reads (lib/cms/projects.ts) — used by Home
+    // (logos, work slider), /work and every filter/story page.
+    revalidateTag("projects", { expire: 0 }); // expire now: a new story shows on the very next visit
     const paths = new Set<string>(["/work"]);
     for (const d of [doc, previousDoc]) {
       const slug = d && typeof d.slug === "string" ? d.slug : undefined;

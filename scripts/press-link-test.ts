@@ -7,7 +7,7 @@
  */
 import { renderToStaticMarkup } from "react-dom/server";
 import { createElement } from "react";
-import EvidenceRecognition from "../components/work/EvidenceRecognition";
+import EvidenceRecognition from "../components/work/case-study/EvidenceRecognition";
 import type { PressItem, AwardItem } from "../lib/cms/projects";
 
 const press: PressItem[] = [

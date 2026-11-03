@@ -15,7 +15,7 @@ export const Companies: CollectionConfig = {
   slug: "companies",
   labels: { singular: "Company", plural: "Companies" },
   admin: {
-    group: "Portfolio",
+    group: "Hub Pages",
     useAsTitle: "name",
     defaultColumns: ["name", "slug", "_status", "updatedAt"],
     description: "Company hub pages at /companies/[slug]. Publish only when useful content exists.",

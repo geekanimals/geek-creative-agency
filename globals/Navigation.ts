@@ -10,8 +10,8 @@ import { revalidateGlobals } from "./hooks";
  */
 export const Navigation: GlobalConfig = {
   slug: "navigation",
-  label: "Navigation",
-  admin: { group: "Site" },
+  label: "Header (Menu)",
+  admin: { group: "Header, Footer & Settings" },
   versions: true, // version history + rollback; changes publish on save
   access: { read: () => true, update: isEditorUp },
   fields: [

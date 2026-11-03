@@ -10,6 +10,16 @@ import * as migration_20260901_080656_home_page from './20260901_080656_home_pag
 import * as migration_20260901_100158_portfolio_graph from './20260901_100158_portfolio_graph';
 import * as migration_20260901_120000_service_publish_backfill from './20260901_120000_service_publish_backfill';
 import * as migration_20260901_221942_gold_standard_fields from './20260901_221942_gold_standard_fields';
+import * as migration_20261102_045308_video_admin_fields from './20261102_045308_video_admin_fields';
+import * as migration_20261102_052946_pages_and_logos from './20261102_052946_pages_and_logos';
+import * as migration_20261102_081005_contact_offices from './20261102_081005_contact_offices';
+import * as migration_20261102_104002_build_page from './20261102_104002_build_page';
+import * as migration_20261102_105633_create_page from './20261102_105633_create_page';
+import * as migration_20261102_111401_influence_create_pages from './20261102_111401_influence_create_pages';
+import * as migration_20261102_115501_media_changed from './20261102_115501_media_changed';
+import * as migration_20261102_125245_home_section_videos from './20261102_125245_home_section_videos';
+import * as migration_20261102_125835_home_admin_full from './20261102_125835_home_admin_full';
+import * as migration_20261103_072107_meeting_button from './20261103_072107_meeting_button';
 
 export const migrations = [
   {
@@ -70,6 +80,56 @@ export const migrations = [
   {
     up: migration_20260901_221942_gold_standard_fields.up,
     down: migration_20260901_221942_gold_standard_fields.down,
-    name: '20260901_221942_gold_standard_fields'
+    name: '20260901_221942_gold_standard_fields',
+  },
+  {
+    up: migration_20261102_045308_video_admin_fields.up,
+    down: migration_20261102_045308_video_admin_fields.down,
+    name: '20261102_045308_video_admin_fields',
+  },
+  {
+    up: migration_20261102_052946_pages_and_logos.up,
+    down: migration_20261102_052946_pages_and_logos.down,
+    name: '20261102_052946_pages_and_logos',
+  },
+  {
+    up: migration_20261102_081005_contact_offices.up,
+    down: migration_20261102_081005_contact_offices.down,
+    name: '20261102_081005_contact_offices',
+  },
+  {
+    up: migration_20261102_104002_build_page.up,
+    down: migration_20261102_104002_build_page.down,
+    name: '20261102_104002_build_page',
+  },
+  {
+    up: migration_20261102_105633_create_page.up,
+    down: migration_20261102_105633_create_page.down,
+    name: '20261102_105633_create_page',
+  },
+  {
+    up: migration_20261102_111401_influence_create_pages.up,
+    down: migration_20261102_111401_influence_create_pages.down,
+    name: '20261102_111401_influence_create_pages',
+  },
+  {
+    up: migration_20261102_115501_media_changed.up,
+    down: migration_20261102_115501_media_changed.down,
+    name: '20261102_115501_media_changed',
+  },
+  {
+    up: migration_20261102_125245_home_section_videos.up,
+    down: migration_20261102_125245_home_section_videos.down,
+    name: '20261102_125245_home_section_videos',
+  },
+  {
+    up: migration_20261102_125835_home_admin_full.up,
+    down: migration_20261102_125835_home_admin_full.down,
+    name: '20261102_125835_home_admin_full',
+  },
+  {
+    up: migration_20261103_072107_meeting_button.up,
+    down: migration_20261103_072107_meeting_button.down,
+    name: '20261103_072107_meeting_button'
   },
 ];

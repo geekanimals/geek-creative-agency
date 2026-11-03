@@ -7,7 +7,8 @@ import { getTransporter, isSmtpConfigured, leadInboxes, mailFrom } from "@/lib/m
  * Contact page, Creators page and the homepage "Four Doors").
  *
  * Delivery is SMTP only (see lib/mail/smtp.ts + .env.example):
- *   1) the lead is emailed to LEAD_TO_EMAIL (reply-to = the person who wrote)
+ *   1) the lead is emailed to LEAD_TO_EMAIL (reply-to = the person who wrote);
+ *      a career application's resume is attached to that email
  *   2) the person immediately gets a "Thank you for contacting Geek" email
  * With SMTP not configured: dev → logged to the terminal; production → 503.
  */
@@ -24,10 +25,20 @@ const ALLOWED_FIELDS = new Set<string>([
   "_form", "company_website", // control + honeypot
   "name", "company", "designation", "email", "phone", "budget", "timeline", "goal", // client
   "instagram", "city", "category", "followers", "links", // creator
-  "role", "linkedin", "portfolio", "why", // career
+  "role", "linkedin", "portfolio", "why", // career (older fields, still accepted)
+  "position", "current_ctc", "expected_ctc", "experience", "notice_period", "location", // career
   "service", "website", "about", // vendor
 ]);
 const MAX_BODY_BYTES = 16 * 1024; // 16KB — a contact form never needs more
+// Career form only: multipart with one resume file.
+const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // 5MB resume
+const MAX_MULTIPART_BYTES = MAX_UPLOAD_BYTES + 64 * 1024; // file + form fields
+const RESUME_TYPES: Record<string, string> = {
+  pdf: "application/pdf",
+  doc: "application/msword",
+  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+};
+type Attachment = { filename: string; content: Buffer; contentType: string };
 const MAX_FIELD_LEN = 5000; // generous for the longest textarea; rejects abuse
 
 /** Keep only allowed string fields, trimmed + length-capped. Non-strings dropped. */
@@ -72,21 +83,36 @@ function subjectFor(kind: FormKind, d: Record<string, string>): string {
     case "creator":
       return `NEW GEEK CREATOR — @${handle || d.name || "unknown"}`;
     case "career":
-      return `NEW GEEK CAREER APPLICATION — ${[d.name, d.role].filter(Boolean).join(" / ") || "Applicant"}`;
+      return `NEW GEEK CAREER APPLICATION — ${[d.name, d.position || d.role].filter(Boolean).join(" / ") || "Applicant"}`;
     case "vendor":
       return `NEW GEEK PARTNER / VENDOR — ${d.company || d.name || "Website"}`;
   }
 }
 
+const LABELS: Record<string, string> = {
+  current_ctc: "Current CTC",
+  expected_ctc: "Expected CTC",
+  notice_period: "Notice Period",
+  portfolio: "LinkedIn / Portfolio",
+};
+
 function toRows(data: Record<string, string>): [string, string][] {
   return Object.entries(data)
     .filter(([k]) => k !== "_form" && k !== "company_website")
     .filter(([, v]) => v && v.trim().length > 0)
-    .map(([k, v]) => [k.replace(/(^|_)([a-z])/g, (_, s, c) => (s ? " " : "") + c.toUpperCase()), v]);
+    .map(([k, v]) => [
+      LABELS[k] ?? k.replace(/(^|_)([a-z])/g, (_, s, c) => (s ? " " : "") + c.toUpperCase()),
+      v,
+    ]);
 }
 
-async function deliver(kind: FormKind, data: Record<string, string>): Promise<boolean> {
+async function deliver(
+  kind: FormKind,
+  data: Record<string, string>,
+  attachments: Attachment[] = [],
+): Promise<boolean> {
   const rows = toRows(data);
+  if (attachments.length) rows.push(["Resume", attachments.map((a) => a.filename).join(", ") + " (attached)"]);
   const subject = subjectFor(kind, data);
   const sourceLine = `Source form: ${kind.toUpperCase()}`;
   const text = [sourceLine, "", ...rows.map(([k, v]) => `${k}: ${v}`)].join("\n");
@@ -108,6 +134,10 @@ async function deliver(kind: FormKind, data: Record<string, string>): Promise<bo
     // No SMTP configured — log for dev and report not-delivered
     // eslint-disable-next-line no-console
     console.log(`[GEEK lead:${kind}] (SMTP not configured)\n${text}`);
+    for (const a of attachments) {
+      // eslint-disable-next-line no-console
+      console.log(`[GEEK lead:${kind}] attachment: ${a.filename} (${a.contentType}, ${a.content.length} bytes)`);
+    }
     return false;
   }
 
@@ -123,6 +153,7 @@ async function deliver(kind: FormKind, data: Record<string, string>): Promise<bo
     subject,
     html,
     text,
+    attachments: attachments.length ? attachments : undefined,
   });
 
   // 2) instant "thank you" back to the visitor. Best effort — a bounce here must
@@ -173,33 +204,89 @@ function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
 }
 
-export async function POST(req: NextRequest) {
-  // Body-size guard: reject oversized payloads before parsing.
+/**
+ * Reads a multipart request (career form with a resume). Text fields go through
+ * the same allowlist; the single `resume` file is checked for type and size.
+ */
+async function readMultipart(
+  req: NextRequest,
+): Promise<{ body: Record<string, string>; attachments: Attachment[] } | Response> {
   const declaredLen = Number(req.headers.get("content-length") ?? "0");
-  if (declaredLen > MAX_BODY_BYTES) {
-    return Response.json({ ok: false, error: "Request too large." }, { status: 413 });
+  if (declaredLen > MAX_MULTIPART_BYTES) {
+    return Response.json({ ok: false, error: "File is too large — maximum 5 MB." }, { status: 413 });
   }
-  let text: string;
+  let form: FormData;
   try {
-    text = await req.text();
+    form = await req.formData();
   } catch {
     return Response.json({ ok: false, error: "Invalid request." }, { status: 400 });
   }
-  // Enforce the ceiling in ACTUAL UTF-8 BYTES, not JS UTF-16 code units:
-  // `text.length` undercounts multibyte characters (an emoji is 1–2 code units
-  // but 4 bytes), so a crafted multibyte body could exceed MAX_BODY_BYTES on the
-  // wire while passing a `.length` check. Buffer.byteLength measures the wire size.
-  if (Buffer.byteLength(text, "utf8") > MAX_BODY_BYTES) {
-    return Response.json({ ok: false, error: "Request too large." }, { status: 413 });
+  const raw: Record<string, string> = {};
+  let file: File | null = null;
+  for (const [k, v] of form.entries()) {
+    if (typeof v === "string") raw[k] = v;
+    else if (k === "resume" && v.size > 0) file = v;
   }
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    return Response.json({ ok: false, error: "Invalid request." }, { status: 400 });
+  const body = sanitizeBody(raw);
+  const attachments: Attachment[] = [];
+  if (file) {
+    if (body._form !== "career") {
+      return Response.json({ ok: false, error: "Uploads are only accepted on the careers form." }, { status: 400 });
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      return Response.json({ ok: false, error: "File is too large — maximum 5 MB." }, { status: 413 });
+    }
+    const ext = (file.name.split(".").pop() || "").toLowerCase();
+    const contentType = RESUME_TYPES[ext];
+    if (!contentType) {
+      return Response.json({ ok: false, error: "Please upload a PDF, DOC or DOCX resume." }, { status: 415 });
+    }
+    const safeName =
+      file.name
+        .replace(/[^\w.\- ]+/g, "")
+        .trim()
+        .slice(0, 120) || `resume.${ext}`;
+    attachments.push({ filename: safeName, content: Buffer.from(await file.arrayBuffer()), contentType });
   }
-  // Strict allowlist + per-field length cap.
-  const body = sanitizeBody(parsed);
+  return { body, attachments };
+}
+
+export async function POST(req: NextRequest) {
+  let body: Record<string, string>;
+  let attachments: Attachment[] = [];
+
+  if ((req.headers.get("content-type") || "").includes("multipart/form-data")) {
+    const read = await readMultipart(req);
+    if (read instanceof Response) return read;
+    ({ body, attachments } = read);
+  } else {
+    // Body-size guard: reject oversized payloads before parsing.
+    const declaredLen = Number(req.headers.get("content-length") ?? "0");
+    if (declaredLen > MAX_BODY_BYTES) {
+      return Response.json({ ok: false, error: "Request too large." }, { status: 413 });
+    }
+    let text: string;
+    try {
+      text = await req.text();
+    } catch {
+      return Response.json({ ok: false, error: "Invalid request." }, { status: 400 });
+    }
+    // Enforce the ceiling in ACTUAL UTF-8 BYTES, not JS UTF-16 code units:
+    // `text.length` undercounts multibyte characters (an emoji is 1–2 code units
+    // but 4 bytes), so a crafted multibyte body could exceed MAX_BODY_BYTES on the
+    // wire while passing a `.length` check. Buffer.byteLength measures the wire size.
+    if (Buffer.byteLength(text, "utf8") > MAX_BODY_BYTES) {
+      return Response.json({ ok: false, error: "Request too large." }, { status: 413 });
+    }
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      return Response.json({ ok: false, error: "Invalid request." }, { status: 400 });
+    }
+    // Strict allowlist + per-field length cap.
+    body = sanitizeBody(parsed);
+  }
 
   const kind = body._form as FormKind;
   if (!FORMS.includes(kind)) {
@@ -209,6 +296,10 @@ export async function POST(req: NextRequest) {
   // Honeypot — bots fill this hidden field. Pretend success, drop silently.
   if (body.company_website && body.company_website.trim() !== "") {
     return Response.json({ ok: true, delivered: false });
+  }
+
+  if (kind === "career" && attachments.length === 0) {
+    return Response.json({ ok: false, error: "Please upload your resume." }, { status: 422 });
   }
 
   // Minimal validation — vendor form uses `company` instead of `name`
@@ -239,7 +330,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const delivered = await deliver(kind, body);
+    const delivered = await deliver(kind, body, attachments);
     // PII-safe structured log — NEVER log the lead's name/company/email/subject.
     // eslint-disable-next-line no-console
     console.log(JSON.stringify({ type: "lead", form: kind, delivered, at: new Date().toISOString() }));

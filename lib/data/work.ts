@@ -30,11 +30,11 @@ export const workWall: WorkItem[] = [
 ];
 
 // Section 4 — BUILD stories (real assets only)
-export type BuildStory = WorkItem & { blurb: string };
+export type BuildStory = WorkItem & { blurb: string; href: string };
 export const buildStories: BuildStory[] = [
-  { slug: "the-coolest-job", brand: "The Coolest Job", project: "A brand launch people wanted to be part of.", folder: "the-coolest-job", src: "/assets/work/the-coolest-job/hero/hero-poster.jpg", blurb: "Miller / Millet High Life launch artwork." },
-  { slug: "high-ultra", brand: "High Ultra Lounge", project: "A brand built to be experienced.", folder: "high-ultra-lounge", src: "/assets/work/high-ultra-lounge/venue-on-ground/high-view-rooftop-venue-night.jpg", blurb: "Venue · launch & event communications." },
-  { slug: "high-on-power", brand: "High Ultra Lounge", project: "High on Power.", folder: "high-ultra-lounge", src: "/assets/work/high-ultra-lounge/high-on-power/high-on-power-menu-centre-fold.jpg", blurb: "Menu · cocktails · standees." },
+  { slug: "the-coolest-job", href: "/work/the-coolest-job", brand: "The Coolest Job", project: "A brand launch people wanted to be part of.", folder: "the-coolest-job", src: "/assets/work/the-coolest-job/hero/hero-poster.jpg", blurb: "Miller / Millet High Life launch artwork." },
+  { slug: "high-ultra", href: "/work/high-ultra-lounge", brand: "High Ultra Lounge", project: "A brand built to be experienced.", folder: "high-ultra-lounge", src: "/assets/work/high-ultra-lounge/venue-on-ground/high-view-rooftop-venue-night.jpg", blurb: "Venue · launch & event communications." },
+  { slug: "high-on-power", href: "/work/high-ultra-lounge", brand: "High Ultra Lounge", project: "High on Power.", folder: "high-ultra-lounge", src: "/assets/work/high-ultra-lounge/high-on-power/high-on-power-menu-centre-fold.jpg", blurb: "Menu · cocktails · standees." },
 ];
 
 // Section 5 — CREATE gallery (real creator content from Geek campaigns)

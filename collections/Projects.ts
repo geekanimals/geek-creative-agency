@@ -6,6 +6,7 @@ import { goldStandardTabs } from "../fields/goldStandard";
 import { FLAGSHIP_RENDERER_KEYS } from "../lib/work/renderers";
 import { businessCategories, campaignTypes } from "../lib/work/taxonomy";
 import { revalidateProjectAndHubs } from "./revalidateProject";
+import { videoField } from "../fields/video";
 
 const toOptions = (items: { slug: string; label: string }[]) => items.map((t) => ({ label: t.label, value: t.slug }));
 
@@ -23,8 +24,9 @@ const toOptions = (items: { slug: string; label: string }[]) => items.map((t) =>
  */
 export const Projects: CollectionConfig = {
   slug: "projects",
+  labels: { singular: "Case Study", plural: "Case Studies" },
   admin: {
-    group: "Content",
+    group: "Case Studies",
     useAsTitle: "title",
     defaultColumns: ["title", "client", "renderMode", "featured", "_status"],
     description: "Case studies. Drafts stay private; publish to go live. Existing /public/assets paths keep working.",
@@ -49,9 +51,9 @@ export const Projects: CollectionConfig = {
     {
       type: "tabs",
       tabs: [
-        // ── OVERVIEW ──────────────────────────────────────────────────────
+        // ── BASICS ────────────────────────────────────────────────────────
         {
-          label: "Overview",
+          label: "Basics",
           fields: [
             { name: "title", type: "text", required: true, admin: { description: "Project name shown as the case-study title." } },
             {
@@ -67,52 +69,29 @@ export const Projects: CollectionConfig = {
               { name: "year", type: "number", admin: { width: "25%" } },
               { name: "location", type: "text", admin: { width: "25%" } },
             ] },
+            { name: "brandLogo", label: "Brand logo", type: "upload", relationTo: "media", filterOptions: { mimeType: { contains: "image" } }, admin: {
+              description: "The brand's logo (PNG/WebP, ideally transparent). When this story is published, the brand appears with this logo in the homepage “We've made a few friends” strip.",
+            } },
             { name: "shortSummary", type: "textarea", admin: { description: "One-line summary used at the top of the case study." } },
             { name: "cardSummary", type: "text", admin: { description: "Shorter line for the /work card (falls back to shortSummary)." } },
-            { type: "row", fields: [
-              {
-                name: "renderMode",
-                type: "select",
-                required: true,
-                defaultValue: "standard",
-                admin: { width: "50%", description: "How this project renders. Flagship = bespoke developer renderer." },
-                options: [
-                  { label: "Standard (shared editorial template)", value: "standard" },
-                  { label: "Flexible (CMS content sections)", value: "flexible" },
-                  { label: "Flagship (bespoke React renderer)", value: "flagship" },
-                ],
-              },
-              {
-                name: "flagshipRendererKey",
-                type: "select",
-                admin: {
-                  width: "50%",
-                  description: "Which developer-built renderer to use (flagship only).",
-                  condition: (data) => data?.renderMode === "flagship",
-                },
-                options: FLAGSHIP_RENDERER_KEYS.map((k) => ({ label: k, value: k })),
-              },
-            ] },
+          ],
+        },
+        // ── HERO (image / video) ──────────────────────────────────────────
+        {
+          label: "Hero image & video",
+          description: "The big picture at the top of the case study (also used on the /work card). Add a video to play it instead of the image.",
+          fields: [
             { type: "row", fields: [
               { name: "heroMedia", type: "upload", relationTo: "media", admin: { width: "50%", description: "Hero/card image (CMS). Or use heroLegacySrc." } },
               { name: "heroLegacySrc", type: "text", admin: { width: "50%", description: "OR existing /public/assets hero path." } },
             ] },
-            { name: "heroVideo", type: "text", admin: { description: "Optional hero video path/URL." } },
-            { name: "projectKind", type: "select", defaultValue: "campaign", options: [
-              { label: "Campaign", value: "campaign" },
-              { label: "Ongoing program", value: "ongoing-program" },
-              { label: "Platform", value: "platform" },
-              { label: "Activation", value: "activation" },
-            ], admin: { description: "What the work IS (separate from Render Mode, which is how it's PRESENTED). Programs vs campaigns group differently on the Brand hub." } },
-            { type: "row", fields: [
-              { name: "featured", type: "checkbox", admin: { width: "33%", description: "Show in Featured Stories." } },
-              { name: "order", type: "number", defaultValue: 100, admin: { width: "33%", description: "Lower sorts first in the grid." } },
-            ] },
+            videoField({ name: "heroVideoMedia", label: "Hero video", description: "Plays in the hero instead of the image. Upload a video OR paste a YouTube link." }),
+            { name: "heroVideo", label: "Hero video — old path (optional)", type: "text", admin: { description: "Older option: a /public/assets path or direct MP4 URL. Used only when “Hero video” above is empty." } },
           ],
         },
-        // ── TAXONOMY ──────────────────────────────────────────────────────
+        // ── FILTERS (taxonomy) ────────────────────────────────────────────
         {
-          label: "Taxonomy",
+          label: "Filters",
           fields: [
             { name: "services", type: "relationship", relationTo: "services", hasMany: true, admin: { description: "What Geek did (reusable Services taxonomy). Also powers the /work Service filter." } },
             { name: "campaignTypes", type: "select", hasMany: true, options: toOptions(campaignTypes) },
@@ -151,7 +130,7 @@ export const Projects: CollectionConfig = {
         },
         // ── METRICS ───────────────────────────────────────────────────────
         {
-          label: "Metrics",
+          label: "Numbers",
           admin: { description: "Verified figures only. Never invent metrics." },
           fields: [
             { name: "metrics", type: "array", labels: { singular: "Metric", plural: "Metrics" }, fields: [
@@ -169,10 +148,51 @@ export const Projects: CollectionConfig = {
         },
         // ── SECTIONS (flexible mode) ──────────────────────────────────────
         {
-          label: "Sections",
+          label: "Page sections",
           admin: { description: "Modular content blocks for Flexible mode.", condition: (data) => data?.renderMode === "flexible" },
           fields: [
             { name: "sections", type: "blocks", blocks: sectionBlocks, admin: { description: "Content sections. React decides the exact styling." } },
+          ],
+        },
+        // ── DISPLAY SETTINGS ──────────────────────────────────────────────
+        {
+          label: "Display settings",
+          description: "How the case study is laid out and where it shows up.",
+          fields: [
+            { type: "row", fields: [
+              {
+                name: "renderMode",
+                type: "select",
+                required: true,
+                defaultValue: "standard",
+                admin: { width: "50%", description: "How this project renders. Flagship = bespoke developer renderer." },
+                options: [
+                  { label: "Standard (shared editorial template)", value: "standard" },
+                  { label: "Flexible (CMS content sections)", value: "flexible" },
+                  { label: "Flagship (bespoke React renderer)", value: "flagship" },
+                ],
+              },
+              {
+                name: "flagshipRendererKey",
+                type: "select",
+                admin: {
+                  width: "50%",
+                  description: "Which developer-built renderer to use (flagship only).",
+                  condition: (data) => data?.renderMode === "flagship",
+                },
+                options: FLAGSHIP_RENDERER_KEYS.map((k) => ({ label: k, value: k })),
+              },
+            ] },
+            { name: "projectKind", type: "select", defaultValue: "campaign", options: [
+              { label: "Campaign", value: "campaign" },
+              { label: "Ongoing program", value: "ongoing-program" },
+              { label: "Platform", value: "platform" },
+              { label: "Activation", value: "activation" },
+            ], admin: { description: "What the work IS (separate from Render Mode, which is how it's PRESENTED). Programs vs campaigns group differently on the Brand hub." } },
+            { type: "row", fields: [
+              { name: "featured", type: "checkbox", admin: { width: "33%", description: "Show in Featured Stories." } },
+              { name: "order", type: "number", defaultValue: 100, admin: { width: "33%", description: "Lower sorts first in the grid." } },
+            ] },
           ],
         },
         // ── SEO ───────────────────────────────────────────────────────────

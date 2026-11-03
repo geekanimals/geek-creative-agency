@@ -36,7 +36,7 @@ showing the exact required path (`need`). Never fabricate a campaign visual.
    `lib/data/*.ts` (e.g. `src: "/assets/work/doritos/hero.jpg"`). It renders
    immediately.
 3. **Showreel**: add `public/assets/work/showreel.mp4` (20–25s, muted) and
-   uncomment the `<video>` block in `components/Hero.tsx` (poster collage is the
+   uncomment the `<video>` block in `components/home/Hero.jsx` (poster collage is the
    fallback until then).
 4. **Client logos**: drop monochrome SVGs at `/assets/clients/<slug>.svg` and set
    `logo` in `lib/data/clients.ts`.

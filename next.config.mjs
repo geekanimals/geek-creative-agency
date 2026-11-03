@@ -1,4 +1,8 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { withPayload } from "@payloadcms/next/withPayload";
+
+const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 // Baseline security headers, applied site-wide. Deliberately conservative so
 // they do NOT break the Payload admin, its same-origin live-preview iframe
@@ -16,12 +20,27 @@ const securityHeaders = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Build pages with at most 3 workers (3 DB connections each — see the pool in
+  // payload.config.ts), so a build never exhausts Supabase's 15-client pooler
+  // while the live site is also connected.
+  experimental: { cpus: 3 },
+  // This folder is the project root (a stray package-lock.json in the home
+  // folder otherwise makes Next guess wrong and print a warning).
+  turbopack: { root: projectRoot },
+  // The dev-only "N" badge sat on top of the Share button (bottom-left).
+  // Build/runtime errors still show their overlay without it.
+  devIndicators: false,
   images: {
     remotePatterns: [
       // Public CMS media served from Vercel Blob. Existing /public/assets are
       // local and need no remote pattern.
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
+      // Brand logos on the homepage logo wall (optimised + cached as WebP).
+      { protocol: "https", hostname: "upload.wikimedia.org" },
+      { protocol: "https", hostname: "beardo.in" },
     ],
+    // Optimised copies are reused for 31 days (case-study photos rarely change).
+    minimumCacheTTL: 2678400,
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
@@ -35,8 +54,8 @@ const nextConfig = {
   // to "/" and need no redirect. See docs/PRODUCTION_REDIRECT_MAP.md.
   async redirects() {
     return [
-      { source: "/career.html", destination: "/contact", permanent: true },      // careers → "Work at Geek" door
-      { source: "/careers.html", destination: "/contact", permanent: true },      // defensive alias
+      { source: "/career.html", destination: "/careers", permanent: true },      // careers page
+      { source: "/careers.html", destination: "/careers", permanent: true },      // defensive alias
       { source: "/privacy-policy.html", destination: "/privacy", permanent: true },
       { source: "/terms-and-conditions.html", destination: "/terms", permanent: true },
       { source: "/refund-policy.html", destination: "/terms", permanent: true },  // nearest legal doc

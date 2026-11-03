@@ -10,7 +10,7 @@ import { revalidateGlobals } from "./hooks";
 export const Footer: GlobalConfig = {
   slug: "footer",
   label: "Footer",
-  admin: { group: "Site" },
+  admin: { group: "Header, Footer & Settings" },
   versions: true,
   access: { read: () => true, update: isEditorUp },
   fields: [

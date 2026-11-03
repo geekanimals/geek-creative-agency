@@ -49,6 +49,9 @@ export type CaseStudy = {
   slug: string;
   brand: string;
   brandSlug: string;
+  /** Parent company (e.g. PepsiCo) — a /work filter dimension. */
+  company?: string;
+  companySlug?: string;
   project: string;
   year?: number;
 
@@ -64,6 +67,8 @@ export type CaseStudy = {
   heroImageNeed?: string;
   heroVideo?: string;
   heroVideoMobile?: string; // lighter/portrait hero cut for small screens
+  brandLogo?: string; // brand logo for the homepage logo strip (admin: Case Study → Brand logo)
+  heroYoutube?: string; // YouTube video id for the hero (admin: Hero video → YouTube link)
 
   headline: string;
   oneLineSummary: string;

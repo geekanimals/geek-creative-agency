@@ -43,7 +43,7 @@ export const WHAT_WE_DO_FALLBACK: WhatWeDoModel = {
       thought: "1 or 1,000+.\nInfluence at scale.",
       thoughtHighlight: "Influence at scale.",
       linkLabel: "One Degree of Separation",
-      linkHref: "/work?service=influencer-marketing",
+      linkHref: "/work/influencer-marketing",
     },
     { label: "Amplify.", items: ["Media", "Paid Social", "Distribution", "Performance"], thought: "Great work\ndeserves to travel." },
   ],

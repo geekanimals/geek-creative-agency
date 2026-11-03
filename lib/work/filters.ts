@@ -12,6 +12,7 @@ export type Filters = Record<FilterKey, string[]>;
 
 export const emptyFilters = (): Filters => ({
   category: [],
+  company: [],
   brand: [],
   service: [],
   campaign: [],
@@ -21,6 +22,15 @@ export const emptyFilters = (): Filters => ({
 export function deriveBrands(list: CaseStudy[] = projects): TaxonomyItem[] {
   const map = new Map<string, string>();
   for (const p of list) if (!map.has(p.brandSlug)) map.set(p.brandSlug, p.brand);
+  return [...map.entries()]
+    .map(([slug, label]) => ({ slug, label }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
+
+/** Parent companies, derived from project data (CMS Case Study → Company). */
+export function deriveCompanies(list: CaseStudy[] = projects): TaxonomyItem[] {
+  const map = new Map<string, string>();
+  for (const p of list) if (p.companySlug && !map.has(p.companySlug)) map.set(p.companySlug, p.company || p.companySlug);
   return [...map.entries()]
     .map(([slug, label]) => ({ slug, label }))
     .sort((a, b) => a.label.localeCompare(b.label));
@@ -40,6 +50,7 @@ export function filterGroups(list?: CaseStudy[]): { key: FilterKey; label: strin
   const camps = used((p) => p.campaignTypes);
   return [
     { key: "category", label: "Business Category", items: businessCategories.filter((t) => cats.has(t.slug)) },
+    { key: "company", label: "Company", items: deriveCompanies(src) },
     { key: "brand", label: "Brand", items: deriveBrands(list) },
     { key: "service", label: "Service", items: services.filter((t) => svcs.has(t.slug)) },
     { key: "campaign", label: "Campaign Type", items: campaignTypes.filter((t) => camps.has(t.slug)) },
@@ -54,6 +65,7 @@ export function parseFilters(sp: SP): Filters {
     (sp.get(k) ?? "").split(",").map((s) => s.trim()).filter(Boolean);
   return {
     category: read("category"),
+    company: read("company"),
     brand: read("brand"),
     service: read("service"),
     campaign: read("campaign"),
@@ -63,6 +75,7 @@ export function parseFilters(sp: SP): Filters {
 export function serializeFilters(f: Filters): string {
   const params = new URLSearchParams();
   if (f.category.length) params.set("category", f.category.join(","));
+  if (f.company.length) params.set("company", f.company.join(","));
   if (f.brand.length) params.set("brand", f.brand.join(","));
   if (f.service.length) params.set("service", f.service.join(","));
   if (f.campaign.length) params.set("campaign", f.campaign.join(","));
@@ -70,7 +83,7 @@ export function serializeFilters(f: Filters): string {
 }
 
 export const countActive = (f: Filters): number =>
-  f.category.length + f.brand.length + f.service.length + f.campaign.length;
+  f.category.length + f.company.length + f.brand.length + f.service.length + f.campaign.length;
 
 // ── Filtering: OR within a group, AND across groups ───────────────────────
 const overlaps = (a: string[], b: string[]) => a.some((x) => b.includes(x));
@@ -78,6 +91,7 @@ const overlaps = (a: string[], b: string[]) => a.some((x) => b.includes(x));
 export function filterProjects(f: Filters, list: CaseStudy[] = projects): CaseStudy[] {
   return list.filter((p) => {
     if (f.category.length && !overlaps(p.businessCategory, f.category)) return false;
+    if (f.company.length && !(p.companySlug && f.company.includes(p.companySlug))) return false;
     if (f.brand.length && !f.brand.includes(p.brandSlug)) return false;
     if (f.service.length && !overlaps(p.services, f.service)) return false;
     if (f.campaign.length && !overlaps(p.campaignTypes, f.campaign)) return false;

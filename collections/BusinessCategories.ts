@@ -16,7 +16,7 @@ export const BusinessCategories: CollectionConfig = {
   slug: "business-categories",
   labels: { singular: "Industry", plural: "Industries" },
   admin: {
-    group: "Portfolio",
+    group: "Hub Pages",
     useAsTitle: "name",
     defaultColumns: ["name", "slug", "_status", "updatedAt"],
     description: "Industry/vertical hub pages at /industries/[slug]. Publish only when useful content exists.",

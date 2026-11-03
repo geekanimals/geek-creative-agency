@@ -99,3 +99,34 @@ export async function getSiteSettings(): Promise<SiteSettingsModel> {
 export async function getGlobalSEO(): Promise<SeoModel> {
   return (await getSiteSettings()).seo;
 }
+
+/* ── Floating WhatsApp / Instagram buttons (Site Settings → “WhatsApp & Instagram buttons”) ── */
+export type FloatingContactModel = {
+  whatsappNumber: string;
+  whatsappMessage: string;
+  instagramUrl: string;
+  meetingUrl: string;
+  meetingLabel: string;
+  hidden: boolean;
+};
+
+/** Admin values for the floating buttons; empty fields are filled by the caller's code defaults. */
+export async function getFloatingContact(): Promise<Partial<FloatingContactModel>> {
+  try {
+    const g = (await rawSettings()) as unknown as {
+      floatingContact?: { whatsappNumber?: string | null; whatsappMessage?: string | null; instagramUrl?: string | null; meetingUrl?: string | null; meetingLabel?: string | null; hideButtons?: boolean | null };
+    };
+    const f = g?.floatingContact ?? {};
+    return {
+      whatsappNumber: f.whatsappNumber || undefined,
+      whatsappMessage: f.whatsappMessage || undefined,
+      instagramUrl: f.instagramUrl || undefined,
+      meetingUrl: f.meetingUrl || undefined,
+      meetingLabel: f.meetingLabel || undefined,
+      hidden: Boolean(f.hideButtons),
+    };
+  } catch (e) {
+    logCmsError("getFloatingContact", e);
+    return {};
+  }
+}
