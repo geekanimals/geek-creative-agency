@@ -5,7 +5,10 @@ import { getImageProps } from "next/image";
 import LogoGrid from "@/components/home/LogoGrid";
 import { LOGO_CATEGORIES } from "@/lib/data/clients";
 
-const OPTIMISABLE = /^\/|^https:\/\/(upload\.wikimedia\.org|beardo\.in|[^/]+\.public\.blob\.vercel-storage\.com)\//;
+// Our own files and CMS uploads go through next/image. Remote brand logos
+// (Wikimedia, beardo.in) load straight from their CDN: Wikimedia answers a
+// server's repeated fetches with HTTP 429, which broke tiles on the live site.
+const OPTIMISABLE = /^\/|^https:\/\/[^/]+\.public\.blob\.vercel-storage\.com\//;
 
 /** Small, cached WebP copies via next/image, so logos load fast and from our own domain. */
 function logoImg(src) {

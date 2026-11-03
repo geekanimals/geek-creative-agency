@@ -1,4 +1,13 @@
-import { BRAND_CATEGORY, clients, KNOWN_LOGOS } from "@/lib/data/clients";
+import { existsSync } from "node:fs";
+import path from "node:path";
+import { BRAND_CATEGORY, clients, KNOWN_LOGOS, LOCAL_LOGOS } from "@/lib/data/clients";
+
+/** Our own copy in public/ when it has been downloaded, else the remote URL. */
+function knownLogo(k: string): string | undefined {
+  const local = LOCAL_LOGOS[k];
+  if (local && existsSync(path.join(process.cwd(), "public", local))) return local;
+  return KNOWN_LOGOS[k];
+}
 
 /**
  * The homepage "We've made a few friends along the way" strip.
@@ -46,7 +55,7 @@ export function buildFriendLogos(
   // Any brand still without an image gets its known logo (lib/data/clients.ts).
   return out.map((f) => ({
     ...f,
-    logo: f.logo || KNOWN_LOGOS[key(f.name)],
+    logo: f.logo || knownLogo(key(f.name)),
     category: BRAND_CATEGORY[key(f.name)] || "more",
   }));
 }

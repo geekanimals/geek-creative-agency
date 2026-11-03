@@ -35,6 +35,31 @@ export const KNOWN_LOGOS: Record<string, string> = {
   sustainify: "/assets/work/sustainify/sustainify-logo.jpg",
 };
 
+/* Local copies downloaded by `node scripts/fetch-logos.mjs` (public/assets/clients).
+   When a file exists here it is used instead of the remote URL above. */
+export const LOCAL_LOGOS: Record<string, string> = {
+  pepsi: "/assets/clients/pepsi.png",
+  lays: "/assets/clients/lays.png",
+  doritos: "/assets/clients/doritos.png",
+  cocacola: "/assets/clients/cocacola.png",
+  fastrack: "/assets/clients/fastrack.png",
+  tanishq: "/assets/clients/tanishq.png",
+  durex: "/assets/clients/durex.png",
+  ponds: "/assets/clients/ponds.png",
+  axe: "/assets/clients/axe.png",
+  foreo: "/assets/clients/foreo.png",
+  "7up": "/assets/clients/7up.png",
+  airasia: "/assets/clients/airasia.png",
+  icicibank: "/assets/clients/icicibank.png",
+  kotak: "/assets/clients/kotak.png",
+  croma: "/assets/clients/croma.png",
+  kurkure: "/assets/clients/kurkure.png",
+  mountaindew: "/assets/clients/mountaindew.png",
+  quaker: "/assets/clients/quaker.png",
+  millerhighlife: "/assets/clients/millerhighlife.png",
+  beardo: "/assets/clients/beardo.png",
+};
+
 export const logoKey = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, "");
 
 const c = (name: string, slug: string): Client => ({
