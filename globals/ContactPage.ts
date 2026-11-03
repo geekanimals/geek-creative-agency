@@ -40,25 +40,7 @@ export const ContactPage: GlobalConfig = {
             { name: "hero", type: "group", label: false, fields: [
               { name: "headingBlock", type: "textarea", admin: { description: "The big heading. Use a line break for the two lines (e.g. “What should” / “we make matter next?”)." } },
               { name: "headingHighlight", type: "text", admin: { description: "Word in the heading shown highlighted cyan (e.g. “matter”)." } },
-              { name: "formEyebrow", type: "text", admin: { description: "Small label above the form (e.g. “Tell us the problem”)." } },
-            ] },
-          ],
-        },
-        {
-          label: "Offices & Map",
-          fields: [
-            { name: "offices", type: "group", label: false, admin: { description: "The office cards with a Google Map on the Contact page. Tapping a card opens the location in Google Maps. Leave the list empty to show the default offices." }, fields: [
-              { type: "row", fields: [
-                { name: "eyebrow", type: "text", admin: { width: "50%", description: "e.g. “The G spot.”" } },
-                { name: "heading", type: "text", admin: { width: "50%", description: "e.g. “Come say hi.”" } },
-              ] },
-              { name: "items", type: "array", label: "Offices", labels: { singular: "Office", plural: "Offices" }, fields: [
-                { type: "row", fields: [
-                  { name: "city", type: "text", required: true, admin: { width: "30%", description: "e.g. “Bangalore”" } },
-                  { name: "address", type: "textarea", required: true, admin: { width: "70%", description: "Full address, shown on the card." } },
-                ] },
-                { name: "mapQuery", type: "text", label: "Google Maps search (optional)", admin: { description: "What the map should search for, if the address alone lands in the wrong spot — e.g. “Geek Creative Agency, HMT Layout, Bengaluru” or a Google Maps place name. Empty → the address is used." } },
-              ] },
+              { name: "formEyebrow", type: "text", admin: { hidden: true, description: "No longer shown — the Contact page has no form now (the Four Doors open each form)." } },
             ] },
           ],
         },
@@ -85,6 +67,24 @@ export const ContactPage: GlobalConfig = {
                   ] },
                 ],
               },
+            ] },
+          ],
+        },
+        {
+          label: "Offices & Map",
+          fields: [
+            { name: "offices", type: "group", label: false, admin: { description: "The office cards with a Google Map on the Contact page. Tapping a card opens the location in Google Maps. Leave the list empty to show the default offices." }, fields: [
+              { type: "row", fields: [
+                { name: "eyebrow", type: "text", admin: { width: "50%", description: "e.g. “The G spot.”" } },
+                { name: "heading", type: "text", admin: { width: "50%", description: "e.g. “Come say hi.”" } },
+              ] },
+              { name: "items", type: "array", label: "Offices", labels: { singular: "Office", plural: "Offices" }, fields: [
+                { type: "row", fields: [
+                  { name: "city", type: "text", required: true, admin: { width: "30%", description: "e.g. “Bangalore”" } },
+                  { name: "address", type: "textarea", required: true, admin: { width: "70%", description: "Full address, shown on the card." } },
+                ] },
+                { name: "mapQuery", type: "text", label: "Google Maps search (optional)", admin: { description: "What the map should search for, if the address alone lands in the wrong spot — e.g. “Geek Creative Agency, HMT Layout, Bengaluru” or a Google Maps place name. Empty → the address is used." } },
+              ] },
             ] },
           ],
         },

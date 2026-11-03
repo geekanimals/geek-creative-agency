@@ -2,7 +2,6 @@ import { draftMode } from "next/headers";
 import FourDoors from "@/components/doors/FourDoors";
 import { HighlightedLines } from "@/components/content/HighlightedLines";
 import Offices from "@/components/contact/Offices";
-import ClientForm from "@/components/forms/ClientForm";
 import { getContactPage } from "@/lib/cms/contactPage";
 import { CONTACT_FALLBACK } from "@/lib/site/contactFallback";
 import { ogFallback } from "@/lib/seo/ogImage";
@@ -42,25 +41,18 @@ export default async function ContactPage() {
       <main id="main" className="contact">
         {draft && <div className="contact__draft">Preview — draft (not public)</div>}
 
-        {/* Hero + primary form */}
+        {/* Hero */}
         <section className="contact-container contact-hero">
           <h1 className="contact-display contact-hero__title">
             <HighlightedLines text={hero.headingBlock} highlight={hero.headingHighlight} />
           </h1>
-
-          <div className="contact-hero__form">
-            <p className="contact-hero__eyebrow">{hero.formEyebrow}</p>
-            <div className="contact-hero__form-body">
-              <ClientForm />
-            </div>
-          </div>
         </section>
+
+        {/* Four doors first — each opens its own page + form (components/doors/doors.jsx) */}
+        <FourDoors eyebrow={doors.eyebrow} heading={doors.heading} labels={doorLabels} />
 
         {/* Offices — embedded Google Maps; tap opens Maps (admin: Contact Page → Offices & Map) */}
         <Offices eyebrow={offices.eyebrow} heading={offices.heading} items={offices.items} />
-
-        {/* Four doors — each opens its own page (components/doors/doors.jsx) */}
-        <FourDoors eyebrow={doors.eyebrow} heading={doors.heading} labels={doorLabels} />
       </main>
     </>
   );
@@ -84,7 +76,7 @@ const styles = `
 }
 
 .contact-hero {
-  padding-block: 2.5rem;
+  padding-block: 2.5rem 2rem;
 }
 
 .contact-hero__title {
@@ -93,23 +85,6 @@ const styles = `
   color: #0c0d0c;
 }
 
-.contact-hero__form {
-  margin-top: 3rem;
-  max-width: 42rem;
-}
-
-.contact-hero__eyebrow {
-  font-size: 0.75rem;
-  line-height: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #32c1df;
-}
-
-.contact-hero__form-body {
-  margin-top: 1.5rem;
-}
 
 /* ---- type/layout helpers (local copy). Placed after the base rules and before the
    breakpoints, matching the original cascade: helpers beat plain utilities, responsive
@@ -141,7 +116,7 @@ const styles = `
   }
 
   .contact-hero {
-    padding-block: 4rem;
+    padding-block: 4rem 3rem;
   }
 }
 `;

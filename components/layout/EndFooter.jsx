@@ -1,13 +1,25 @@
 import EndFooterClient from "./EndFooterClient";
-import { getFooter, getSiteSettings } from "@/lib/cms/globals";
+import { getFloatingContact, getFooter, getSiteSettings } from "@/lib/cms/globals";
+import { getContactPage } from "@/lib/cms/contactPage";
 
 /**
- * Server wrapper: resolves footer content + social links (CMS-first, static
- * fallback, cached + tagged "globals") in parallel and hands them to the client
- * footer. Rendered once for every page by
- * app/(frontend)/layout.jsx.
+ * Server wrapper: footer content, social links, office addresses and the
+ * "Book a meeting" link (all CMS-first, cached + tagged) for the client footer.
+ * Rendered once for every page by app/(frontend)/layout.jsx.
  */
 export default async function EndFooter() {
-  const [footer, settings] = await Promise.all([getFooter(), getSiteSettings()]);
-  return <EndFooterClient footer={footer} socials={settings.socials} />;
+  const [footer, settings, contact, floating] = await Promise.all([
+    getFooter(),
+    getSiteSettings(),
+    getContactPage().catch(() => null),
+    getFloatingContact(),
+  ]);
+  return (
+    <EndFooterClient
+      footer={footer}
+      socials={settings.socials}
+      offices={contact?.offices?.items ?? []}
+      meetingUrl={floating.meetingUrl || ""}
+    />
+  );
 }

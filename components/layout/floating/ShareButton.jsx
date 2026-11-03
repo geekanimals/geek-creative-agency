@@ -224,7 +224,8 @@ const styles = `
   cursor: pointer;
   background: #0c0d0c;
   color: #ffffff;
-  box-shadow: 0 10px 24px -6px rgba(12, 13, 12, 0.35), 0 2px 6px rgba(12, 13, 12, 0.15);
+  /* white ring keeps it visible over the dark footer */
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9), 0 10px 24px -6px rgba(12, 13, 12, 0.35), 0 2px 6px rgba(12, 13, 12, 0.15);
   transition: transform 200ms ease, background-color 200ms ease;
 }
 .share-fab:hover { transform: translateY(-2px) scale(1.05); background: #137c93; }

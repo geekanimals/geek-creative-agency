@@ -3657,39 +3657,9 @@ export interface ContactPage {
      */
     headingHighlight?: string | null;
     /**
-     * Small label above the form (e.g. “Tell us the problem”).
+     * No longer shown — the Contact page has no form now (the Four Doors open each form).
      */
     formEyebrow?: string | null;
-  };
-  /**
-   * The office cards with a Google Map on the Contact page. Tapping a card opens the location in Google Maps. Leave the list empty to show the default offices.
-   */
-  offices?: {
-    /**
-     * e.g. “The G spot.”
-     */
-    eyebrow?: string | null;
-    /**
-     * e.g. “Come say hi.”
-     */
-    heading?: string | null;
-    items?:
-      | {
-          /**
-           * e.g. “Bangalore”
-           */
-          city: string;
-          /**
-           * Full address, shown on the card.
-           */
-          address: string;
-          /**
-           * What the map should search for, if the address alone lands in the wrong spot — e.g. “Geek Creative Agency, HMT Layout, Bengaluru” or a Google Maps place name. Empty → the address is used.
-           */
-          mapQuery?: string | null;
-          id?: string | null;
-        }[]
-      | null;
   };
   /**
    * The “What brings you to Geek?” section. You can relabel the four doors, but their forms and styling are fixed.
@@ -3720,6 +3690,36 @@ export interface ContactPage {
            * e.g. “For Clients.”
            */
           sub: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * The office cards with a Google Map on the Contact page. Tapping a card opens the location in Google Maps. Leave the list empty to show the default offices.
+   */
+  offices?: {
+    /**
+     * e.g. “The G spot.”
+     */
+    eyebrow?: string | null;
+    /**
+     * e.g. “Come say hi.”
+     */
+    heading?: string | null;
+    items?:
+      | {
+          /**
+           * e.g. “Bangalore”
+           */
+          city: string;
+          /**
+           * Full address, shown on the card.
+           */
+          address: string;
+          /**
+           * What the map should search for, if the address alone lands in the wrong spot — e.g. “Geek Creative Agency, HMT Layout, Bengaluru” or a Google Maps place name. Empty → the address is used.
+           */
+          mapQuery?: string | null;
           id?: string | null;
         }[]
       | null;
@@ -4830,20 +4830,6 @@ export interface ContactPageSelect<T extends boolean = true> {
         headingHighlight?: T;
         formEyebrow?: T;
       };
-  offices?:
-    | T
-    | {
-        eyebrow?: T;
-        heading?: T;
-        items?:
-          | T
-          | {
-              city?: T;
-              address?: T;
-              mapQuery?: T;
-              id?: T;
-            };
-      };
   doors?:
     | T
     | {
@@ -4855,6 +4841,20 @@ export interface ContactPageSelect<T extends boolean = true> {
               key?: T;
               title?: T;
               sub?: T;
+              id?: T;
+            };
+      };
+  offices?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        items?:
+          | T
+          | {
+              city?: T;
+              address?: T;
+              mapQuery?: T;
               id?: T;
             };
       };

@@ -17,5 +17,7 @@ export const FLOATING_CONTACT = {
   // "Book a meeting" button — paste the Calendly / Google appointment link in
   // the admin (Site Settings → buttons). Empty = button hidden.
   meetingUrl: "",
+  // Email shown in the footer (Gmail icon → opens a new mail to this address).
+  contactEmail: "hr@geekcreativeagency.com",
   meetingLabel: "Book a meeting",
 };
