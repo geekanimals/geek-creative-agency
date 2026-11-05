@@ -72,11 +72,14 @@ export default function ShareButton() {
   const [copied, setCopied] = useState(false);
   const [page, setPage] = useState({ url: "", title: "" });
   const [canNative, setCanNative] = useState(false);
+  const [mobile, setMobile] = useState(false);
+  const [toast, setToast] = useState("");
 
   useEffect(() => {
     if (!open) return;
     setPage({ url: window.location.href.split("#")[0], title: document.title });
     setCanNative(typeof navigator.share === "function");
+    setMobile(isMobile());
     const onKey = (e) => e.key === "Escape" && setOpen(false);
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -99,6 +102,7 @@ export default function ShareButton() {
     }
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
+    return true;
   };
 
   const native = async () => {
@@ -110,9 +114,17 @@ export default function ShareButton() {
   };
 
   // Instagram / Snapchat: system share sheet on phones; copy + open the app on desktop.
-  const viaApp = (desktopUrl) => async () => {
+  const say = (text) => {
+    setToast(text);
+    setTimeout(() => setToast(""), 3200);
+  };
+
+  // Instagram has no "share a link" URL: phone → system share sheet (Instagram
+  // is in it); computer → copy the link, open Instagram DMs, tell them to paste.
+  const viaApp = (desktopUrl, appName) => async () => {
     if (isMobile() && canNative) return native();
     await copy();
+    say(`Link copied — paste it in your ${appName} chat`);
     window.open(desktopUrl, "_blank", "noopener");
   };
 
@@ -120,14 +132,21 @@ export default function ShareButton() {
   const msg = enc(`${page.title} ${page.url}`);
   const targets = [
     { id: "whatsapp", label: "WhatsApp", bg: "#25d366", href: `https://wa.me/?text=${msg}` },
-    { id: "instagram", label: "Instagram", bg: "radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285aeb 90%)", onClick: viaApp("https://www.instagram.com/direct/inbox/") },
-    { id: "snapchat", label: "Snapchat", bg: "#fffc00", fg: "#ffffff", href: `https://www.snapchat.com/scan?attachmentUrl=${u}` },
+    { id: "instagram", label: "Instagram", bg: "radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285aeb 90%)", onClick: viaApp("https://www.instagram.com/direct/inbox/", "Instagram") },
+    // Phone: opens the Snapchat app with the link attached. Computer: Snapchat
+    // shows a Snapcode to scan with the phone (Snapchat has no desktop sending).
+    { id: "snapchat", label: "Snapchat", bg: "#fffc00", fg: "#ffffff", href: `https://www.snapchat.com/scan?attachmentUrl=${u}`, note: mobile ? "" : "Scan the code with your phone" },
     { id: "telegram", label: "Telegram", bg: "#229ed9", href: `https://t.me/share/url?url=${u}&text=${enc(page.title)}` },
     { id: "facebook", label: "Facebook", bg: "#1877f2", href: `https://www.facebook.com/sharer/sharer.php?u=${u}` },
     { id: "x", label: "X", bg: "#0c0d0c", href: `https://twitter.com/intent/tweet?url=${u}&text=${enc(page.title)}` },
     { id: "linkedin", label: "LinkedIn", bg: "#0a66c2", href: `https://www.linkedin.com/sharing/share-offsite/?url=${u}` },
-    { id: "email", label: "Email", bg: "#5a5f5c", href: `mailto:?subject=${enc(page.title)}&body=${msg}` },
-    { id: "sms", label: "Message", bg: "#34c759", href: `sms:?&body=${msg}` },
+    // Phone: the mail app. Computer: Gmail compose (a bare mailto: does nothing
+    // on most computers that have no mail app set up).
+    mobile
+      ? { id: "email", label: "Email", bg: "#5a5f5c", href: `mailto:?subject=${enc(page.title)}&body=${msg}` }
+      : { id: "email", label: "Gmail", bg: "#ea4335", href: `https://mail.google.com/mail/?view=cm&fs=1&su=${enc(page.title)}&body=${msg}` },
+    // SMS only exists on phones.
+    ...(mobile ? [{ id: "sms", label: "Message", bg: "#34c759", href: `sms:?&body=${msg}` }] : []),
     { id: "copy", label: copied ? "Copied!" : "Copy link", bg: "#137c93", onClick: copy },
     ...(canNative ? [{ id: "more", label: "More", bg: "#e6e8e5", fg: "#0c0d0c", onClick: native }] : []),
   ];
@@ -181,7 +200,10 @@ export default function ShareButton() {
                       <span className="share-sheet__label">{t.label}</span>
                     </>
                   );
-                  const onTrack = () => track("share_click", { channel: t.id });
+                  const onTrack = () => {
+                    track("share_click", { channel: t.id });
+                    if (t.note) say(t.note);
+                  };
                   return t.href ? (
                     <a key={t.id} href={t.href} target={/^(mailto|sms):/.test(t.href) ? undefined : "_blank"} rel="noopener noreferrer" className="share-sheet__item" onClick={onTrack}>
                       {inner}
@@ -193,6 +215,12 @@ export default function ShareButton() {
                   );
                 })}
               </div>
+
+              {toast && (
+                <p className="share-sheet__toast" role="status">
+                  {toast}
+                </p>
+              )}
 
               <div className="share-sheet__link">
                 <span className="share-sheet__url">{page.url}</span>
@@ -297,6 +325,11 @@ const styles = `
 .share-sheet__copy {
   flex: none; border: 0; border-radius: 9999px; background: #0c0d0c; color: #fff;
   padding: 0.45rem 0.9rem; font-size: 0.75rem; font-weight: 700; cursor: pointer;
+}
+.share-sheet__toast {
+  margin: 1rem 0 0; border-radius: 0.75rem; background: #e7f8fc; color: #0c5465;
+  padding: 0.6rem 0.85rem; font-size: 0.8rem; font-weight: 600; text-align: center;
+  animation: share-up 200ms ease both;
 }
 @keyframes share-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes share-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
