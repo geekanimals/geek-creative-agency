@@ -530,6 +530,79 @@ const styles = `
   color: rgba(255, 255, 255, 0.8);
 }
 
+/* Rich-text typography: headings, lists and spacing inside richText / splitContent */
+.flex-cs__rich > * + *,
+.flex-cs__split-copy > * + * {
+  margin-top: 1rem;
+}
+
+.flex-cs__rich h2,
+.flex-cs__rich h3,
+.flex-cs__split-copy h2,
+.flex-cs__split-copy h3 {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: #0c0d0c;
+}
+
+.flex-cs__rich h2,
+.flex-cs__split-copy h2 {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+}
+
+.flex-cs__rich h3,
+.flex-cs__split-copy h3 {
+  font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+}
+
+.flex-cs__rich * + h2,
+.flex-cs__rich * + h3,
+.flex-cs__split-copy * + h2,
+.flex-cs__split-copy * + h3 {
+  margin-top: 2rem;
+}
+
+.flex-cs__copy--dark h2,
+.flex-cs__copy--dark h3 {
+  color: #ffffff;
+}
+
+.flex-cs__rich ul,
+.flex-cs__rich ol,
+.flex-cs__split-copy ul,
+.flex-cs__split-copy ol {
+  padding-left: 1.4em;
+}
+
+.flex-cs__rich ul,
+.flex-cs__split-copy ul {
+  list-style: disc;
+}
+
+.flex-cs__rich ol,
+.flex-cs__split-copy ol {
+  list-style: decimal;
+}
+
+.flex-cs__rich li + li,
+.flex-cs__split-copy li + li {
+  margin-top: 0.5rem;
+}
+
+.flex-cs__rich li::marker,
+.flex-cs__split-copy li::marker {
+  color: #32c1df;
+  font-weight: 700;
+}
+
+.flex-cs__rich em,
+.flex-cs__split-copy em {
+  font-style: italic;
+}
+
 /* mediaBlock */
 .flex-cs__caption {
   margin-top: 0.75rem;
