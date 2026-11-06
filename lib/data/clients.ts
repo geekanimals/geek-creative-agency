@@ -98,14 +98,18 @@ export const LOGO_CATEGORIES = [
   { id: "lifestyle", label: "Beauty & Lifestyle" },
   { id: "retail", label: "Retail, Finance & Travel" },
   { id: "hospitality", label: "Hospitality & Startups" },
+  { id: "health", label: "Health & Hygiene" },
 ] as const;
 
 export const BRAND_CATEGORY: Record<string, string> = {
   lays: "food", doritos: "food", kurkure: "food", quaker: "food",
+  quakerfoods: "food", cheetos: "food", mcdonalds: "food", oliopizza: "food",
   pepsi: "drinks", cocacola: "drinks", "7up": "drinks", mountaindew: "drinks", sting: "drinks",
   nimbooz: "drinks", millerhighlife: "drinks",
+  slice: "drinks", gatorade: "drinks", mirinda: "drinks", aquafina: "drinks", tropicana: "drinks",
   fastrack: "lifestyle", tanishq: "lifestyle", durex: "lifestyle", ponds: "lifestyle", axe: "lifestyle",
-  foreo: "lifestyle", beardo: "lifestyle",
+  foreo: "lifestyle", beardo: "lifestyle", veet: "lifestyle", kapiva: "lifestyle",
+  dettol: "health", cipla: "health",
   airasia: "retail", icicibank: "retail", kotak: "retail", croma: "retail",
   highultralounge: "hospitality", thebiereclub: "hospitality", sustainify: "hospitality", lyfe: "hospitality",
 };
