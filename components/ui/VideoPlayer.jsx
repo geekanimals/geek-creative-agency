@@ -35,6 +35,9 @@ export default function VideoPlayer({ video, title = "Video", ratio = "16/9" }) 
           title={title}
           loading="lazy"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          // YouTube needs the page origin as Referer (else "Error 153"); the server adds
+          // a stricter Referrer-Policy header, so set it on the iframe itself.
+          referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
           className="vplayer__media"
         />

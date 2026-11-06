@@ -99,6 +99,7 @@ export default function AutoVideo({
             src={`https://www.youtube-nocookie.com/embed/${youtube}?${ytParams}`}
             title="Background video"
             allow="autoplay; encrypted-media; picture-in-picture"
+            referrerPolicy="strict-origin-when-cross-origin"
             tabIndex={-1}
             onLoad={() => setReady(true)}
             className={`avideo__yt-frame ${ready ? "avideo__video--ready" : ""}`}
