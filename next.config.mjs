@@ -15,11 +15,18 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  // HTTPS only for a year (the site is self-hosted, so HSTS is not added for us).
+  { key: "Strict-Transport-Security", value: "max-age=31536000" },
+  // Minimal CSP that cannot break scripts/styles: no plugins, no <base> hijack,
+  // and only our own pages may frame the site (admin live preview still works).
+  { key: "Content-Security-Policy", value: "frame-ancestors 'self'; object-src 'none'; base-uri 'self'" },
 ];
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Don't advertise the framework in an X-Powered-By header.
+  poweredByHeader: false,
   // Build pages with at most 3 workers (3 DB connections each — see the pool in
   // payload.config.ts), so a build never exhausts Supabase's 15-client pooler
   // while the live site is also connected.

@@ -22,15 +22,15 @@
     "case-study:draft": "tsx scripts/claude-case-study/write-draft.ts"
   },
   "dependencies": {
-    "@payloadcms/db-postgres": "3.88.0",
-    "@payloadcms/next": "3.88.0",
-    "@payloadcms/richtext-lexical": "3.88.0",
-    "@payloadcms/storage-vercel-blob": "3.88.0",
-    "@payloadcms/ui": "3.88.0",
+    "@payloadcms/db-postgres": "3.93.0",
+    "@payloadcms/next": "3.93.0",
+    "@payloadcms/richtext-lexical": "3.93.0",
+    "@payloadcms/storage-vercel-blob": "3.93.0",
+    "@payloadcms/ui": "3.93.0",
     "framer-motion": "^11.3.19",
-    "next": "16.3.4",
+    "next": "16.4.6",
     "nodemailer": "^10.2.1",
-    "payload": "3.88.0",
+    "payload": "3.93.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "sharp": "^0.33.5"

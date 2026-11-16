@@ -39,6 +39,14 @@ const RESUME_TYPES: Record<string, string> = {
   docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 };
 type Attachment = { filename: string; content: Buffer; contentType: string };
+
+/** Does the file really start like a PDF / DOC / DOCX (not just named like one)? */
+function looksLikeResume(ext: string, buf: Buffer): boolean {
+  if (ext === "pdf") return buf.subarray(0, 5).toString("latin1") === "%PDF-";
+  if (ext === "docx") return buf[0] === 0x50 && buf[1] === 0x4b; // ZIP ("PK")
+  if (ext === "doc") return buf.subarray(0, 4).toString("hex") === "d0cf11e0"; // OLE2
+  return false;
+}
 const MAX_FIELD_LEN = 5000; // generous for the longest textarea; rejects abuse
 
 /** Keep only allowed string fields, trimmed + length-capped. Non-strings dropped. */
@@ -246,7 +254,11 @@ async function readMultipart(
         .replace(/[^\w.\- ]+/g, "")
         .trim()
         .slice(0, 120) || `resume.${ext}`;
-    attachments.push({ filename: safeName, content: Buffer.from(await file.arrayBuffer()), contentType });
+    const content = Buffer.from(await file.arrayBuffer());
+    if (!looksLikeResume(ext, content)) {
+      return Response.json({ ok: false, error: "Please upload a PDF, DOC or DOCX resume." }, { status: 415 });
+    }
+    attachments.push({ filename: safeName, content, contentType });
   }
   return { body, attachments };
 }
@@ -311,9 +323,12 @@ export async function POST(req: NextRequest) {
     return Response.json({ ok: false, error: "Please use a valid email." }, { status: 422 });
   }
 
+  // X-Real-IP is set by our nginx from the real connection. The FIRST entry of
+  // X-Forwarded-For is whatever the visitor sends, so it can't be trusted for
+  // rate limiting; fall back to its LAST entry (added by our proxy).
   const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
+    req.headers.get("x-real-ip")?.trim() ||
+    req.headers.get("x-forwarded-for")?.split(",").pop()?.trim() ||
     "unknown";
   if (rateLimited(ip)) {
     return Response.json({ ok: false, error: "Too many requests — try again shortly." }, { status: 429 });

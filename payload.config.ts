@@ -71,6 +71,9 @@ if (process.env.NODE_ENV === "production" && process.env.PAYLOAD_DB_PUSH === "tr
 export default buildConfig({ sharp,
   // Absolute URLs derive from NEXT_PUBLIC_SITE_URL (never a hardcoded host).
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || undefined,
+  // Public API callers can't request deeply nested (heavy) responses; the site
+  // itself never asks for more than depth 2.
+  maxDepth: 3,
 
   admin: {
     user: Users.slug,
