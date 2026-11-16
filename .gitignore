@@ -19,3 +19,11 @@ _private-source/
 tsconfig.tsbuildinfo
 .claude/
 .jsx-staging/
+
+# Private files — never commit or deploy (removed from the repo 2026-11-16)
+/geek creds.zip
+/Growth Plan for Geek Creative Agency*.pdf
+/ChatGPT Image *.png
+/geek-codex-independent-audit-prompt.md
+/newsletter template.png
+*.zip
