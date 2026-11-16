@@ -1,9 +1,12 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL, IS_STAGING } from "@/lib/site";
+import { headers } from "next/headers";
+import { SITE_URL, IS_STAGING, isCanonicalHost } from "@/lib/site";
 
-export default function robots(): MetadataRoute.Robots {
-  // Staging (…vercel.app): block all crawling so it can't be indexed.
-  if (IS_STAGING) {
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const host = (await headers()).get("host");
+  // Staging builds, and any host that is not the canonical one (test
+  // subdomain, server IP, localhost), block all crawling.
+  if (IS_STAGING || !isCanonicalHost(host)) {
     return { rules: [{ userAgent: "*", disallow: "/" }] };
   }
   return {

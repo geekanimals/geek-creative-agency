@@ -6,6 +6,7 @@ import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
 import { getWorkProjects } from "@/lib/cms/projects";
 import {
   WORK_DIMENSIONS,
+  dimensionOptions,
   projectsForFilters,
   resolveWorkPath,
   workPathHref,
@@ -46,7 +47,20 @@ export async function workFilterMetadata(segments) {
   }
   const { filters } = resolved;
   const count = projectsForFilters(filters, projects).length;
-  const name = joinLabels(filters);
+  let name = joinLabels(filters);
+  // A company and its brand can share a name (Cipla / Cipla). Say which one
+  // this page is so the two pages don't carry duplicate titles.
+  if (filters.length === 1) {
+    const { dimension, option } = filters[0];
+    const clash = WORK_DIMENSIONS.some(
+      (d) =>
+        d.key !== dimension.key &&
+        dimensionOptions(d.key, projects).some(
+          (o) => o.label.toLowerCase() === option.label.toLowerCase(),
+        ),
+    );
+    if (clash) name = `${option.label} ${dimension.label}`;
+  }
   const title = `${name} Work — Geek Creative Agency`;
   const brands = [
     ...new Set(

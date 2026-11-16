@@ -26,7 +26,24 @@ export const SITE = {
   socials: SOCIALS,
 };
 
-/** True when running against a Vercel preview/staging host (never the prod canonical). */
-export const IS_STAGING = /vercel\.app$/i.test(new URL(SITE_URL).hostname);
+/** Hostname of the canonical site, e.g. "www.geekcreativeagency.com". */
+export const CANONICAL_HOST = new URL(SITE_URL).hostname.toLowerCase();
+
+/**
+ * True when the BUILD is a preview/staging build that must never be indexed:
+ * a Vercel host, a "test." host, or NEXT_PUBLIC_NOINDEX=true.
+ */
+export const IS_STAGING =
+  /vercel\.app$/i.test(CANONICAL_HOST) ||
+  /(^|\.)test\./i.test(CANONICAL_HOST) ||
+  process.env.NEXT_PUBLIC_NOINDEX === "true";
+
+/**
+ * True when a request's Host header is the canonical host. Any other host
+ * serving the same build (test subdomain, server IP, apex without www) is
+ * kept out of search results by robots.txt and an X-Robots-Tag header.
+ */
+export const isCanonicalHost = (host?: string | null): boolean =>
+  !!host && host.split(":")[0].toLowerCase() === CANONICAL_HOST;
 
 export const abs = (path: string): string => `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;

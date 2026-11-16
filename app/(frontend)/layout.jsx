@@ -63,6 +63,19 @@ export async function generateMetadata() {
       description: seo.defaultDescription,
       images: seo.defaultOgImage ? [seo.defaultOgImage] : undefined,
     },
+    // Search Console / Bing Webmaster ownership tags, set via env when ready.
+    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? {
+          verification: {
+            ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+              ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+              : {}),
+            ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+              ? { other: { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } }
+              : {}),
+          },
+        }
+      : {}),
     robots: IS_STAGING
       ? { index: false, follow: false, googleBot: { index: false, follow: false } }
       : { index: true, follow: true },
