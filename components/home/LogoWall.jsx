@@ -39,9 +39,9 @@ export default function LogoWall({ content = HOME_FALLBACK.logoWall, logos = [] 
         {styles}
       </style>
       <div className="logos-container">
-        <p className="logos__heading">
+        <h2 className="logos__heading">
           <HighlightedLines text={content.heading} highlight={content.headingHighlight} />
-        </p>
+        </h2>
         <LogoGrid logos={ready} categories={LOGO_CATEGORIES.map((c) => ({ id: c.id, label: c.label }))} />
       </div>
     </section>
@@ -55,15 +55,20 @@ const styles = `
   padding-block: 3rem;
 }
 
+/* Same size as every other section heading (Build., Create., The Work…). */
 .logos__heading {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   text-align: center;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 1.875rem;
+  line-height: 0.92;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
   color: #0c0d0c;
+}
+@media (min-width: 640px) {
+  .logos__heading { font-size: 2.25rem; margin-bottom: 2.5rem; }
 }
 
 /* Hairline grid: the 1px gaps show the border colour between tiles. */

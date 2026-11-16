@@ -67,7 +67,7 @@ const styles = `
 
 .doors__heading {
   margin-top: 0.5rem;
-  font-size: 1.5rem;
+  font-size: 1.875rem;
   color: #0c0d0c;
 }
 
@@ -152,8 +152,8 @@ const styles = `
 
 @media (min-width: 640px) {
   .doors__heading {
-    font-size: 1.875rem;
-    line-height: 2.25rem;
+    font-size: 2.25rem;
+    line-height: 0.92;
   }
 
   .doors__grid {

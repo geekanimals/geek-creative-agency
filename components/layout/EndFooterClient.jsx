@@ -256,10 +256,6 @@ export default function EndFooterClient({ footer, socials = [], offices = [], me
             </div>
           )}
 
-          <div className="footer__wordmark" aria-hidden>
-            GEEK
-          </div>
-
           <div className="footer__bottom">
             <p className="footer__copyright">{copyright}</p>
             <ul className="footer__legal">
@@ -359,34 +355,9 @@ const styles = `
 .footer__office-addr { font-size: 0.85rem; line-height: 1.55; color: rgba(255,255,255,0.55); transition: color 150ms ease; }
 .footer__office:hover .footer__office-addr { color: #32c1df; }
 
-.footer__wordmark {
-  position: relative;
-  margin-top: 2.5rem; font-family: var(--font-display), system-ui, sans-serif; font-weight: 700;
-  font-size: clamp(5rem, 22vw, 19rem); line-height: 0.8; letter-spacing: -0.06em; text-align: center;
-  user-select: none; white-space: nowrap;
-  /* Brand cyan fading into the dark, with a slow light sweep across it. */
-  background:
-    linear-gradient(110deg, transparent 35%, rgba(255,255,255,0.55) 50%, transparent 65%) -150% 0 / 60% 100% no-repeat,
-    linear-gradient(180deg, #5fd6ee 0%, #32c1df 35%, #137c93 70%, rgba(12,13,12,0) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(95, 214, 238, 0.35);
-  opacity: 0.9;
-  filter: drop-shadow(0 18px 40px rgba(50, 193, 223, 0.18));
-  animation: footer-shine 7s ease-in-out infinite;
-}
-@keyframes footer-shine {
-  0%, 55% { background-position: -150% 0, 0 0; }
-  100% { background-position: 250% 0, 0 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .footer__wordmark { animation: none; }
-}
-
 .footer__bottom {
   display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem;
-  padding-block: 1.5rem; border-top: 1px solid rgba(255,255,255,0.12);
+  margin-top: 2.5rem; padding-block: 1.5rem; border-top: 1px solid rgba(255,255,255,0.12);
 }
 .footer__copyright { margin: 0; font-size: 0.78rem; color: rgba(255,255,255,0.5); }
 .footer__legal { list-style: none; margin: 0; padding: 0; display: flex; gap: 1.25rem; }

@@ -207,10 +207,10 @@ export default function Process({ content = HOME_FALLBACK.process }) {
         {styles}
       </style>
       <div className="process-container process__inner">
-        <p className="process__heading">
+        <h2 className="process__heading">
           {content.heading}{" "}
           <span className="process__heading-accent">{content.headingHighlight}</span>
-        </p>
+        </h2>
 
         {/* py/px give the enlarged active circle + glow room so nothing gets clipped.
             Track pr = same rail length after the closing pill as before it. */}
@@ -286,14 +286,19 @@ const styles = `
   padding-block: 2.25rem;
 }
 
+/* Same size as every other section heading (Build., Create., The Work…). */
 .process__heading {
-  margin-bottom: 1.25rem;
-  font-size: 0.75rem;
-  line-height: 1rem;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 1.875rem;
+  line-height: 0.92;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #5a5f5c;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  color: #0c0d0c;
+}
+@media (min-width: 640px) {
+  .process__heading { font-size: 2.25rem; margin-bottom: 2rem; }
 }
 
 .process__heading-accent {
