@@ -20,6 +20,7 @@ import * as migration_20261102_115501_media_changed from './20261102_115501_medi
 import * as migration_20261102_125245_home_section_videos from './20261102_125245_home_section_videos';
 import * as migration_20261102_125835_home_admin_full from './20261102_125835_home_admin_full';
 import * as migration_20261103_072107_meeting_button from './20261103_072107_meeting_button';
+import * as migration_20261116_095020_old_site_extras from './20261116_095020_old_site_extras';
 
 export const migrations = [
   {
@@ -130,6 +131,11 @@ export const migrations = [
   {
     up: migration_20261103_072107_meeting_button.up,
     down: migration_20261103_072107_meeting_button.down,
-    name: '20261103_072107_meeting_button'
+    name: '20261103_072107_meeting_button',
+  },
+  {
+    up: migration_20261116_095020_old_site_extras.up,
+    down: migration_20261116_095020_old_site_extras.down,
+    name: '20261116_095020_old_site_extras'
   },
 ];

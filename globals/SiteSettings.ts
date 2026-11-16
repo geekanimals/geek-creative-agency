@@ -42,6 +42,7 @@ export const SiteSettings: GlobalConfig = {
                   { label: "YouTube", value: "youtube" },
                   { label: "X", value: "x" },
                   { label: "Facebook", value: "facebook" },
+                  { label: "SlideShare", value: "slideshare" },
                 ] },
                 { name: "label", type: "text", admin: { description: "Display label (defaults to the platform name)." } },
                 { name: "url", type: "text", required: true },

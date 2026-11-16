@@ -96,6 +96,17 @@ export default async function RootLayout({ children }) {
         url: SITE.url,
         logo: `${SITE.url}/geek-logo-cyan.png`,
         description: settings.description,
+        telephone: SITE.contact.tel,
+        email: SITE.contact.email,
+        contactPoint: [
+          {
+            "@type": "ContactPoint",
+            contactType: "sales",
+            telephone: SITE.contact.tel,
+            email: SITE.contact.email,
+            areaServed: "IN",
+          },
+        ],
         ...(settings.socials.length ? { sameAs: settings.socials.map((s) => s.url) } : {}),
         address: contact.offices.items.map((o) => ({
           "@type": "PostalAddress",

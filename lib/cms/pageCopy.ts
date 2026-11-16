@@ -96,3 +96,58 @@ export async function getWorkPageCopy(opts: { draft?: boolean } = {}): Promise<W
     seo: seoFrom(g?.seo),
   };
 }
+
+/* ── Careers: open roles + internships ──────────────────────────────────── */
+export type CareerOpening = {
+  title: string;
+  type: "full-time" | "internship" | "part-time" | "contract";
+  team?: string;
+  location?: string;
+  experience?: string;
+  summary?: string;
+  responsibilities: string[];
+  requirements: string[];
+};
+export type CareerOpenings = {
+  openings: CareerOpening[];
+  internship: { show: boolean; heading: string; body: string };
+};
+
+const INTERNSHIP_FALLBACK = {
+  heading: "Internships at Geek.",
+  body:
+    "Students and fresh graduates are welcome. Apply with the form, write “Internship” as the position and pick “Fresher” under experience. Tell us what you want to learn and share any work you're proud of.",
+};
+
+const lines = (v?: string | null): string[] =>
+  (v ?? "")
+    .split(/\r?\n/)
+    .map((l) => l.replace(/^[-•*\s]+/, "").trim())
+    .filter(Boolean);
+
+export async function getCareerOpenings(opts: { draft?: boolean } = {}): Promise<CareerOpenings> {
+  const d = ((await readGlobal("careers-page", "careers-page", opts.draft)) ?? {}) as {
+    openings?: Array<Record<string, string | boolean | null | undefined>> | null;
+    internship?: { show?: boolean | null; heading?: string | null; body?: string | null } | null;
+  };
+  const openings: CareerOpening[] = (d.openings ?? [])
+    .filter((o) => o.title && o.open !== false)
+    .map((o) => ({
+      title: String(o.title),
+      type: ((o.jobType as string) || "full-time") as CareerOpening["type"],
+      team: (o.team as string) || undefined,
+      location: (o.location as string) || undefined,
+      experience: (o.experience as string) || undefined,
+      summary: (o.summary as string) || undefined,
+      responsibilities: lines(o.responsibilities as string),
+      requirements: lines(o.requirements as string),
+    }));
+  return {
+    openings,
+    internship: {
+      show: d.internship?.show !== false,
+      heading: d.internship?.heading || INTERNSHIP_FALLBACK.heading,
+      body: d.internship?.body || INTERNSHIP_FALLBACK.body,
+    },
+  };
+}

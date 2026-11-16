@@ -79,6 +79,16 @@ const SOCIAL_ICON = {
     bg: "#1877f2",
     svg: <path fill="#fff" d="M13.4 20.5v-7.3h2.5l.4-2.9h-2.9V8.5c0-.8.2-1.4 1.4-1.4h1.5V4.5c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.1H8v2.9h2.5v7.3h2.9Z" />,
   },
+  slideshare: {
+    bg: "#0077b5",
+    // Generic "slide deck" glyph: a screen on a stand.
+    svg: (
+      <g fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="4" y="5" width="16" height="10.5" rx="1.5" />
+        <path d="M12 15.5v3.5M9 19h6M8 12l2.5-2.5 2 2L16 8" />
+      </g>
+    ),
+  },
   gmail: {
     bg: "#ffffff",
     svg: (
@@ -212,6 +222,14 @@ export default function EndFooterClient({ footer, socials = [], offices = [], me
                   })}
                 </ul>
               )}
+              <p className="footer__direct">
+                <a href={`tel:${FLOATING_CONTACT.contactTel}`} className="footer__email">
+                  {FLOATING_CONTACT.contactPhone}
+                </a>
+                <a href={`mailto:${email}`} className="footer__email">
+                  {email}
+                </a>
+              </p>
             </div>
 
             <nav className="footer__cols" aria-label="Footer">
@@ -314,6 +332,7 @@ const styles = `
   border-bottom: 1px solid rgba(255,255,255,0.25); transition: color 150ms ease, border-color 150ms ease;
 }
 .footer__email:hover { color: #32c1df; border-color: #32c1df; }
+.footer__direct { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; margin: 0.5rem 0 0; }
 
 .footer__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.25rem 1.5rem; }
 .footer__col-title {

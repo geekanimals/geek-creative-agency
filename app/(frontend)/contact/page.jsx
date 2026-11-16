@@ -5,6 +5,7 @@ import Offices from "@/components/contact/Offices";
 import { getContactPage } from "@/lib/cms/contactPage";
 import { CONTACT_FALLBACK } from "@/lib/site/contactFallback";
 import { ogFallback } from "@/lib/seo/ogImage";
+import { SITE } from "@/lib/site";
 
 export async function generateMetadata() {
   const { seo } = await getContactPage();
@@ -51,6 +52,30 @@ export default async function ContactPage() {
         {/* Four doors first — each opens its own page + form (components/doors/doors.jsx) */}
         <FourDoors eyebrow={doors.eyebrow} heading={doors.heading} labels={doorLabels} />
 
+        {/* Direct line — phone + business email */}
+        <section className="contact-container contact-direct" aria-labelledby="contact-direct-title">
+          <div className="contact-direct__head">
+            <p className="contact__eyebrow">Prefer to talk?</p>
+            <h2 id="contact-direct-title" className="contact-display contact-direct__title">
+              Call or write to us directly.
+            </h2>
+          </div>
+          <div className="contact-direct__grid">
+            <a href={`tel:${SITE.contact.tel}`} className="contact-direct__card">
+              <span className="contact-direct__label">Call</span>
+              <span className="contact-display contact-direct__value">{SITE.contact.phone}</span>
+              <span className="contact-direct__hint">Speak to the Geek team</span>
+            </a>
+            <a href={`mailto:${SITE.contact.email}`} className="contact-direct__card">
+              <span className="contact-direct__label">Email</span>
+              <span className="contact-display contact-direct__value contact-direct__value--email">
+                {SITE.contact.email}
+              </span>
+              <span className="contact-direct__hint">We reply within 1–2 working days</span>
+            </a>
+          </div>
+        </section>
+
         {/* Offices — embedded Google Maps; tap opens Maps (admin: Contact Page → Offices & Map) */}
         <Offices eyebrow={offices.eyebrow} heading={offices.heading} items={offices.items} />
       </main>
@@ -85,6 +110,84 @@ const styles = `
   color: #0c0d0c;
 }
 
+
+/* Direct line */
+.contact__eyebrow {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #32c1df;
+}
+.contact-direct {
+  padding-block: 3rem;
+  border-top: 1px solid #eceeeb;
+}
+.contact-direct__title {
+  margin-top: 0.75rem;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  text-transform: uppercase;
+  color: #0c0d0c;
+}
+.contact-direct__grid {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+.contact-direct__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 1.5rem;
+  border: 1px solid #eceeeb;
+  border-radius: 1rem;
+  color: #0c0d0c;
+  text-decoration: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.contact-direct__card:hover,
+.contact-direct__card:focus-visible {
+  border-color: #32c1df;
+  box-shadow: 0 14px 30px -20px rgba(50, 193, 223, 0.7);
+  transform: translateY(-2px);
+}
+.contact-direct__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #5a5f5c;
+}
+.contact-direct__value {
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  overflow-wrap: anywhere;
+}
+.contact-direct__value--email {
+  font-size: clamp(1.1rem, 2.4vw, 1.75rem);
+  letter-spacing: -0.02em;
+}
+.contact-direct__hint {
+  font-size: 0.875rem;
+  color: #5a5f5c;
+}
+@media (min-width: 640px) {
+  .contact-direct {
+    padding-block: 4rem;
+  }
+  .contact-direct__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+  .contact-direct__card {
+    padding: 2rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-direct__card { transition: none; }
+}
 
 /* ---- type/layout helpers (local copy). Placed after the base rules and before the
    breakpoints, matching the original cascade: helpers beat plain utilities, responsive

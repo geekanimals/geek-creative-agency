@@ -14,6 +14,7 @@ export const SOCIALS: { label: string; url: string }[] = [
   { label: "YouTube", url: "https://www.youtube.com/user/GeekCreativeAgency" },
   { label: "X", url: "https://x.com/shortygeek" },
   { label: "Facebook", url: "https://www.facebook.com/WeGeek/" },
+  { label: "SlideShare", url: "https://www.slideshare.net/GeekCreativeAgency" },
 ];
 
 export const SITE = {
@@ -24,6 +25,12 @@ export const SITE = {
   description:
     "Geek is a creative agency in India — strategy, creative, brand building, creator marketing, digital and media. We build brands, then we make them matter.",
   socials: SOCIALS,
+  /** Direct business contact (same values as components/layout/floating/contactConfig.js). */
+  contact: {
+    phone: "+91 88849 88446",
+    tel: "+918884988446",
+    email: "mayank@geekcreativeagency.com",
+  },
 };
 
 /** Hostname of the canonical site, e.g. "www.geekcreativeagency.com". */

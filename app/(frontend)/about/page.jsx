@@ -127,6 +127,32 @@ export default async function AboutPage() {
           </div>
         </section>
 
+        {/* Where it started — the original Geek promise, kept word for word */}
+        <section className="about-roots">
+          <div className="about-container about-roots__inner">
+            <p className="about__eyebrow">Where it started</p>
+            <p className="about-roots__lead">
+              We make this possible by using tools and technologies that are
+            </p>
+            <ul className="about-roots__list">
+              {ROOT_PRINCIPLES.map((p, i) => (
+                <li key={p} className="about-roots__item">
+                  <span className="about-roots__num">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="about-display about-roots__word">{p}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="about-roots__shape">
+              <p className="about-display about-roots__figure" aria-label="36, 24, 36">
+                36<span className="about__accent">-</span>24<span className="about__accent">-</span>36
+              </p>
+              <p className="about-display about-roots__tagline">
+                Giving each brand the most <span className="about__accent">desirable shape</span>.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* We're builders too — reuse the homepage Built by Geek section */}
         <BuiltByGeek />
       </main>
@@ -134,7 +160,87 @@ export default async function AboutPage() {
   );
 }
 
+// The three promises from the original geekcreativeagency.com homepage.
+const ROOT_PRINCIPLES = ["Cost Effective", "Easier to Measure", "More Engaging"];
+
 const styles = `
+/* Where it started (36-24-36) */
+.about-roots {
+  background-color: #0c0d0c;
+  color: #fff;
+  padding-block: 4rem;
+}
+
+.about-roots__lead {
+  margin-top: 1rem;
+  max-width: 34ch;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  color: #a3a8a5;
+}
+
+.about-roots__list {
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1px;
+  background-color: #2a2c2b;
+  border: 1px solid #2a2c2b;
+}
+
+.about-roots__item {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1.5rem 1.25rem;
+  background-color: #0c0d0c;
+}
+
+.about-roots__num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #32c1df;
+}
+
+.about-roots__word {
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  text-transform: uppercase;
+}
+
+.about-roots__shape {
+  margin-top: 3.5rem;
+}
+
+.about-roots__figure {
+  font-size: clamp(3.5rem, 14vw, 11rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.about-roots__tagline {
+  margin-top: 1rem;
+  max-width: 22ch;
+  font-size: clamp(1.4rem, 3vw, 2.4rem);
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+@media (min-width: 640px) {
+  .about-roots {
+    padding-block: 6rem;
+  }
+  .about-roots__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .about-roots__item {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 2rem 1.75rem;
+  }
+}
+
 .about {
   padding-top: 6rem;
 }

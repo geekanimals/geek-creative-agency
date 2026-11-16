@@ -1,7 +1,8 @@
 import { draftMode } from "next/headers";
 import DoorPage from "@/components/doors/DoorPage";
 import CareerForm from "@/components/forms/CareerForm";
-import { getDoorCopy } from "@/lib/cms/pageCopy";
+import OpenRoles from "@/components/careers/OpenRoles";
+import { getCareerOpenings, getDoorCopy } from "@/lib/cms/pageCopy";
 import { ogFallback } from "@/lib/seo/ogImage";
 
 // Heading, intro + SEO are editable in the admin: Pages → Careers Page.
@@ -28,9 +29,22 @@ export async function generateMetadata() {
 
 export default async function CareersPage() {
   const { isEnabled: draft } = await draftMode();
-  const copy = await getDoorCopy("career", { draft });
+  const [copy, roles] = await Promise.all([
+    getDoorCopy("career", { draft }),
+    getCareerOpenings({ draft }),
+  ]);
+  const count = roles.openings.length;
   return (
-    <DoorPage door="career" title={copy.title} intro={copy.intro}>
+    <DoorPage
+      door="career"
+      title={copy.title}
+      intro={copy.intro}
+      introLink={{
+        href: "#open-roles",
+        label: count ? `See ${count} open ${count === 1 ? "role" : "roles"}` : "Open roles & internships",
+      }}
+      after={<OpenRoles openings={roles.openings} internship={roles.internship} />}
+    >
       <CareerForm />
     </DoorPage>
   );

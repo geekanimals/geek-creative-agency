@@ -3776,6 +3776,58 @@ export interface CareersPage {
    * The paragraph under the heading.
    */
   intro?: string | null;
+  openings?:
+    | {
+        /**
+         * e.g. Senior Copywriter
+         */
+        title: string;
+        jobType: 'full-time' | 'internship' | 'part-time' | 'contract';
+        /**
+         * e.g. Creative, Digital, Tech
+         */
+        team?: string | null;
+        /**
+         * e.g. Bangalore / Gurugram / Remote
+         */
+        location?: string | null;
+        /**
+         * e.g. 2–4 years
+         */
+        experience?: string | null;
+        /**
+         * Two or three lines about the role.
+         */
+        summary?: string | null;
+        /**
+         * One point per line.
+         */
+        responsibilities?: string | null;
+        /**
+         * One point per line.
+         */
+        requirements?: string | null;
+        /**
+         * Show this role on the site.
+         */
+        open?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  internship?: {
+    /**
+     * Show the internships box.
+     */
+    show?: boolean | null;
+    /**
+     * Empty = “Internships at Geek.”
+     */
+    heading?: string | null;
+    /**
+     * Empty = the standard internship text.
+     */
+    body?: string | null;
+  };
   seo?: {
     metaTitle?: string | null;
     metaDescription?: string | null;
@@ -3911,7 +3963,7 @@ export interface SiteSetting {
    */
   socialLinks?:
     | {
-        platform: 'instagram' | 'linkedin' | 'youtube' | 'x' | 'facebook';
+        platform: 'instagram' | 'linkedin' | 'youtube' | 'x' | 'facebook' | 'slideshare';
         /**
          * Display label (defaults to the platform name).
          */
@@ -4898,6 +4950,27 @@ export interface BuildMyBrandPageSelect<T extends boolean = true> {
 export interface CareersPageSelect<T extends boolean = true> {
   title?: T;
   intro?: T;
+  openings?:
+    | T
+    | {
+        title?: T;
+        jobType?: T;
+        team?: T;
+        location?: T;
+        experience?: T;
+        summary?: T;
+        responsibilities?: T;
+        requirements?: T;
+        open?: T;
+        id?: T;
+      };
+  internship?:
+    | T
+    | {
+        show?: T;
+        heading?: T;
+        body?: T;
+      };
   seo?:
     | T
     | {

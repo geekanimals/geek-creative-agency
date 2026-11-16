@@ -12,7 +12,7 @@ const STEPS = [
  * door colour + icon, heading and intro on the left, the form on the right,
  * and the other doors underneath. The form itself is passed as `children`.
  */
-export default function DoorPage({ door: key, title, intro, children }) {
+export default function DoorPage({ door: key, title, intro, children, introLink, after }) {
   const door = doorByKey(key);
 
   return (
@@ -33,6 +33,11 @@ export default function DoorPage({ door: key, title, intro, children }) {
             </p>
             <h1 className="door-page-display door-page__title">{title || door.title}</h1>
             <p className="door-page__lede">{intro}</p>
+            {introLink && (
+              <a href={introLink.href} className="door-page__intro-link">
+                {introLink.label} <span aria-hidden>↓</span>
+              </a>
+            )}
 
             <ol className="door-page__steps">
               {STEPS.map((s, i) => (
@@ -49,10 +54,12 @@ export default function DoorPage({ door: key, title, intro, children }) {
             </ol>
           </div>
 
-          <div className="door-page__card" style={{ borderTopColor: door.color }}>
+          <div id="apply" className="door-page__card" style={{ borderTopColor: door.color }}>
             {children}
           </div>
         </section>
+
+        {after}
 
         <FourDoors eyebrow="Other doors." heading="Looking for something else?" exclude={key} />
       </main>
@@ -61,6 +68,20 @@ export default function DoorPage({ door: key, title, intro, children }) {
 }
 
 const styles = `
+.door-page__intro-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #137c93;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+.door-page__intro-link:hover { color: #0c0d0c; }
+#apply { scroll-margin-top: 6.5rem; }
+
 .door-page {
   padding-top: 6rem;
 }

@@ -79,6 +79,27 @@ export default async function WhatWeDoPage() {
           </Band>
         ))}
 
+        {/* Full service list — every discipline under one roof */}
+        <section className="wwd-container wwd-services" aria-labelledby="wwd-services-title">
+          <div className="wwd-services__head">
+            <p className="wwd-services__eyebrow">Everything we do</p>
+            <h2 id="wwd-services-title" className="wwd-display wwd-services__title">
+              The full service list.
+            </h2>
+          </div>
+          <dl className="wwd-services__list">
+            {SERVICES.map((sv, i) => (
+              <div key={sv.name} className="wwd-services__row">
+                <dt className="wwd-services__name">
+                  <span className="wwd-services__num">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="wwd-display">{sv.name}</span>
+                </dt>
+                <dd className="wwd-services__desc">{sv.desc}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
         {/* Process rail (from the big idea to the last mile → we make it happen) */}
         <Process />
 
@@ -93,7 +114,88 @@ export default async function WhatWeDoPage() {
   );
 }
 
+// The full service list (first six from the original geekcreativeagency.com).
+const SERVICES = [
+  { name: "Advertising", desc: "360° ATL, BTL and digital campaigns." },
+  { name: "Branding", desc: "Logo, design, characters, identity and collateral." },
+  { name: "Video", desc: "Scripting, motion graphics, animation and promotion." },
+  { name: "Web Design", desc: "Wireframes, media integration and mobile-first websites." },
+  { name: "Social Media & Online Engagement", desc: "Strategy, digital PR, content creation, platform optimisation and fan-base building." },
+  { name: "Product Design & UX", desc: "Concepts, UX/UI, apps and digital product development." },
+  { name: "SEO & Performance", desc: "Search engine optimisation, app store and e-commerce SEO, performance marketing and analytics." },
+];
+
 const styles = `
+/* Full service list */
+.wwd-services {
+  padding-block: 4rem;
+}
+.wwd-services__eyebrow {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #32c1df;
+}
+.wwd-services__title {
+  margin-top: 0.75rem;
+  font-size: clamp(2rem, 5vw, 4rem);
+  text-transform: uppercase;
+  color: #0c0d0c;
+}
+.wwd-services__list {
+  margin: 2.5rem 0 0;
+  border-top: 1px solid #eceeeb;
+}
+.wwd-services__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  padding-block: 1.25rem;
+  border-bottom: 1px solid #eceeeb;
+}
+.wwd-services__name {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  color: #0c0d0c;
+}
+.wwd-services__num {
+  flex: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #32c1df;
+}
+.wwd-services__desc {
+  margin: 0;
+  padding-left: 2.1rem;
+  font-size: 1rem;
+  line-height: 1.6rem;
+  color: #5a5f5c;
+}
+@media (min-width: 640px) {
+  .wwd-services {
+    padding-block: 6rem;
+  }
+  .wwd-services__row {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 2rem;
+    align-items: baseline;
+    padding-block: 1.6rem;
+  }
+  .wwd-services__name {
+    font-size: 1.75rem;
+  }
+  .wwd-services__desc {
+    padding-left: 0;
+    font-size: 1.05rem;
+  }
+}
+
 .wwd {
   padding-top: 6rem;
 }

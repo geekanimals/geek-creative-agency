@@ -1,4 +1,4 @@
-import type { GlobalConfig } from "payload";
+import type { GlobalConfig, Tab } from "payload";
 import { isEditorUp } from "../access/roles";
 import { seoField } from "../fields/seoFields";
 import { revalidatePageHook } from "./revalidate";
@@ -13,11 +13,13 @@ function doorPageGlobal({
   label,
   path,
   headingHint,
+  extraTabs = [],
 }: {
   slug: string;
   label: string;
   path: string;
   headingHint: string;
+  extraTabs?: Tab[];
 }): GlobalConfig {
   return {
     slug,
@@ -47,6 +49,7 @@ function doorPageGlobal({
               { name: "intro", type: "textarea", admin: { description: "The paragraph under the heading." } },
             ],
           },
+          ...extraTabs,
           { label: "SEO", fields: [seoField({ hideLabel: true })] },
         ],
       },
@@ -62,11 +65,65 @@ export const BuildMyBrandPage = doorPageGlobal({
   headingHint: "Build my brand.",
 });
 
+/** Careers → "Open roles": the jobs and internships listed above the form. */
+const careerOpeningsTab: Tab = {
+  label: "Open roles",
+  description: "Jobs listed on /careers. Untick “Open” to hide a role without deleting it. No roles = “no openings right now” message.",
+  fields: [
+    {
+      name: "openings",
+      type: "array",
+      labels: { singular: "Role", plural: "Roles" },
+      admin: { initCollapsed: true },
+      fields: [
+        { name: "title", type: "text", required: true, admin: { description: "e.g. Senior Copywriter" } },
+        {
+          type: "row",
+          fields: [
+            {
+              name: "jobType",
+              label: "Type",
+              type: "select",
+              required: true,
+              defaultValue: "full-time",
+              options: [
+                { label: "Full-time", value: "full-time" },
+                { label: "Internship", value: "internship" },
+                { label: "Part-time", value: "part-time" },
+                { label: "Contract", value: "contract" },
+              ],
+              admin: { width: "33%" },
+            },
+            { name: "team", type: "text", admin: { width: "33%", description: "e.g. Creative, Digital, Tech" } },
+            { name: "location", type: "text", admin: { width: "33%", description: "e.g. Bangalore / Gurugram / Remote" } },
+          ],
+        },
+        { name: "experience", type: "text", admin: { description: "e.g. 2–4 years" } },
+        { name: "summary", type: "textarea", admin: { description: "Two or three lines about the role." } },
+        { name: "responsibilities", type: "textarea", admin: { description: "One point per line." } },
+        { name: "requirements", type: "textarea", admin: { description: "One point per line." } },
+        { name: "open", type: "checkbox", defaultValue: true, admin: { description: "Show this role on the site." } },
+      ],
+    },
+    {
+      name: "internship",
+      type: "group",
+      label: "Internships box",
+      fields: [
+        { name: "show", type: "checkbox", defaultValue: true, admin: { description: "Show the internships box." } },
+        { name: "heading", type: "text", admin: { description: "Empty = “Internships at Geek.”" } },
+        { name: "body", type: "textarea", admin: { description: "Empty = the standard internship text." } },
+      ],
+    },
+  ],
+};
+
 export const CareersPage = doorPageGlobal({
   slug: "careers-page",
   label: "Careers Page",
   path: "/careers",
   headingHint: "Work at Geek.",
+  extraTabs: [careerOpeningsTab],
 });
 
 export const PartnersPage = doorPageGlobal({
