@@ -21,6 +21,7 @@ import * as migration_20261102_125245_home_section_videos from './20261102_12524
 import * as migration_20261102_125835_home_admin_full from './20261102_125835_home_admin_full';
 import * as migration_20261103_072107_meeting_button from './20261103_072107_meeting_button';
 import * as migration_20261116_095020_old_site_extras from './20261116_095020_old_site_extras';
+import * as migration_20261117_113245_payload_393_upgrade from './20261117_113245_payload_393_upgrade';
 
 export const migrations = [
   {
@@ -136,6 +137,11 @@ export const migrations = [
   {
     up: migration_20261116_095020_old_site_extras.up,
     down: migration_20261116_095020_old_site_extras.down,
-    name: '20261116_095020_old_site_extras'
+    name: '20261116_095020_old_site_extras',
+  },
+  {
+    up: migration_20261117_113245_payload_393_upgrade.up,
+    down: migration_20261117_113245_payload_393_upgrade.down,
+    name: '20261117_113245_payload_393_upgrade'
   },
 ];
