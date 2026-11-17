@@ -59,7 +59,7 @@ export function renderOG({
             width: 620,
             height: 620,
             borderRadius: 620,
-            background: "radial-gradient(closest-side, rgba(50,193,223,0.55), rgba(50,193,223,0))",
+            background: "radial-gradient(circle at center, rgba(50,193,223,0.42) 0%, rgba(50,193,223,0.14) 40%, rgba(12,13,12,0) 70%)",
             display: "flex",
           }}
         />
