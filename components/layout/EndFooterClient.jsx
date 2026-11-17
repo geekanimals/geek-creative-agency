@@ -79,16 +79,8 @@ const SOCIAL_ICON = {
     bg: "#1877f2",
     svg: <path fill="#fff" d="M13.4 20.5v-7.3h2.5l.4-2.9h-2.9V8.5c0-.8.2-1.4 1.4-1.4h1.5V4.5c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.1H8v2.9h2.5v7.3h2.9Z" />,
   },
-  slideshare: {
-    bg: "#0077b5",
-    // Generic "slide deck" glyph: a screen on a stand.
-    svg: (
-      <g fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="4" y="5" width="16" height="10.5" rx="1.5" />
-        <path d="M12 15.5v3.5M9 19h6M8 12l2.5-2.5 2 2L16 8" />
-      </g>
-    ),
-  },
+  // The original SlideShare icon from the old geekcreativeagency.com.
+  slideshare: { bg: "#ffffff", img: "/assets/social/slideshare.png" },
   gmail: {
     bg: "#ffffff",
     svg: (
@@ -208,7 +200,9 @@ export default function EndFooterClient({ footer, socials = [], offices = [], me
                           title={s.platform === "gmail" ? email : s.label}
                         >
                           <span className="footer__social-icon" style={{ background: icon?.bg || "#32c1df" }}>
-                            {icon ? (
+                            {icon?.img ? (
+                              <img src={icon.img} alt="" width="24" height="24" className="footer__social-img" />
+                            ) : icon ? (
                               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
                                 {icon.svg}
                               </svg>
@@ -323,6 +317,7 @@ const styles = `
 .footer__social:hover .footer__social-icon { transform: translateY(-3px); box-shadow: 0 0 0 2px #32c1df, 0 10px 20px -8px rgba(50,193,223,0.6); }
 .footer__social:focus-visible { outline: 2px solid #32c1df; outline-offset: 3px; }
 .footer__social-letter { font-weight: 700; color: #fff; }
+.footer__social-img { display: block; width: 24px; height: 24px; border-radius: 4px; }
 .footer__email {
   display: inline-block; margin-top: 1rem; font-size: 0.9rem; color: rgba(255,255,255,0.75); text-decoration: none;
   border-bottom: 1px solid rgba(255,255,255,0.25); transition: color 150ms ease, border-color 150ms ease;

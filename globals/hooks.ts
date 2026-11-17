@@ -8,8 +8,11 @@ import type { GlobalAfterChangeHook } from "payload";
  */
 export const revalidateGlobals: GlobalAfterChangeHook = async ({ doc }) => {
   try {
-    const { revalidateTag } = await import("next/cache");
+    const { revalidateTag, revalidatePath } = await import("next/cache");
     revalidateTag("globals", "max");
+    // Nav/footer/socials appear on every page: refresh every page now, not on
+    // each page's next timed revalidation.
+    revalidatePath("/", "layout");
   } catch {
     /* not in a request context — ignore */
   }
