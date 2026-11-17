@@ -71,6 +71,39 @@ const styles = `
   .logos__heading { font-size: 2.25rem; margin-bottom: 2.5rem; }
 }
 
+/* "Load more" under the grid */
+.logos__more {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+.logos__more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1.4rem;
+  border: 1px solid #0c0d0c;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #0c0d0c;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.logos__more-btn:hover { background: #0c0d0c; color: #ffffff; }
+.logos__more-btn:focus-visible { outline: 2px solid #32c1df; outline-offset: 3px; }
+.logos__more-count {
+  padding: 0.1rem 0.5rem;
+  border-radius: 9999px;
+  background: #eceeeb;
+  color: #0c0d0c;
+  font-size: 0.75rem;
+}
+.logos__more-note { font-size: 0.8rem; color: #5a5f5c; }
+
 /* Hairline grid: the 1px gaps show the border colour between tiles. */
 .logos__frame {
   overflow: hidden;

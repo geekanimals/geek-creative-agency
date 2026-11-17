@@ -91,25 +91,52 @@ export const clients: Client[] = [
 ];
 
 
-/* Filter groups for the homepage logo wall. Brands not listed fall into "More". */
+/* Filter groups for the homepage logo wall — the old geekcreativeagency.com
+   filters (Technology, Hospitality, FMCG, Fashion, Aviation, …), with FMCG split
+   into Food & Snacks and Beverages. Brands not listed fall into "More". */
 export const LOGO_CATEGORIES = [
   { id: "food", label: "Food & Snacks" },
   { id: "drinks", label: "Beverages" },
-  { id: "lifestyle", label: "Beauty & Lifestyle" },
-  { id: "retail", label: "Retail, Finance & Travel" },
-  { id: "hospitality", label: "Hospitality & Startups" },
+  { id: "lifestyle", label: "Fashion & Lifestyle" },
+  { id: "jewellery", label: "Jewellery" },
   { id: "health", label: "Health & Hygiene" },
+  { id: "tech", label: "Technology & Mobile" },
+  { id: "online", label: "Online & E-commerce" },
+  { id: "retail", label: "Retail" },
+  { id: "financial", label: "Financial Services" },
+  { id: "travel", label: "Aviation & Travel" },
+  { id: "automobile", label: "Automobile" },
+  { id: "hospitality", label: "Hospitality" },
+  { id: "events", label: "Events & International" },
+  { id: "education", label: "Education" },
+  { id: "realestate", label: "Real Estate & Construction" },
+  { id: "sports", label: "Sports" },
+  { id: "agencies", label: "Agencies" },
+  { id: "ngo", label: "NGO & CSR" },
 ] as const;
 
-export const BRAND_CATEGORY: Record<string, string> = {
-  lays: "food", doritos: "food", kurkure: "food", quaker: "food",
-  quakerfoods: "food", cheetos: "food", mcdonalds: "food", oliopizza: "food",
-  pepsi: "drinks", cocacola: "drinks", "7up": "drinks", mountaindew: "drinks", sting: "drinks",
-  nimbooz: "drinks", millerhighlife: "drinks",
-  slice: "drinks", gatorade: "drinks", mirinda: "drinks", aquafina: "drinks", tropicana: "drinks",
-  fastrack: "lifestyle", tanishq: "lifestyle", durex: "lifestyle", ponds: "lifestyle", axe: "lifestyle",
-  foreo: "lifestyle", beardo: "lifestyle", veet: "lifestyle", kapiva: "lifestyle",
-  dettol: "health", cipla: "health",
-  airasia: "retail", icicibank: "retail", kotak: "retail", croma: "retail",
-  highultralounge: "hospitality", thebiereclub: "hospitality", sustainify: "hospitality", lyfe: "hospitality",
+/* Brand → filter, keyed by brand name without spaces/punctuation (logoKey). */
+const CATS: Record<string, string[]> = {
+  food: ["lays", "doritos", "kurkure", "quaker", "quakerfoods", "cheetos", "mcdonalds", "oliopizza", "britannia", "britanniabourbon", "gonemad", "sunpure"],
+  drinks: ["pepsi", "cocacola", "7up", "mountaindew", "sting", "nimbooz", "millerhighlife", "slice", "gatorade", "mirinda", "aquafina", "tropicana", "kingfisher", "sabmillerindia", "budweiser", "dspblack"],
+  lifestyle: ["fastrack", "durex", "ponds", "axe", "foreo", "beardo", "veet", "kapiva", "nivea", "emami", "titan", "titaneye", "splash", "lee", "brandfactory", "javaplum", "adamoandevah", "hysteria", "breakbounce", "tommyhilfiger", "arvind", "calvinklein"],
+  jewellery: ["tanishq", "ilovediamonds", "raae", "forevermark"],
+  health: ["dettol", "cipla", "klenza"],
+  tech: ["jio", "apple", "cisco", "wipro", "cognizant", "xerox", "lt", "honeywell", "texasinstruments", "schneiderelectric", "intuit", "citrix", "igate", "altimetrik", "capillarytechnologies", "fissionlabs", "enate", "blackbuck", "actfibernet", "beamfiber", "romaware", "onmobile", "virginmobile", "zte", "azar"],
+  online: ["flipkart", "myntra", "makemytrip", "holidayiq", "roadrunnr", "playup", "recruitmentfactory", "williampenn", "starthosting", "thoughtbuzz", "andamen", "udictionary"],
+  retail: ["croma", "reliancetrends", "avirate", "max", "vista", "lamy", "sprintfit", "vts"],
+  financial: ["icicibank", "kotak", "taxbuddy", "propriumcapitalpartners", "prashaste", "iciciprudential", "realcash"],
+  travel: ["airasia", "omanair"],
+  automobile: ["scooty", "mahindrareva", "autoportal", "advelocity"],
+  hospitality: ["highultralounge", "thebiereclub", "theleelapalace", "barbequenation", "johnnyrockets", "indigolive", "amanvana", "regentclub", "woodroseclub", "mlrconventioncentre", "galaxyclub", "brigadehospitality", "thegrandmagrathhotel", "thebakingcompany", "thechanceryhotels", "sayajihotels", "micehospitality", "goldenpalms"],
+  events: ["lyfe", "themusicrun", "designmile", "maiyapublishing", "celebrationscateringevents", "pencilmy", "agrathakreeda", "kevo"],
+  education: ["manipaluniversity", "schoolcinema", "mindlogicx", "lodestar", "sikkimmanipaluniversity", "etabu", "pearson"],
+  realestate: ["bluejay", "sobha", "mantri", "brigadehomestead", "grabhouse", "beasy", "jainheights", "meraqiadvisors", "samanvaygroup"],
+  sports: ["sportswizz", "mysorewarriors", "championstennisleague", "kpl", "xwarrior"],
+  agencies: ["happycreative", "maxus", "saatchisaatchi", "nirvana", "mccann", "edelman"],
+  ngo: ["sustainify", "ippf", "icare", "yunussocialbusiness", "mirchy"],
 };
+
+export const BRAND_CATEGORY: Record<string, string> = Object.fromEntries(
+  Object.entries(CATS).flatMap(([cat, keys]) => keys.map((k) => [k, cat])),
+);

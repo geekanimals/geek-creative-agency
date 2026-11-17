@@ -6,8 +6,12 @@ import { useMemo, useState } from "react";
  * Logo wall grid with category filter chips. Gets ready-to-render logos
  * (optimised src/srcSet built on the server in LogoWall.jsx).
  */
+/** How many logos show before "Load more" (and how many each click adds). */
+const PAGE = 24;
+
 export default function LogoGrid({ logos, categories }) {
   const [active, setActive] = useState("all");
+  const [limit, setLimit] = useState(PAGE);
 
   const chips = useMemo(() => {
     const counts = logos.reduce((m, l) => ((m[l.category] = (m[l.category] || 0) + 1), m), {});
@@ -16,7 +20,9 @@ export default function LogoGrid({ logos, categories }) {
     return [{ id: "all", label: "All brands", count: logos.length }, ...list];
   }, [logos, categories]);
 
-  const shown = active === "all" ? logos : logos.filter((l) => l.category === active);
+  const filtered = active === "all" ? logos : logos.filter((l) => l.category === active);
+  const shown = filtered.slice(0, limit);
+  const remaining = filtered.length - shown.length;
 
   return (
     <>
@@ -28,7 +34,10 @@ export default function LogoGrid({ logos, categories }) {
             role="tab"
             aria-selected={active === c.id}
             className={`logos__chip ${active === c.id ? "is-active" : ""}`}
-            onClick={() => setActive(c.id)}
+            onClick={() => {
+              setActive(c.id);
+              setLimit(PAGE);
+            }}
           >
             {c.label}
             <span className="logos__chip-count">{c.count}</span>
@@ -67,6 +76,16 @@ export default function LogoGrid({ logos, categories }) {
         ))}
       </ul>
       </div>
+      {remaining > 0 && (
+        <div className="logos__more">
+          <button type="button" className="logos__more-btn" onClick={() => setLimit((n) => n + PAGE)}>
+            Load more <span className="logos__more-count">+{Math.min(remaining, PAGE)}</span>
+          </button>
+          <p className="logos__more-note">
+            Showing {shown.length} of {filtered.length}
+          </p>
+        </div>
+      )}
     </>
   );
 }
