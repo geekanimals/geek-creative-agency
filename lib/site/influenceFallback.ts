@@ -41,7 +41,7 @@ export type InfluencePageModel = {
   seo: InfluenceSeo;
 };
 
-export const BRAND_LOGIN_URL = "https://bountythreads.geekcreativeagency.com/brands";
+export const BRAND_LOGIN_URL = "https://bounty.geekcreativeagency.com/brands";
 
 export const INFLUENCE_FALLBACK: InfluencePageModel = {
   hero: {

@@ -22,7 +22,7 @@ export const CREATORS_FALLBACK: CreatorsPageModel = {
     headingHighlight: "With great brands.",
     subline: "Join the Geek Creator Network.",
     ctaLabel: "Join now",
-    ctaHref: "https://www.bountythreads.geekcreativeagency.com/app.html",
+    ctaHref: "https://bounty.geekcreativeagency.com/creator",
   },
   oneDegree: {
     heading: "One degree\nof separation.",
