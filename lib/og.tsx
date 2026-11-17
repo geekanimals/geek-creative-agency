@@ -77,15 +77,30 @@ export function renderOG({
 
         <div style={{ display: "flex", flexDirection: "column" }}>
           {eyebrow && (
-            <div style={{ fontSize: 26, fontWeight: 700, letterSpacing: 3, color: CYAN, textTransform: "uppercase", marginBottom: 18 }}>{eyebrow}</div>
+            <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: 4, color: CYAN, textTransform: "uppercase", marginBottom: 20 }}>{eyebrow}</div>
           )}
-          <div style={{ fontSize: title.length > 40 ? 76 : 96, fontWeight: 800, color: fg, lineHeight: 1.02, letterSpacing: -2, textTransform: "uppercase" }}>
+          <div style={{ fontSize: title.length > 60 ? 60 : title.length > 40 ? 70 : 88, fontWeight: 800, color: fg, lineHeight: 1.04, letterSpacing: -2, textTransform: "uppercase", maxWidth: 1000 }}>
             {title}
           </div>
         </div>
 
-        <div style={{ fontSize: 24, color: dark ? "rgba(255,255,255,0.6)" : "#5A5F5C", fontWeight: 600 }}>
-          We build brands. Then we make them matter.
+        {/* Footer row: hairline, domain, what Geek does */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderTop: `1px solid ${dark ? "rgba(255,255,255,0.16)" : "#E3E5E2"}`,
+            paddingTop: 26,
+            fontSize: 22,
+            fontWeight: 600,
+            color: dark ? "rgba(255,255,255,0.62)" : "#5A5F5C",
+          }}
+        >
+          <div style={{ display: "flex" }}>geekcreativeagency.com</div>
+          <div style={{ display: "flex", letterSpacing: 2, textTransform: "uppercase", fontSize: 18 }}>
+            Strategy · Creative · Creators · Media
+          </div>
         </div>
       </div>
     ),

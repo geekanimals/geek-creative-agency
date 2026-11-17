@@ -5,5 +5,5 @@ export const size = ogSize;
 export const contentType = ogContentType;
 
 export default function Image() {
-  return renderOG({ eyebrow: "Geek Creative Agency", title: "We build brands. Then we make them matter." });
+  return renderOG({ eyebrow: "Creative agency · India", title: "We build brands. Then we make them matter." });
 }
