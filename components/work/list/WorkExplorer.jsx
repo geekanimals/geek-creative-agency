@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import FilterDropdown from "@/components/work/list/FilterDropdown";
 import FilterSheet from "@/components/work/list/FilterSheet";
 import WorkTile from "@/components/work/list/WorkTile";
+import WorkSearch from "@/components/work/list/WorkSearch";
+import { track } from "@/lib/analytics";
 
 /**
  * Filter bar + grid shared by /work and every filter page (/work/fmcg, /work/fmcg/lays).
@@ -19,8 +21,118 @@ import WorkTile from "@/components/work/list/WorkTile";
  */
 export default function WorkExplorer({ projects, total, menu, chips = [], basePath = "/work" }) {
   const [sheetOpen, setSheetOpen] = useState(false);
-  const count = projects.length;
   const active = chips.length > 0;
+
+  // ── Search (backend: /api/work-search). Results are matched against the
+  // tiles already on this page, so on a filter page it searches within it. ──
+  const [query, setQuery] = useState("");
+  const [hits, setHits] = useState(null); // null = no search; [] = no match
+  const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const ctrl = useRef(null);
+  const term = query.trim();
+
+  // ?q= in the URL (shared link) → start with that search.
+  useEffect(() => {
+    try {
+      const q = new URLSearchParams(window.location.search).get("q");
+      if (q) setQuery(q.slice(0, 100));
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    // Keep ?q= in the address bar so a search can be shared; leave other params alone.
+    try {
+      const url = new URL(window.location.href);
+      if (term) url.searchParams.set("q", term);
+      else url.searchParams.delete("q");
+      if (url.href !== window.location.href) window.history.replaceState(window.history.state, "", url.href);
+    } catch {}
+
+    if (!term) {
+      ctrl.current?.abort();
+      setHits(null);
+      setLoading(false);
+      setFailed(false);
+      return;
+    }
+    setLoading(true);
+    const t = setTimeout(async () => {
+      ctrl.current?.abort();
+      const c = new AbortController();
+      ctrl.current = c;
+      try {
+        const res = await fetch(`/api/work-search?q=${encodeURIComponent(term)}`, { signal: c.signal });
+        const data = await res.json();
+        if (c.signal.aborted) return;
+        setHits(Array.isArray(data.results) ? data.results : []);
+        setFailed(!res.ok);
+        setLoading(false);
+        track("work_search", { q: term, results: Array.isArray(data.results) ? data.results.length : 0 });
+      } catch (e) {
+        if (e?.name === "AbortError") return;
+        setHits([]);
+        setFailed(true);
+        setLoading(false);
+      }
+    }, 250);
+    return () => clearTimeout(t);
+  }, [term]);
+
+  const searching = Boolean(term) && hits !== null;
+  // "default" = curated order (or best match while searching).
+  const [sort, setSort] = useState("default");
+  const shown = useMemo(() => {
+    let list = projects;
+    if (searching) {
+      const bySlug = new Map(projects.map((p) => [p.slug, p]));
+      list = hits.map((h) => bySlug.get(h.slug)).filter(Boolean);
+    }
+    if (sort === "default") return list;
+    const name = (p) => `${p.brand ?? ""} ${p.project ?? ""}`.toLowerCase();
+    const idx = new Map(list.map((p, i) => [p.slug, i]));
+    const byYear = (dir) => (a, b) => {
+      const ya = a.year ?? null, yb = b.year ?? null;
+      if (ya === yb) return idx.get(a.slug) - idx.get(b.slug);
+      if (ya === null) return 1; // no year → last
+      if (yb === null) return -1;
+      return dir * (yb - ya);
+    };
+    const sorted = [...list];
+    if (sort === "newest") sorted.sort(byYear(1));
+    else if (sort === "oldest") sorted.sort(byYear(-1));
+    else if (sort === "az") sorted.sort((a, b) => name(a).localeCompare(name(b)));
+    else if (sort === "za") sorted.sort((a, b) => name(b).localeCompare(name(a)));
+    return sorted;
+  }, [searching, hits, projects, sort]);
+  const sortControl = (cls = "") => (
+    <label className={`wx__sort ${cls}`}>
+      <span className="wx__sort-label">Sort</span>
+      <select
+        value={sort}
+        onChange={(e) => {
+          setSort(e.target.value);
+          track("work_sort", { sort: e.target.value });
+        }}
+        className="wx__sort-select"
+        aria-label="Sort the work"
+      >
+        <option value="default">{term ? "Best match" : "Featured"}</option>
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+        <option value="az">Brand A–Z</option>
+        <option value="za">Brand Z–A</option>
+      </select>
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden className="wx__sort-caret">
+        <path d="M2 3.5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </label>
+  );
+  const count = shown.length;
+  const clearSearch = () => setQuery("");
+  const search = (cls) => (
+    <WorkSearch value={query} onChange={setQuery} onClear={clearSearch} loading={loading} className={cls} />
+  );
 
   return (
     <div>
@@ -47,9 +159,14 @@ export default function WorkExplorer({ projects, total, menu, chips = [], basePa
                 Clear all
               </Link>
             )}
+            <div className="wx__tools">
+              {sortControl()}
+              {search("wx__search")}
+            </div>
           </div>
 
           {/* mobile */}
+          <div className="wx__mobile-search">{search()}</div>
           <div className="wx__mobile">
             <button type="button" onClick={() => setSheetOpen(true)} className="wx__sheet-trigger">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
@@ -63,9 +180,7 @@ export default function WorkExplorer({ projects, total, menu, chips = [], basePa
               Filter Work
               {active && <span className="wx__badge">{chips.length}</span>}
             </button>
-            <span className="wx__mobile-count">
-              {active ? `${count} of ${total}` : `${total} Projects`}
-            </span>
+            {sortControl("wx__sort--mobile")}
           </div>
         </div>
       </div>
@@ -84,14 +199,28 @@ export default function WorkExplorer({ projects, total, menu, chips = [], basePa
             </div>
           )}
           <span className="wx__count">
-            {active ? `Showing ${count} of ${total} Projects` : `${total} Projects`}
+            {searching
+              ? `${count} ${count === 1 ? "result" : "results"} for “${term}”`
+              : active
+                ? `Showing ${count} of ${total} Projects`
+                : `${total} Projects`}
           </span>
         </div>
       </div>
 
       {/* ── Grid / empty state ── */}
       <div className="wx-container wx__results">
-        {count === 0 ? (
+        {searching && count === 0 ? (
+          <div className="wx__empty">
+            <p className="wx-display wx__empty-title">
+              {failed ? "Search is unavailable right now." : `No work matches “${term}”.`}
+            </p>
+            <p className="wx__empty-hint">Try a brand, a campaign name, a service or a city.</p>
+            <button type="button" onClick={clearSearch} className="wx__empty-reset">
+              Clear search →
+            </button>
+          </div>
+        ) : count === 0 ? (
           <div className="wx__empty">
             <p className="wx-display wx__empty-title">No work here yet.</p>
             <Link href="/work" className="wx__empty-reset">
@@ -104,7 +233,7 @@ export default function WorkExplorer({ projects, total, menu, chips = [], basePa
                 waiting for JavaScript before the grid shows (fade-in only for tiles
                 added later). */}
             <AnimatePresence mode="popLayout" initial={false}>
-              {projects.map((p, i) => (
+              {shown.map((p, i) => (
                 <motion.div
                   key={p.slug}
                   layout
@@ -140,8 +269,10 @@ const styles = `
 
 .wx__desktop {
   display: none;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 2rem;
+  column-gap: 2rem;
+  row-gap: 0.75rem;
   padding-block: 1.25rem;
 }
 
@@ -162,6 +293,94 @@ const styles = `
   color: #0c0d0c;
 }
 
+.wx__tools {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex: 1 1 360px;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.wx__clear + .wx__tools {
+  margin-left: 0;
+}
+
+.wx__search {
+  flex: 1 1 200px;
+  max-width: 340px;
+}
+
+.wx__sort {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.wx__sort-label {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #5a5f5c;
+}
+
+.wx__sort-select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0.5rem 1.1rem 0.5rem 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #0c0d0c;
+  cursor: pointer;
+  outline: none;
+}
+
+.wx__sort-select:focus-visible {
+  box-shadow: 0 2px 0 #32c1df;
+}
+
+.wx__sort-caret {
+  position: absolute;
+  right: 0;
+  pointer-events: none;
+  color: #0c0d0c;
+}
+
+.wx__sort--mobile {
+  margin-left: auto;
+}
+
+.wx__sort--mobile .wx__sort-label {
+  display: none;
+}
+
+.wx__sort--mobile .wx__sort-select {
+  font-size: 16px; /* no iOS zoom */
+  letter-spacing: 0.08em;
+}
+
+.wx__mobile-search {
+  padding-top: 1rem;
+}
+
+.wx__empty-hint {
+  margin-top: 0.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.375rem;
+  color: #5a5f5c;
+}
+
 .wx__mobile {
   display: flex;
   align-items: center;
@@ -170,6 +389,7 @@ const styles = `
 }
 
 .wx__sheet-trigger {
+  white-space: nowrap;
   margin-block: -0.5rem;
   display: flex;
   align-items: center;
@@ -249,7 +469,7 @@ const styles = `
 
 .wx__count {
   margin-left: auto;
-  display: none;
+  display: block;
   font-size: 0.75rem;
   line-height: 1rem;
   font-weight: 600;
@@ -338,13 +558,11 @@ const styles = `
     display: flex;
   }
 
-  .wx__mobile {
+  .wx__mobile,
+  .wx__mobile-search {
     display: none;
   }
 
-  .wx__count {
-    display: block;
-  }
 
   .wx__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
