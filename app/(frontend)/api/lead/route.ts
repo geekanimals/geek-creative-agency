@@ -1,3 +1,4 @@
+import { gzipSync } from "node:zlib";
 import { NextRequest } from "next/server";
 
 import { getTransporter, isSmtpConfigured, leadInboxes, mailFrom } from "@/lib/mail/smtp";
@@ -264,39 +265,40 @@ async function readMultipart(
 }
 
 /**
- * CLIENT form only: the same lead is also sent to Geek CRM (Website Leads + Pipeline),
- * so the team works on it from the CRM. Best effort: a CRM problem is logged and never
- * fails the form or the email. Needs CRM_LEAD_URL + WEBSITE_LEAD_SECRET (same value as
- * in the CRM backend .env); without them nothing is sent.
+ * Every form (client / creator / career / vendor) is also sent to Geek CRM (Website Leads), so the team
+ * works on it from the CRM; a client lead also becomes a Hot lead in its Pipeline. A career resume goes
+ * gzip-compressed. Best effort: a CRM problem is logged and never fails the form or the email.
+ * Needs CRM_LEAD_URL + WEBSITE_LEAD_SECRET (same value as in the CRM backend .env); without them nothing is sent.
  */
-async function sendToCrm(d: Record<string, string>, page: string): Promise<void> {
+async function sendToCrm(kind: FormKind, d: Record<string, string>, attachments: Attachment[], page: string): Promise<void> {
   const url = (process.env.CRM_LEAD_URL || "").trim();
   const secret = (process.env.WEBSITE_LEAD_SECRET || "").trim();
   if (!url || !secret || !isEmail(d.email)) return;
+  const fields: Record<string, string> = {};
+  for (const [k, v] of Object.entries(d)) if (k !== "_form" && k !== "company_website" && v) fields[k] = v;
+  const file = attachments[0];
+  const resume = file
+    ? { name: file.filename, gzip: true, data: gzipSync(file.content, { level: 9 }).toString("base64") }
+    : undefined;
   try {
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-website-secret": secret },
       body: JSON.stringify({
-        name: d.name || "",
-        company: d.company || "",
-        designation: d.designation || "",
-        email: d.email,
-        phone: d.phone || "",
-        budget: d.budget || "",
-        timeline: d.timeline || "",
-        goal: d.goal || "",
+        ...fields,
+        form: kind,
         page: /^https?:\/\//i.test(page) ? page.slice(0, 300) : "",
+        ...(resume ? { resume } : {}),
       }),
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) {
       // eslint-disable-next-line no-console
-      console.error(JSON.stringify({ type: "lead-crm", ok: false, status: res.status, at: new Date().toISOString() }));
+      console.error(JSON.stringify({ type: "lead-crm", form: kind, ok: false, status: res.status, at: new Date().toISOString() }));
     }
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.error(JSON.stringify({ type: "lead-crm", ok: false, error: e instanceof Error ? e.message : String(e), at: new Date().toISOString() }));
+    console.error(JSON.stringify({ type: "lead-crm", form: kind, ok: false, error: e instanceof Error ? e.message : String(e), at: new Date().toISOString() }));
   }
 }
 
@@ -381,8 +383,8 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // client form: send it to the CRM at the same time as the email (never blocks or fails the form)
-  const crm = kind === "client" ? sendToCrm(body, req.headers.get("referer") || "") : Promise.resolve();
+  // every form goes to the CRM at the same time as the email (never blocks or fails the form)
+  const crm = sendToCrm(kind, body, attachments, req.headers.get("referer") || "");
 
   try {
     const delivered = await deliver(kind, body, attachments);
