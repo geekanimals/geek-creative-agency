@@ -263,6 +263,43 @@ async function readMultipart(
   return { body, attachments };
 }
 
+/**
+ * CLIENT form only: the same lead is also sent to Geek CRM (Website Leads + Pipeline),
+ * so the team works on it from the CRM. Best effort: a CRM problem is logged and never
+ * fails the form or the email. Needs CRM_LEAD_URL + WEBSITE_LEAD_SECRET (same value as
+ * in the CRM backend .env); without them nothing is sent.
+ */
+async function sendToCrm(d: Record<string, string>, page: string): Promise<void> {
+  const url = (process.env.CRM_LEAD_URL || "").trim();
+  const secret = (process.env.WEBSITE_LEAD_SECRET || "").trim();
+  if (!url || !secret || !isEmail(d.email)) return;
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-website-secret": secret },
+      body: JSON.stringify({
+        name: d.name || "",
+        company: d.company || "",
+        designation: d.designation || "",
+        email: d.email,
+        phone: d.phone || "",
+        budget: d.budget || "",
+        timeline: d.timeline || "",
+        goal: d.goal || "",
+        page: /^https?:\/\//i.test(page) ? page.slice(0, 300) : "",
+      }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) {
+      // eslint-disable-next-line no-console
+      console.error(JSON.stringify({ type: "lead-crm", ok: false, status: res.status, at: new Date().toISOString() }));
+    }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(JSON.stringify({ type: "lead-crm", ok: false, error: e instanceof Error ? e.message : String(e), at: new Date().toISOString() }));
+  }
+}
+
 export async function POST(req: NextRequest) {
   let body: Record<string, string>;
   let attachments: Attachment[] = [];
@@ -344,8 +381,12 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // client form: send it to the CRM at the same time as the email (never blocks or fails the form)
+  const crm = kind === "client" ? sendToCrm(body, req.headers.get("referer") || "") : Promise.resolve();
+
   try {
     const delivered = await deliver(kind, body, attachments);
+    await crm;
     // PII-safe structured log — NEVER log the lead's name/company/email/subject.
     // eslint-disable-next-line no-console
     console.log(JSON.stringify({ type: "lead", form: kind, delivered, at: new Date().toISOString() }));
@@ -353,6 +394,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error("[GEEK lead] delivery error", err);
+    await crm; // the CRM still gets the lead even when the email failed
     return Response.json({ ok: false, error: "Could not send right now — please email us." }, { status: 502 });
   }
 }
