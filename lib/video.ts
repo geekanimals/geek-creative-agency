@@ -22,6 +22,20 @@ export const VIDEO: Record<string, VideoSlot> = {
   process: { desktop: "" }, // /assets/video/last-mile.mp4
 };
 
+/**
+ * Homepage hero grid: one YouTube video per tile (6 tiles, left→right, top→bottom).
+ * Muted, looping, no controls — the tile's photo shows until the video plays.
+ * `vertical: true` for YouTube Shorts (9:16). Leave empty to show the photos only.
+ */
+export const HERO_TILE_YOUTUBE: { id: string; vertical?: boolean }[] = [
+  { id: "1P_ceYFI3hg" },
+  { id: "YIM8vATuO_g" },
+  { id: "TcxyV7KTsMY", vertical: true },
+  { id: "eNBmomD8fqQ" },
+  { id: "9T2JSYHz7lI", vertical: true },
+  { id: "WaGoqc3K94M" },
+];
+
 export const hasVideo = (slot: VideoSlot | undefined): boolean => !!slot && !!slot.desktop;
 
 /**

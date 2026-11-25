@@ -2,13 +2,17 @@
 
 import Media from "@/components/ui/Media";
 import AutoVideo from "@/components/ui/AutoVideo";
+import YouTubeTile from "@/components/ui/YouTubeTile";
 import { HighlightedLines } from "@/components/content/HighlightedLines";
 import { heroPoster } from "@/lib/data/work";
-import { VIDEO, videoProps } from "@/lib/video";
+import { VIDEO, videoProps, HERO_TILE_YOUTUBE } from "@/lib/video";
 import { HOME_FALLBACK } from "@/lib/site/homeFallback";
 
 export default function Hero({ content = HOME_FALLBACK.hero, video = null }) {
   const reel = videoProps(video, VIDEO.hero);
+  // One YouTube video per tile (lib/video.ts). When set, it replaces the single showreel.
+  const tileVideos = HERO_TILE_YOUTUBE;
+  const perTile = tileVideos.length > 0;
   return (
     <section id="top" className="hero">
       <style href="hero" precedence="default">
@@ -73,15 +77,10 @@ export default function Hero({ content = HOME_FALLBACK.hero, video = null }) {
           <div className="hero__frame">
             {/* Showreel — set in the admin (Home Page → Videos: upload or YouTube link);
                 lib/video.ts is the code fallback, the poster collage the static fallback. */}
-            <AutoVideo
-              desktop={reel.video}
-              mobile={reel.videoMobile}
-              youtube={reel.youtube}
-              posterImg={reel.poster}
-            >
+            {perTile ? (
               <div className="hero__poster">
-                {heroPoster.map((p, i) => (
-                  <div key={p.slug} className="hero__tile">
+                {heroPoster.map((p, i) => {
+                  const media = (
                     <Media
                       src={p.src}
                       need={p.need}
@@ -91,10 +90,45 @@ export default function Hero({ content = HOME_FALLBACK.hero, video = null }) {
                       priority={i < 2}
                       sizes="(max-width: 1024px) 50vw, 25vw"
                     />
-                  </div>
-                ))}
+                  );
+                  const yt = tileVideos[i];
+                  return (
+                    <div key={p.slug} className="hero__tile">
+                      {yt ? (
+                        <YouTubeTile id={yt.id} vertical={yt.vertical}>
+                          {media}
+                        </YouTubeTile>
+                      ) : (
+                        media
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            </AutoVideo>
+            ) : (
+              <AutoVideo
+                desktop={reel.video}
+                mobile={reel.videoMobile}
+                youtube={reel.youtube}
+                posterImg={reel.poster}
+              >
+                <div className="hero__poster">
+                  {heroPoster.map((p, i) => (
+                    <div key={p.slug} className="hero__tile">
+                      <Media
+                        src={p.src}
+                        need={p.need}
+                        label={p.brand}
+                        index={i}
+                        showSlotLabel={i % 2 === 0}
+                        priority={i < 2}
+                        sizes="(max-width: 1024px) 50vw, 25vw"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </AutoVideo>
+            )}
 
             {/* showreel affordance */}
             <div className="hero__overlay">
