@@ -129,19 +129,6 @@ export default function Hero({ content = HOME_FALLBACK.hero, video = null }) {
                 </div>
               </AutoVideo>
             )}
-
-            {/* showreel affordance */}
-            <div className="hero__overlay">
-              <span className="hero__badge">
-                <span className="hero__play">
-                  <svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
-                    <path d="M3 2l7 4-7 4z" />
-                  </svg>
-                </span>
-                Showreel · Muted
-              </span>
-              <span className="hero__note">Real Geek work</span>
-            </div>
           </div>
         </div>
       </div>
@@ -293,49 +280,9 @@ const styles = `
   overflow: hidden;
 }
 
-.hero__overlay {
-  pointer-events: none;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  background-image: linear-gradient(to top, rgba(12, 13, 12, 0.85), transparent);
-  padding: 2.5rem 1rem 1rem;
-}
 
-.hero__badge {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.85);
-}
 
-.hero__play {
-  display: flex;
-  width: 1.5rem;
-  height: 1.5rem;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  background-color: #32c1df;
-  color: #0c0d0c;
-}
 
-.hero__note {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-}
 
 /* ---- type/layout helpers (local copy). Placed after the base rules and before the
    breakpoints, matching the original cascade: helpers beat plain utilities, responsive
