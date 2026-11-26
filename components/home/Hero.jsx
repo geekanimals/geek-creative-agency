@@ -2,17 +2,18 @@
 
 import Media from "@/components/ui/Media";
 import AutoVideo from "@/components/ui/AutoVideo";
-import YouTubeTile from "@/components/ui/YouTubeTile";
+import YouTubeReel from "@/components/ui/YouTubeReel";
 import { HighlightedLines } from "@/components/content/HighlightedLines";
 import { heroPoster } from "@/lib/data/work";
-import { VIDEO, videoProps, HERO_TILE_YOUTUBE } from "@/lib/video";
+import { VIDEO, videoProps, HERO_REEL_YOUTUBE } from "@/lib/video";
 import { HOME_FALLBACK } from "@/lib/site/homeFallback";
 
 export default function Hero({ content = HOME_FALLBACK.hero, video = null }) {
   const reel = videoProps(video, VIDEO.hero);
-  // One YouTube video per tile (lib/video.ts). When set, it replaces the single showreel.
-  const tileVideos = HERO_TILE_YOUTUBE;
-  const perTile = tileVideos.length > 0;
+  // YouTube reel (lib/video.ts): the videos play one after another. When set,
+  // it replaces the photo collage / admin showreel.
+  const reelIds = HERO_REEL_YOUTUBE;
+  const hasReel = reelIds.length > 0;
   return (
     <section id="top" className="hero">
       <style href="hero" precedence="default">
@@ -74,37 +75,11 @@ export default function Hero({ content = HOME_FALLBACK.hero, video = null }) {
 
         {/* Showreel media container */}
         <div className="hero__media hero-in hero-in--media">
-          <div className="hero__frame">
+          <div className={`hero__frame ${hasReel ? "hero__frame--reel" : ""}`}>
             {/* Showreel — set in the admin (Home Page → Videos: upload or YouTube link);
                 lib/video.ts is the code fallback, the poster collage the static fallback. */}
-            {perTile ? (
-              <div className="hero__poster">
-                {heroPoster.map((p, i) => {
-                  const media = (
-                    <Media
-                      src={p.src}
-                      need={p.need}
-                      label={p.brand}
-                      index={i}
-                      showSlotLabel={i % 2 === 0}
-                      priority={i < 2}
-                      sizes="(max-width: 1024px) 50vw, 25vw"
-                    />
-                  );
-                  const yt = tileVideos[i];
-                  return (
-                    <div key={p.slug} className="hero__tile">
-                      {yt ? (
-                        <YouTubeTile id={yt.id} vertical={yt.vertical}>
-                          {media}
-                        </YouTubeTile>
-                      ) : (
-                        media
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+            {hasReel ? (
+              <YouTubeReel ids={reelIds} />
             ) : (
               <AutoVideo
                 desktop={reel.video}
@@ -267,6 +242,11 @@ const styles = `
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
+/* horizontal reel on every screen size */
+.hero__frame--reel {
+  aspect-ratio: 16 / 9;
+}
+
 .hero__poster {
   display: grid;
   height: 100%;
@@ -315,6 +295,10 @@ const styles = `
 
   .hero__frame {
     aspect-ratio: 16 / 11;
+  }
+
+  .hero__frame--reel {
+    aspect-ratio: 16 / 9;
   }
 }
 
